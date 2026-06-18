@@ -90,12 +90,12 @@ snippets/
 
 | Token                   | Replace with                                                     |
 | ----------------------- | ---------------------------------------------------------------- |
-| `{{APP_NAME}}`          | Human-readable name (e.g. `Acme`)                                |
-| `{{APP_SLUG}}`          | Kebab-case slug used for worker/D1 names and the plan name       |
-| `{{APP_DOMAIN}}`        | Apex domain (e.g. `acme.com`)                                    |
-| `{{APP_REF_COOKIE}}`    | Referral cookie name (e.g. `acme_ref`) — only if referrals stay  |
-| `{{MAIL_FROM_LOCAL}}`   | Local part of From address (e.g. `hello`)                        |
-| `{{ADMIN_EMAIL}}`       | Bootstrap admin email address                                    |
+| `Stems`          | Human-readable name (e.g. `Acme`)                                |
+| `stems`          | Kebab-case slug used for worker/D1 names and the plan name       |
+| `stems.market`        | Apex domain (e.g. `acme.com`)                                    |
+| `stems_ref`    | Referral cookie name (e.g. `acme_ref`) — only if referrals stay  |
+| `hello`   | Local part of From address (e.g. `hello`)                        |
+| `jamie@island-web.ca`       | Bootstrap admin email address                                    |
 
 `gtm-container-template.json` carries two more placeholders (`{{CONTAINER_NAME}}`,
 `{{GA4_MEASUREMENT_ID}}`) that you fill by hand when importing the container —
@@ -106,12 +106,12 @@ see `../11-analytics-gtm-ga4.md`. They're not part of the `sed` pass below.
 ```bash
 find . -type f \( -name '*.ts' -o -name '*.vue' -o -name '*.sql' -o -name '*.json' -o -name '*.jsonc' -o -name '*.yml' -o -name '*.md' -o -name '.env.example' \) \
   -exec sed -i '' \
-    -e 's/{{APP_NAME}}/Acme/g' \
-    -e 's/{{APP_SLUG}}/acme/g' \
-    -e 's/{{APP_DOMAIN}}/acme.com/g' \
-    -e 's/{{APP_REF_COOKIE}}/acme_ref/g' \
-    -e 's/{{MAIL_FROM_LOCAL}}/hello/g' \
-    -e 's/{{ADMIN_EMAIL}}/you@example.com/g' \
+    -e 's/Stems/Acme/g' \
+    -e 's/stems/acme/g' \
+    -e 's/stems.market/acme.com/g' \
+    -e 's/stems_ref/acme_ref/g' \
+    -e 's/hello/hello/g' \
+    -e 's/jamie@island-web.ca/you@example.com/g' \
     {} +
 ```
 

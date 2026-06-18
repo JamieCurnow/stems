@@ -11,12 +11,12 @@ Everything has been genericised — no app names, brand colours, or product-spec
 
 | Placeholder            | What it is                                                     |
 | ---------------------- | -------------------------------------------------------------- |
-| `{{APP_NAME}}`         | Human-readable name (e.g. "Acme")                              |
-| `{{APP_SLUG}}`         | Kebab-case slug used for the worker name, D1 name, plan name   |
-| `{{APP_DOMAIN}}`       | Apex domain (e.g. `acme.com`)                                  |
-| `{{APP_REF_COOKIE}}`   | Referral cookie name (e.g. `acme_ref`) — only needed if you keep referrals |
-| `{{MAIL_FROM_LOCAL}}`  | Local part of the From address (e.g. `hello`)                  |
-| `{{ADMIN_EMAIL}}`      | Bootstrap admin email                                          |
+| `Stems`         | Human-readable name (e.g. "Acme")                              |
+| `stems`         | Kebab-case slug used for the worker name, D1 name, plan name   |
+| `stems.market`       | Apex domain (e.g. `acme.com`)                                  |
+| `stems_ref`   | Referral cookie name (e.g. `acme_ref`) — only needed if you keep referrals |
+| `hello`  | Local part of the From address (e.g. `hello`)                  |
+| `jamie@island-web.ca`      | Bootstrap admin email                                          |
 
 A simple find/replace pass at the end of setup turns the template into a real app.
 

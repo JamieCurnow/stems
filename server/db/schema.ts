@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, index, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer, real, index, uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 /**
  * Drizzle schema for the Cloudflare D1 database.
@@ -163,6 +163,96 @@ export const scheduledEmail = sqliteTable(
     index('scheduledEmail_leadId_idx').on(t.leadId)
   ]
 )
+
+/* ── Stems app tables ─────────────────────────────────────────────────────
+   Profiles + flower listings. App-owned (written via Drizzle), keyed by Better
+   Auth's user.id. Date columns are epoch millis; money is integer pence. See
+   roadmap/02-data-model.md for the canonical spec. */
+
+/* Profile (1:1 with user). Holds everything that makes a grower's public page.
+   Florist-specific fields are deferred to V2. */
+export const profile = sqliteTable(
+  'profile',
+  {
+    userId: text('userId')
+      .primaryKey()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    handle: text('handle').notNull().unique(), // lowercase canonical, no '@'
+    farmName: text('farmName').notNull(), // display name / farm name
+    bio: text('bio'), // about-page body (plain text/markdown-lite)
+    locationName: text('locationName'), // freeform e.g. "Bissoe, Cornwall"
+    postcode: text('postcode'), // stored for future radius search (V2)
+    latitude: real('latitude'), // optional geocode (V2 search); nullable in V1
+    longitude: real('longitude'),
+    instagram: text('instagram'), // handle without '@'
+    website: text('website'),
+    // Contact-the-grower deep links (no in-app messaging — see shared/utils/contact.ts).
+    whatsapp: text('whatsapp'), // contact number, international format (powers wa.me)
+    contactEmail: text('contactEmail'), // public contact email, distinct from login email
+    preferredContact: text('preferredContact'), // 'whatsapp' | 'email' | 'instagram' | null
+    avatarKey: text('avatarKey'), // R2 key (see doc 06)
+    bannerKey: text('bannerKey'), // R2 key, optional hero image
+    isGrower: integer('isGrower', { mode: 'boolean' }).notNull().default(false),
+    createdAt: integer('createdAt', { mode: 'timestamp_ms' }).notNull(),
+    updatedAt: integer('updatedAt', { mode: 'timestamp_ms' }).notNull()
+  },
+  (t) => [uniqueIndex('profile_handle_idx').on(t.handle), index('profile_isGrower_idx').on(t.isGrower)]
+)
+
+/* Flower listing (1:N from grower). The live, continuously-editable
+   availability item. No weekly snapshot. `updatedAt` powers the public
+   "Updated 2 days ago" line. */
+export const flower = sqliteTable(
+  'flower',
+  {
+    id: text('id').primaryKey(),
+    growerId: text('growerId')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(), // "Cosmos"
+    variety: text('variety'), // "Cupcake White"
+    color: text('color'), // freeform "White", "Blush pink"
+    stemLengthCm: integer('stemLengthCm'), // 60
+    stemsPerBunch: integer('stemsPerBunch'), // 10
+    pricePerStem: integer('pricePerStem'), // pence, e.g. 85 = £0.85
+    pricePerBunch: integer('pricePerBunch'), // pence; optional override, else derived
+    // Grower will consider offers rather than only the listed price.
+    openToOffers: integer('openToOffers', { mode: 'boolean' }).notNull().default(false),
+    // Stems currently available: null = available (count unspecified), 0 = sold
+    // out, >0 = that many stems. Replaced the old categorical `availability`.
+    stemsAvailable: integer('stemsAvailable'),
+    notes: text('notes'),
+    sortOrder: integer('sortOrder').notNull().default(0),
+    isArchived: integer('isArchived', { mode: 'boolean' }).notNull().default(false),
+    createdAt: integer('createdAt', { mode: 'timestamp_ms' }).notNull(),
+    updatedAt: integer('updatedAt', { mode: 'timestamp_ms' }).notNull()
+  },
+  (t) => [
+    index('flower_growerId_idx').on(t.growerId),
+    index('flower_grower_archived_idx').on(t.growerId, t.isArchived)
+  ]
+)
+
+/* Flower photos (1:N). Square crops stored in public R2 (doc 06). V1 UI manages
+   one primary photo (lowest sortOrder), but the table supports a gallery for V2
+   with no migration. */
+export const flowerPhoto = sqliteTable(
+  'flower_photo',
+  {
+    id: text('id').primaryKey(),
+    flowerId: text('flowerId')
+      .notNull()
+      .references(() => flower.id, { onDelete: 'cascade' }),
+    r2Key: text('r2Key').notNull(),
+    sortOrder: integer('sortOrder').notNull().default(0),
+    createdAt: integer('createdAt', { mode: 'timestamp_ms' }).notNull()
+  },
+  (t) => [index('flower_photo_flowerId_idx').on(t.flowerId)]
+)
+
+export type ProfileRow = typeof profile.$inferSelect
+export type FlowerRow = typeof flower.$inferSelect
+export type FlowerPhotoRow = typeof flowerPhoto.$inferSelect
 
 export type SubscriptionRow = typeof subscription.$inferSelect
 export type ReferralRow = typeof referral.$inferSelect

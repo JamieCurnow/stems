@@ -25,12 +25,12 @@ Every file uses a fixed set of tokens that need real values. Run one `sed` pass:
 find . -type f \( -name '*.ts' -o -name '*.vue' -o -name '*.sql' -o -name '*.json' -o -name '*.jsonc' -o -name '*.yml' -o -name '*.md' -o -name '.env.example' \) \
   -not -path './node_modules/*' -not -path './.nuxt/*' -not -path './.output/*' \
   -exec sed -i '' \
-    -e 's/{{APP_NAME}}/Acme/g' \
-    -e 's/{{APP_SLUG}}/acme/g' \
-    -e 's/{{APP_DOMAIN}}/acme.com/g' \
-    -e 's/{{APP_REF_COOKIE}}/acme_ref/g' \
-    -e 's/{{MAIL_FROM_LOCAL}}/hello/g' \
-    -e 's/{{ADMIN_EMAIL}}/you@example.com/g' \
+    -e 's/Stems/Acme/g' \
+    -e 's/stems/acme/g' \
+    -e 's/stems.market/acme.com/g' \
+    -e 's/stems_ref/acme_ref/g' \
+    -e 's/hello/hello/g' \
+    -e 's/jamie@island-web.ca/you@example.com/g' \
     {} +
 ```
 
@@ -38,12 +38,12 @@ GNU sed: drop the empty `''` after `-i`.
 
 | Token                 | What it is                                            |
 | --------------------- | ----------------------------------------------------- |
-| `{{APP_NAME}}`        | Human-readable name (e.g. `Acme`)                     |
-| `{{APP_SLUG}}`        | Kebab-case slug — worker name, D1 name, plan name     |
-| `{{APP_DOMAIN}}`      | Apex domain (e.g. `acme.com`)                         |
-| `{{APP_REF_COOKIE}}`  | Referral cookie name. Drop if you don't use referrals |
-| `{{MAIL_FROM_LOCAL}}` | Local part of the From address (e.g. `hello`)         |
-| `{{ADMIN_EMAIL}}`     | Bootstrap admin email                                 |
+| `Stems`        | Human-readable name (e.g. `Acme`)                     |
+| `stems`        | Kebab-case slug — worker name, D1 name, plan name     |
+| `stems.market`      | Apex domain (e.g. `acme.com`)                         |
+| `stems_ref`  | Referral cookie name. Drop if you don't use referrals |
+| `hello` | Local part of the From address (e.g. `hello`)         |
+| `jamie@island-web.ca`     | Bootstrap admin email                                 |
 
 Two more placeholders live only in the analytics GTM container template
 (`integration-guides/snippets/gtm-container-template.json`) and are filled by
@@ -252,7 +252,12 @@ server/
 shared/utils/             Code crossing the SSR boundary
 .cloudflare/worker.ts     Wrangler entry — wraps Nitro output + DO exports
 wrangler.jsonc            Cloudflare config (dev + staging + production)
+DESIGN.md                 Brand & design guidelines (palette, type, layout)
 ```
+
+> **Design system:** see [`DESIGN.md`](./DESIGN.md) for the brand direction,
+> colour tokens, typography, and layout patterns. Read it before styling pages
+> so the UI stays cohesive.
 
 > **Heads-up:** the only page that ships is `app/pages/login.vue`. The auth and
 > subscription middleware (and the login flow) redirect to `/app`,
@@ -371,6 +376,7 @@ A few footguns that this template has already worked around — handy to know be
 
 ## Reference
 
+- [`DESIGN.md`](./DESIGN.md) — Stems brand & design guidelines
 - [Nuxt 4 docs](https://nuxt.com/docs)
 - [Cloudflare Workers docs](https://developers.cloudflare.com/workers/)
 - [Better Auth docs](https://better-auth.com/docs)

@@ -30,7 +30,7 @@ jobs:
     # → "production" → tick "Required reviewers" and add yourself.
     environment:
       name: production
-      url: https://{{APP_DOMAIN}}
+      url: https://stems.market
     permissions:
       # We push to releases/production so the branch tracks deployments.
       contents: write
@@ -79,7 +79,7 @@ jobs:
           # `--env production` is REQUIRED — without it wrangler resolves the
           # database via the top-level d1_databases binding (placeholder UUID)
           # and the API call fails.
-          command: d1 migrations apply {{APP_SLUG}} --remote --env production
+          command: d1 migrations apply stems --remote --env production
 
       - name: Deploy worker (production)
         uses: cloudflare/wrangler-action@v3

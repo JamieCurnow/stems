@@ -4,12 +4,21 @@ export default defineNuxtConfig({
 
   devtools: { enabled: false },
 
+  // Pre-bundle better-auth's deep entry points so Vite doesn't discover them at
+  // runtime (which triggers a full page reload on first load in dev).
+  vite: {
+    optimizeDeps: {
+      include: ['@better-auth/stripe/client', 'better-auth/client/plugins', 'better-auth/vue']
+    }
+  },
+
   css: ['~/assets/css/main.css'],
 
-  // System-driven light/dark with a toggle in the UI. Set preference to
-  // 'light' (and re-add `ui: { colorMode: false }`) to lock the app to light.
+  // Locked to light mode — Stems is a warm, light-first brand. preference +
+  // fallback both 'light' means the app never resolves to dark; there's no UI
+  // toggle. To re-enable dark mode later, set preference back to 'system'.
   // @ts-expect-error provided by @nuxtjs/color-mode via @nuxt/ui
-  colorMode: { preference: 'system', fallback: 'light', classSuffix: '' },
+  colorMode: { preference: 'light', fallback: 'light', classSuffix: '' },
 
   app: {
     head: {
@@ -21,9 +30,9 @@ export default defineNuxtConfig({
         },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-title', content: '{{APP_NAME}}' },
+        { name: 'apple-mobile-web-app-title', content: 'Stems' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-        { name: 'theme-color', content: '#000000' }
+        { name: 'theme-color', content: '#FFFFFF' }
       ],
       link: [
         { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
@@ -102,6 +111,15 @@ export default defineNuxtConfig({
         provider: 'google',
         weights: [400, 500, 600],
         styles: ['normal']
+      },
+      {
+        // Classic, understated display serif (Toast-brand vibe) for the wordmark,
+        // farm names, hero titles and empty-state headings — exposed via the
+        // `font-display` utility (see main.css).
+        name: 'EB Garamond',
+        provider: 'google',
+        weights: [400, 500, 600, 700],
+        styles: ['normal', 'italic']
       }
     ],
     defaults: {
@@ -113,13 +131,13 @@ export default defineNuxtConfig({
 
   pwa: {
     manifest: {
-      name: '{{APP_NAME}}',
-      short_name: '{{APP_NAME}}',
-      description: 'TODO: Your app description',
+      name: 'Stems',
+      short_name: 'Stems',
+      description: 'The marketplace for local-grown flowers',
       lang: 'en',
-      background_color: '#000000',
-      theme_color: '#000000',
-      start_url: '/app',
+      background_color: '#FFFFFF',
+      theme_color: '#FFFFFF',
+      start_url: '/discover',
       display: 'standalone',
       display_override: ['standalone'],
       icons: [

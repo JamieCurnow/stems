@@ -17,7 +17,7 @@ cp .env.example .env
 # Edit .env — see "Local env" below for which keys are required.
 
 # 3. Bootstrap local D1
-wrangler d1 migrations apply {{APP_SLUG}} --local
+wrangler d1 migrations apply stems --local
 
 # 4. (Optional) Generate Workers types so Env / bindings autocomplete
 wrangler types
@@ -55,17 +55,17 @@ Every D1 wrangler command takes a `--local` / `--remote` flag:
 
 ```bash
 # Apply migrations locally
-wrangler d1 migrations apply {{APP_SLUG}} --local
+wrangler d1 migrations apply stems --local
 
 # Apply to remote (specify env!)
-wrangler d1 migrations apply {{APP_SLUG}} --remote --env staging
-wrangler d1 migrations apply {{APP_SLUG}} --remote --env production
+wrangler d1 migrations apply stems --remote --env staging
+wrangler d1 migrations apply stems --remote --env production
 
 # Run an ad-hoc query locally
-wrangler d1 execute {{APP_SLUG}} --local --command "SELECT email, createdAt FROM user LIMIT 10"
+wrangler d1 execute stems --local --command "SELECT email, createdAt FROM user LIMIT 10"
 
 # Same query, against staging
-wrangler d1 execute {{APP_SLUG}}-staging --remote --env staging \
+wrangler d1 execute stems-staging --remote --env staging \
   --command "SELECT email, createdAt FROM user LIMIT 10"
 ```
 
@@ -82,7 +82,7 @@ When local D1 is in a wedged state:
 rm -rf .wrangler/state/v3/d1
 
 # Then re-apply
-wrangler d1 migrations apply {{APP_SLUG}} --local
+wrangler d1 migrations apply stems --local
 ```
 
 Local-only. Remote is untouched.
@@ -99,7 +99,7 @@ The fix is a single flag in `wrangler.jsonc`'s top-level (dev-only) R2 block:
 "r2_buckets": [
   {
     "binding": "FILES",
-    "bucket_name": "{{APP_SLUG}}-files",
+    "bucket_name": "stems-files",
     "remote": true
   }
 ]
@@ -200,7 +200,7 @@ npm run typecheck   # or: nuxt typecheck
 npm run lint
 
 # 3. D1 migrations applied
-wrangler d1 migrations apply {{APP_SLUG}} --local
+wrangler d1 migrations apply stems --local
 
 # 4. Dev server boots
 npm run dev

@@ -42,7 +42,7 @@ export function renderLayoutHtml({
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="color-scheme" content="light only" />
 <meta name="supported-color-schemes" content="light" />
-<title>{{APP_NAME}}</title>
+<title>Stems</title>
 </head>
 <body style="margin:0;padding:0;background:#F5F5F4;font-family:'Inter','Helvetica Neue',Arial,sans-serif;color:#1B1B1B;-webkit-font-smoothing:antialiased;">
 ${preheaderHtml}
@@ -52,7 +52,7 @@ ${preheaderHtml}
       <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;background:#FFFFFF;border:1px solid #E5E5E5;border-radius:8px;overflow:hidden;">
         <tr>
           <td style="padding:24px 32px;border-bottom:1px solid #E5E5E5;">
-            <a href="${escapeHtml(baseUrl)}" style="color:#1B1B1B;text-decoration:none;font-family:Georgia,serif;font-size:22px;font-weight:600;letter-spacing:-0.01em;">{{APP_NAME}}</a>
+            <a href="${escapeHtml(baseUrl)}" style="color:#1B1B1B;text-decoration:none;font-family:Georgia,serif;font-size:22px;font-weight:600;letter-spacing:-0.01em;">Stems</a>
           </td>
         </tr>
         <tr>
@@ -62,7 +62,7 @@ ${preheaderHtml}
         </tr>
         <tr>
           <td style="padding:24px 32px;border-top:1px solid #E5E5E5;font-size:12px;line-height:1.6;color:#6B6B6B;">
-            <p style="margin:0 0 12px;">{{APP_NAME}}. Replace this tagline with your own.</p>
+            <p style="margin:0 0 12px;">Stems. Replace this tagline with your own.</p>
             <p style="margin:0 0 4px;">You're getting this at <a href="mailto:${escapeHtml(recipientEmail)}" style="color:#6B6B6B;">${escapeHtml(recipientEmail)}</a>.</p>
             <p style="margin:0;"><a href="${escapeHtml(unsubscribeUrl)}" style="color:#0066CC;text-decoration:underline;">Unsubscribe</a> &middot; <a href="${escapeHtml(baseUrl)}/settings" style="color:#0066CC;text-decoration:underline;">Email preferences</a></p>
           </td>
@@ -78,7 +78,7 @@ ${preheaderHtml}
 export function renderLayoutText({ bodyText, unsubscribeUrl, recipientEmail }: LayoutTextArgs): string {
   return `${bodyText.trim()}
 
-{{APP_NAME}}
+Stems
 
 You're getting this at ${recipientEmail}.
 Unsubscribe: ${unsubscribeUrl}

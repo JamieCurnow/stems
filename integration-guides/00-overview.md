@@ -59,20 +59,20 @@ And then `wrangler.jsonc` carries everything:
 
 ```jsonc
 {
-  "name": "{{APP_SLUG}}",
+  "name": "stems",
   "main": ".cloudflare/worker.ts",
   "compatibility_date": "2025-07-15",
   "compatibility_flags": ["nodejs_compat"],
 
   // Top-level = local dev (Miniflare reads this).
   // env.staging + env.production = deployed envs.
-  "d1_databases": [{ "binding": "DB", "database_name": "{{APP_SLUG}}", ... }],
+  "d1_databases": [{ "binding": "DB", "database_name": "stems", ... }],
   "r2_buckets": [...],
   "vars": {...},
 
   "env": {
-    "staging":    { "name": "{{APP_SLUG}}-staging", ... },
-    "production": { "name": "{{APP_SLUG}}",         ... }
+    "staging":    { "name": "stems-staging", ... },
+    "production": { "name": "stems",         ... }
   }
 }
 ```

@@ -59,7 +59,7 @@ Minimal skeleton:
 ```jsonc
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "{{APP_SLUG}}",
+  "name": "stems",
   "main": ".cloudflare/worker.ts",
   "compatibility_date": "2025-07-15",
   "compatibility_flags": ["nodejs_compat"],
@@ -75,14 +75,14 @@ Minimal skeleton:
 
   "d1_databases": [{
     "binding": "DB",
-    "database_name": "{{APP_SLUG}}",
+    "database_name": "stems",
     "database_id": "LOCAL_PLACEHOLDER",
     "migrations_dir": "server/db/migrations"
   }],
 
   "r2_buckets": [{
     "binding": "FILES",
-    "bucket_name": "{{APP_SLUG}}-files",
+    "bucket_name": "stems-files",
     "remote": true              // ← Miniflare proxies to the real R2 in dev
   }],
 
@@ -92,47 +92,47 @@ Minimal skeleton:
 
   "env": {
     "staging": {
-      "name": "{{APP_SLUG}}-staging",
+      "name": "stems-staging",
       "workers_dev": false,
       "preview_urls": false,
       "d1_databases": [{
         "binding": "DB",
-        "database_name": "{{APP_SLUG}}-staging",
+        "database_name": "stems-staging",
         "database_id": "<UUID after wrangler d1 create>",
         "migrations_dir": "server/db/migrations"
       }],
-      "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files" }],
       "vars": {
-        "PUBLIC_BASE_URL": "https://staging.{{APP_DOMAIN}}",
-        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>"
+        "PUBLIC_BASE_URL": "https://staging.stems.market",
+        "MAIL_FROM": "Stems <hello@stems.market>"
       },
       "durable_objects": {
         "bindings": [{ "name": "EMAIL_SCHEDULER", "class_name": "EmailScheduler" }]
       },
       "migrations": [{ "tag": "v1", "new_sqlite_classes": ["EmailScheduler"] }],
-      "routes": [{ "pattern": "staging.{{APP_DOMAIN}}", "custom_domain": true }]
+      "routes": [{ "pattern": "staging.stems.market", "custom_domain": true }]
     },
 
     "production": {
-      "name": "{{APP_SLUG}}",
+      "name": "stems",
       "workers_dev": false,
       "preview_urls": false,
       "d1_databases": [{
         "binding": "DB",
-        "database_name": "{{APP_SLUG}}",
+        "database_name": "stems",
         "database_id": "<UUID after wrangler d1 create>",
         "migrations_dir": "server/db/migrations"
       }],
-      "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files" }],
       "vars": {
-        "PUBLIC_BASE_URL": "https://{{APP_DOMAIN}}",
-        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>"
+        "PUBLIC_BASE_URL": "https://stems.market",
+        "MAIL_FROM": "Stems <hello@stems.market>"
       },
       "durable_objects": {
         "bindings": [{ "name": "EMAIL_SCHEDULER", "class_name": "EmailScheduler" }]
       },
       "migrations": [{ "tag": "v1", "new_sqlite_classes": ["EmailScheduler"] }],
-      "routes": [{ "pattern": "{{APP_DOMAIN}}", "custom_domain": true }]
+      "routes": [{ "pattern": "stems.market", "custom_domain": true }]
     }
   }
 }
@@ -227,7 +227,7 @@ STRIPE_PRICE_ID=price_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
 RESEND_API_KEY=re_...
-MAIL_FROM={{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>
+MAIL_FROM=Stems <hello@stems.market>
 PUBLIC_BASE_URL=http://localhost:3000
 ADMIN_API_SECRET=<openssl rand -hex 32>
 ```
@@ -258,11 +258,11 @@ Wrangler is intentionally **not** in the `scripts` block — it's invoked direct
 
 ```bash
 # 1. Create the D1 database for local dev
-wrangler d1 create {{APP_SLUG}}
+wrangler d1 create stems
 # Copy the database_id from the output into wrangler.jsonc → top-level d1_databases[0].database_id
 
 # 2. Run any migrations against local D1
-wrangler d1 migrations apply {{APP_SLUG}} --local
+wrangler d1 migrations apply stems --local
 
 # 3. Start the dev server
 npm run dev

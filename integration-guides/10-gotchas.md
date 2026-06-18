@@ -122,13 +122,13 @@ The plugin forwards your auth-cookie jar as part of the upgrade call, so referra
 
 ### Staging behind basic auth needs route exceptions for Stripe webhooks
 
-Stripe doesn't send HTTP Basic credentials. If your staging worker sits behind a basic-auth gate at `staging.{{APP_DOMAIN}}/*`, every webhook POST 401s before reaching your worker. Add concrete-path routes that bypass the gate:
+Stripe doesn't send HTTP Basic credentials. If your staging worker sits behind a basic-auth gate at `staging.stems.market/*`, every webhook POST 401s before reaching your worker. Add concrete-path routes that bypass the gate:
 
 ```jsonc
 "routes": [
-  { "pattern": "staging.{{APP_DOMAIN}}", "custom_domain": true },
-  { "pattern": "staging.{{APP_DOMAIN}}/api/auth/stripe/webhook", "zone_name": "{{APP_DOMAIN}}" },
-  { "pattern": "staging.{{APP_DOMAIN}}/api/stripe/webhook",      "zone_name": "{{APP_DOMAIN}}" }
+  { "pattern": "staging.stems.market", "custom_domain": true },
+  { "pattern": "staging.stems.market/api/auth/stripe/webhook", "zone_name": "stems.market" },
+  { "pattern": "staging.stems.market/api/stripe/webhook",      "zone_name": "stems.market" }
 ]
 ```
 

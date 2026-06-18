@@ -49,14 +49,14 @@ export function serverAuth(event: H3Event) {
           enabled: true,
           plans: [
             {
-              name: '{{APP_SLUG}}',
+              name: 'stems',
               priceId: env.STRIPE_PRICE_ID,
               freeTrial: { days: 7 } // optional
             }
           ],
           getCheckoutSessionParams: async (_data, req) => {
             const cookieHeader = req?.headers.get('cookie') ?? ''
-            const refMatch = cookieHeader.match(/(?:^|;\s*){{APP_REF_COOKIE}}=([^;]+)/)
+            const refMatch = cookieHeader.match(/(?:^|;\s*)stems_ref=([^;]+)/)
             const refCode = refMatch?.[1] ? decodeURIComponent(refMatch[1]) : null
 
             const baseParams: Stripe.Checkout.SessionCreateParams = {
@@ -152,7 +152,7 @@ export function serverAuth(event: H3Event) {
         create: {
           before: async (data, ctx) => {
             const cookieHeader = ctx?.request?.headers?.get?.('cookie') ?? ''
-            const m = cookieHeader.match(/(?:^|;\s*){{APP_REF_COOKIE}}=([^;]+)/)
+            const m = cookieHeader.match(/(?:^|;\s*)stems_ref=([^;]+)/)
             const refCode = m?.[1] ? decodeURIComponent(m[1]) : null
             if (!refCode) return { data }
             return { data: { ...data, referredByCode: refCode } }
@@ -165,6 +165,15 @@ export function serverAuth(event: H3Event) {
       magicLink({
         expiresIn: 60 * 15, // 15-minute link
         sendMagicLink: async ({ email, url }) => {
+          // Dev fallback: when no RESEND_API_KEY is configured (local dev),
+          // sending would throw, so instead log the sign-in link to the
+          // terminal. Paste it into the browser to sign in. Never logs in
+          // deployed envs (where the key is set).
+          const env = event.context.cloudflare?.env
+          if (!env?.RESEND_API_KEY) {
+            console.log(`\n🌷 [Stems] Magic sign-in link for ${email}:\n${url}\n`)
+            return
+          }
           // Transactional — sendEmail performs no audience check, which is
           // correct here: a login link must never be suppressed by a
           // marketing/product preference toggle.

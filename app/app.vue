@@ -7,7 +7,9 @@ if (import.meta.client) await useAnalyticsIdentity()
 <template>
   <UApp>
     <VitePwaManifest />
-    <NuxtPage />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
     <LayoutCookieConsent />
   </UApp>
 </template>

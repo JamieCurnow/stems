@@ -4,7 +4,7 @@ R2 is Cloudflare's S3-compatible object storage. Zero egress fees, billed per GB
 
 This guide covers two patterns:
 
-1. **Open public assets** — bucket attached to a public Cloudflare R2 custom domain. Nothing to do server-side; clients hit `https://files.{{APP_DOMAIN}}/<key>` directly.
+1. **Open public assets** — bucket attached to a public Cloudflare R2 custom domain. Nothing to do server-side; clients hit `https://files.stems.market/<key>` directly.
 2. **Auth-gated proxy with edge caching** — what to do when every byte served needs the auth check to run first. This is the interesting pattern.
 
 ---
@@ -17,17 +17,17 @@ This guide covers two patterns:
 "r2_buckets": [
   {
     "binding": "FILES",
-    "bucket_name": "{{APP_SLUG}}-files",
+    "bucket_name": "stems-files",
     "remote": true                  // ← dev-only flag, see below
   }
 ],
 "env": {
   "staging": {
-    "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }]
+    "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files" }]
     // Note: no `remote: true` in deployed envs
   },
   "production": {
-    "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }]
+    "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files" }]
   }
 }
 ```
@@ -39,7 +39,7 @@ This is a deliberate convenience choice. Trade-off: dev writes mutate prod state
 Create the bucket once with wrangler:
 
 ```bash
-wrangler r2 bucket create {{APP_SLUG}}-files
+wrangler r2 bucket create stems-files
 ```
 
 Upload via the CLI or the dashboard. For programmatic uploads, use the `S3 API` credentials from the R2 dashboard with any S3 SDK.
@@ -48,12 +48,12 @@ Upload via the CLI or the dashboard. For programmatic uploads, use the `S3 API` 
 
 ## Pattern 1: Open public assets
 
-Skip the proxy entirely. In R2 dashboard → your bucket → Settings → Public access → connect a custom domain (e.g. `files.{{APP_DOMAIN}}`). Cloudflare adds the DNS record and you're done.
+Skip the proxy entirely. In R2 dashboard → your bucket → Settings → Public access → connect a custom domain (e.g. `files.stems.market`). Cloudflare adds the DNS record and you're done.
 
 Use it from the client:
 
 ```html
-<img src="https://files.{{APP_DOMAIN}}/logos/main.png">
+<img src="https://files.stems.market/logos/main.png">
 ```
 
 CDN caching is automatic. Range requests work. Free egress.

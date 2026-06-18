@@ -10,7 +10,7 @@ export interface WelcomeProps {
 }
 
 const template: EmailTemplate<WelcomeProps> = ({ firstName }, { baseUrl }) => ({
-  subject: 'Welcome to {{APP_NAME}}',
+  subject: 'Welcome to Stems',
   preheader: 'Glad you\'re here.',
   html: `
     <p>Hey ${firstName ? escapeHtml(firstName) : 'there'},</p>

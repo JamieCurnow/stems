@@ -7,7 +7,7 @@ import * as schema from '~~/server/db/schema'
  * are blocked at the audience check.
  *
  * Configure in Resend dashboard pointing at:
- *   https://{{APP_DOMAIN}}/api/resend/webhook
+ *   https://stems.market/api/resend/webhook
  *
  * Signature verification: Resend signs webhooks with the Svix scheme
  * (`svix-id`, `svix-timestamp`, `svix-signature` headers). When

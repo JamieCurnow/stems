@@ -10,7 +10,7 @@ import { serverAuth } from './auth'
  * (secret-only). The two coexist — secret for machines, session for humans.
  */
 
-const DEFAULT_ADMIN_EMAILS = ['{{ADMIN_EMAIL}}']
+const DEFAULT_ADMIN_EMAILS = ['jamie@island-web.ca']
 
 function adminEmails(event: H3Event): string[] {
   const env = event.context.cloudflare?.env

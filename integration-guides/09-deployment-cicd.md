@@ -9,8 +9,8 @@ Three completely isolated environments — dev, staging, production. Three worke
 | Env        | Where it runs                 | DB                          | Secrets path                                       | URL                          |
 | ---------- | ----------------------------- | --------------------------- | -------------------------------------------------- | ---------------------------- |
 | **Dev**    | `nuxt dev` (Miniflare)        | Local SQLite in `.wrangler/`| `.env`                                             | `http://localhost:3000`      |
-| **Staging**| Worker `{{APP_SLUG}}-staging` | D1 `{{APP_SLUG}}-staging`   | `wrangler secret put X --env staging`              | `staging.{{APP_DOMAIN}}` or `*.workers.dev` |
-| **Prod**   | Worker `{{APP_SLUG}}`         | D1 `{{APP_SLUG}}`           | `wrangler secret put X --env production`           | `{{APP_DOMAIN}}`             |
+| **Staging**| Worker `stems-staging` | D1 `stems-staging`   | `wrangler secret put X --env staging`              | `staging.stems.market` or `*.workers.dev` |
+| **Prod**   | Worker `stems`         | D1 `stems`           | `wrangler secret put X --env production`           | `stems.market`             |
 
 `wrangler.jsonc` carries everything declarative (bindings, vars, routes); wrangler secrets carry secrets.
 
@@ -20,19 +20,19 @@ Three completely isolated environments — dev, staging, production. Three worke
 
 ```bash
 # 1. Create the D1 database
-wrangler d1 create {{APP_SLUG}}-staging
+wrangler d1 create stems-staging
 # Output: { "database_id": "abc123-..." }
 # Paste that UUID into wrangler.jsonc → env.staging.d1_databases[0].database_id
 
 # 2. Apply migrations to the new D1
-wrangler d1 migrations apply {{APP_SLUG}}-staging --remote --env staging
+wrangler d1 migrations apply stems-staging --remote --env staging
 
 # 3. Generate + set the auth secret
 npx better-auth secret    # prints a fresh 32-byte hex string
 echo -n '<secret>' | wrangler secret put BETTER_AUTH_SECRET --env staging
 
 # 4. Set the URL
-echo -n 'https://staging.{{APP_DOMAIN}}' | wrangler secret put BETTER_AUTH_URL --env staging
+echo -n 'https://staging.stems.market' | wrangler secret put BETTER_AUTH_URL --env staging
 
 # 5. Set Stripe + Resend + admin secrets
 echo -n 'sk_test_...'        | wrangler secret put STRIPE_SECRET_KEY --env staging
@@ -133,7 +133,7 @@ jobs:
           # `--env staging` is REQUIRED — without it wrangler resolves the DB
           # via the top-level d1_databases binding (placeholder UUID) and the
           # migration API call fails.
-          command: d1 migrations apply {{APP_SLUG}}-staging --remote --env staging
+          command: d1 migrations apply stems-staging --remote --env staging
       - name: Deploy worker (staging)
         uses: cloudflare/wrangler-action@v3
         with:
@@ -189,7 +189,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: d1 migrations apply {{APP_SLUG}} --remote --env production
+          command: d1 migrations apply stems --remote --env production
       - name: Deploy worker (production)
         uses: cloudflare/wrangler-action@v3
         with:
@@ -248,8 +248,8 @@ wrangler secret list --env staging
 wrangler secret list --env production
 
 # How many users on each?
-wrangler d1 execute {{APP_SLUG}}-staging --remote --command "SELECT count(*) FROM user"
-wrangler d1 execute {{APP_SLUG}}         --remote --command "SELECT count(*) FROM user"
+wrangler d1 execute stems-staging --remote --command "SELECT count(*) FROM user"
+wrangler d1 execute stems         --remote --command "SELECT count(*) FROM user"
 
 # Live logs
 wrangler tail --env production

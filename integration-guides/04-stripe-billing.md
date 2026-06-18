@@ -78,7 +78,7 @@ const options: BetterAuthOptions = {
         enabled: true,
         plans: [
           {
-            name: '{{APP_SLUG}}',           // the plan slug used by client.subscription.upgrade()
+            name: 'stems',           // the plan slug used by client.subscription.upgrade()
             priceId: env.STRIPE_PRICE_ID,
             freeTrial: { days: 7 }          // optional
           }
@@ -171,7 +171,7 @@ Then from a Vue component / composable:
 
 ```ts
 const { data, error } = await authClient.subscription.upgrade({
-  plan: '{{APP_SLUG}}',
+  plan: 'stems',
   successUrl: '/billing/success',
   cancelUrl: '/billing/cancel'
 })
@@ -204,7 +204,7 @@ export default defineEventHandler(async (event) => {
   const sub = await db.query.subscription.findFirst({
     where: and(
       eq(schema.subscription.referenceId, user.id),
-      eq(schema.subscription.plan, '{{APP_SLUG}}')
+      eq(schema.subscription.plan, 'stems')
     )
   })
 
@@ -385,13 +385,13 @@ Test card: `4242 4242 4242 4242` with any future expiry / 3-digit CVC / 5-digit 
 stripe login
 
 # 2. Create product, price, (optional) referral coupon, webhook endpoints
-stripe products create --name="{{APP_NAME}}" -d "metadata[slug]={{APP_SLUG}}" --live
+stripe products create --name="Stems" -d "metadata[slug]=stems" --live
 stripe prices create --product=prod_... --currency=usd --unit-amount=2000 \
   -d "recurring[interval]=month" --live
 
 # 3. Create both webhook endpoints — Stripe shows the signing secret ONCE per endpoint
 stripe webhook_endpoints create \
-  --url=https://{{APP_DOMAIN}}/api/auth/stripe/webhook \
+  --url=https://stems.market/api/auth/stripe/webhook \
   -d "enabled_events[]=checkout.session.completed" \
   -d "enabled_events[]=customer.subscription.created" \
   -d "enabled_events[]=customer.subscription.updated" \
@@ -402,7 +402,7 @@ stripe webhook_endpoints create \
   -d "enabled_events[]=invoice.paid" --live
 
 stripe webhook_endpoints create \
-  --url=https://{{APP_DOMAIN}}/api/stripe/webhook \
+  --url=https://stems.market/api/stripe/webhook \
   -d "enabled_events[]=invoice.paid" \
   -d "enabled_events[]=customer.subscription.created" \
   -d "enabled_events[]=customer.subscription.updated" \
@@ -419,15 +419,15 @@ echo -n '<custom_whsec>'  | npx wrangler secret put STRIPE_REFERRAL_WEBHOOK_SECR
 
 ## Webhook routing on staging (if staging is behind basic auth)
 
-If your staging worker sits behind a separate Cloudflare Worker doing HTTP Basic Auth on `staging.{{APP_DOMAIN}}/*`, Stripe webhooks will 401 — Stripe doesn't send Basic credentials.
+If your staging worker sits behind a separate Cloudflare Worker doing HTTP Basic Auth on `staging.stems.market/*`, Stripe webhooks will 401 — Stripe doesn't send Basic credentials.
 
 The fix is two extra Cloudflare Worker routes pointing the webhook paths at the app worker directly:
 
 ```jsonc
 "routes": [
-  { "pattern": "staging.{{APP_DOMAIN}}", "custom_domain": true },
-  { "pattern": "staging.{{APP_DOMAIN}}/api/auth/stripe/webhook", "zone_name": "{{APP_DOMAIN}}" },
-  { "pattern": "staging.{{APP_DOMAIN}}/api/stripe/webhook",      "zone_name": "{{APP_DOMAIN}}" }
+  { "pattern": "staging.stems.market", "custom_domain": true },
+  { "pattern": "staging.stems.market/api/auth/stripe/webhook", "zone_name": "stems.market" },
+  { "pattern": "staging.stems.market/api/stripe/webhook",      "zone_name": "stems.market" }
 ]
 ```
 

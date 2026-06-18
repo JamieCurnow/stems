@@ -4,7 +4,7 @@ import { sendServerEvent } from '~~/server/utils/analytics'
 const VALID_CODE = /^[A-Z0-9]{2,8}-[A-Z0-9]{2,8}$/
 
 /**
- * Public landing redirect. `https://{{APP_DOMAIN}}/r/JANE-X4F2` drops a
+ * Public landing redirect. `https://stems.market/r/JANE-X4F2` drops a
  * 30-day cookie carrying the code, then bounces to /login?ref=CODE so the
  * code follows the user through Checkout.
  *

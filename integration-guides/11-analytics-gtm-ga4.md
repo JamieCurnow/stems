@@ -124,7 +124,7 @@ Kept in `app.vue` (not the plugin) so Vue reactivity does the work — easier th
 Persists user choice in a first-party cookie (not localStorage) so SSR / edge can read it on the first request and Consent Mode is honest on the very first render.
 
 ```ts
-const CONSENT_COOKIE = '{{APP_SLUG}}_consent'
+const CONSENT_COOKIE = 'stems_consent'
 const CONSENT_VERSION = 1
 const SIX_MONTHS = 60 * 60 * 24 * 180
 ```
@@ -294,7 +294,7 @@ Server-sent events (via Measurement Protocol) **don't go through GTM** — they 
 3. Extend `server/types/cloudflare.d.ts` with all three.
 4. Copy `app/plugins/analytics.client.ts`.
 5. Copy `app/composables/useAnalytics.ts`, `useAnalyticsIdentity.ts`, `useConsent.ts`.
-6. Copy `app/components/Layout/CookieConsent.vue` + `ConsentManageDialog.vue`, mount the banner inside `<UApp>` in `app.vue`. Rename the cookie (`{{APP_SLUG}}_consent`).
+6. Copy `app/components/Layout/CookieConsent.vue` + `ConsentManageDialog.vue`, mount the banner inside `<UApp>` in `app.vue`. Rename the cookie (`stems_consent`).
 7. Copy `server/utils/analytics.ts`. Wire `sendServerEvent` calls into your Stripe webhook + any other server-side conversion points.
 8. Call `await useAnalyticsIdentity()` inside `app.vue` under `if (import.meta.client)`.
 9. Create a new GTM container and import `snippets/gtm-container-template.json` (after replacing `{{GA4_MEASUREMENT_ID}}` and `{{CONTAINER_NAME}}`). Publish v1. Paste the new `GTM-XXXXXXX` into `NUXT_PUBLIC_GTM_ID`.

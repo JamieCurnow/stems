@@ -38,7 +38,7 @@ export const auth = betterAuth({
         enabled: true,
         plans: [
           {
-            name: '{{APP_SLUG}}',
+            name: 'stems',
             priceId: 'price_dummy_for_cli',
             freeTrial: { days: 7 }
           }

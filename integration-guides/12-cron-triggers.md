@@ -26,7 +26,7 @@ Add `triggers.crons` inside each `env.<name>` block in `wrangler.jsonc`. Top-lev
 ```jsonc
 "env": {
   "production": {
-    "name": "{{APP_SLUG}}",
+    "name": "stems",
     "triggers": {
       "crons": ["* * * * *"]    // every minute
     },

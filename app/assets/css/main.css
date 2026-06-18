@@ -1,2 +1,141 @@
-@import "tailwindcss";
-@import "@nuxt/ui";
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+/* `static` is load-bearing: Nuxt UI maps semantic colours via
+   `--ui-color-primary-500: var(--color-terracotta-500)`, an indirection
+   Tailwind's class scanner can't see. Without `static`, v4 tree-shakes every
+   brand shade that isn't named by a literal utility class, so `--ui-primary`
+   resolves to nothing and `bg-primary` renders transparent. `static` forces
+   all shades below to always emit. */
+@theme static {
+  /* ── Peach (primary) ──────────────────────────────────────
+     The single pop. A vibrant coral-peach used sparingly — CTAs,
+     active states, the "in season" cue — against warm-white calm.
+     Toast-brand restraint, Instagram freshness. */
+  --color-peach-50: #fef5f3;
+  --color-peach-100: #fce8e3;
+  --color-peach-200: #f9d3cc;
+  --color-peach-300: #f4b4a8;
+  --color-peach-400: #ee9486;
+  --color-peach-500: #e38475; /* brand: primary — coral, not orange */
+  --color-peach-600: #d85c4b;
+  --color-peach-700: #b6483b;
+  --color-peach-800: #963d33;
+  --color-peach-900: #7b342d;
+  --color-peach-950: #421612;
+
+  /* ── Terracotta (legacy / warning) ────────────────────── */
+  --color-terracotta-50: #fdf4ef;
+  --color-terracotta-100: #fbe7da;
+  --color-terracotta-200: #ffcba4; /* brand: primary-light */
+  --color-terracotta-300: #f3a878;
+  --color-terracotta-400: #e5814f;
+  --color-terracotta-500: #cb5f36; /* brand: primary */
+  --color-terracotta-600: #b85230;
+  --color-terracotta-700: #a0492a; /* brand: primary-dark */
+  --color-terracotta-800: #813a23;
+  --color-terracotta-900: #6a311f;
+  --color-terracotta-950: #3a1810;
+
+  /* ── Sage (secondary) ─────────────────────────────────── */
+  --color-sage-50: #f4f6f2;
+  --color-sage-100: #e6ebe2;
+  --color-sage-200: #cdd7c6;
+  --color-sage-300: #aebfa4;
+  --color-sage-400: #94a888;
+  --color-sage-500: #7e9476; /* brand: secondary */
+  --color-sage-600: #66795f;
+  --color-sage-700: #51614c;
+  --color-sage-800: #434f40;
+  --color-sage-900: #394236;
+  --color-sage-950: #1e241c;
+
+  /* ── Leaf (success) ───────────────────────────────────── */
+  --color-leaf-50: #f1f7f1;
+  --color-leaf-100: #deecdd;
+  --color-leaf-200: #bfd9bd;
+  --color-leaf-300: #97c096;
+  --color-leaf-400: #74a873;
+  --color-leaf-500: #5b8c5a; /* brand: success */
+  --color-leaf-600: #487147;
+  --color-leaf-700: #3b5a3a;
+  --color-leaf-800: #314830;
+  --color-leaf-900: #293c29;
+  --color-leaf-950: #122011;
+
+  /* ── Rose (error) ─────────────────────────────────────── */
+  --color-rose-50: #fcf1f1;
+  --color-rose-100: #f9dede;
+  --color-rose-200: #f2c0c0;
+  --color-rose-300: #e89696;
+  --color-rose-400: #df6b6b;
+  --color-rose-500: #d64545; /* brand: error */
+  --color-rose-600: #be3232;
+  --color-rose-700: #9e2828;
+  --color-rose-800: #832525;
+  --color-rose-900: #6e2424;
+  --color-rose-950: #3b0e0e;
+
+  /* ── Clay (neutral) ───────────────────────────────────────
+     Warm "greige" — a soft, sandy neutral with just enough warmth to
+     pair with peach and feel hand-made, but kept crisp and light so it
+     reads as clean off-white, never muddy cream. Drives the page, the
+     hairline dividers and the muted/ink text. */
+  --color-clay-50: #fbfaf8;
+  --color-clay-100: #f4f2ed;
+  --color-clay-200: #e9e5de; /* brand: hairline border */
+  --color-clay-300: #d6cfc4;
+  --color-clay-400: #aea597;
+  --color-clay-500: #847b6e; /* brand: text-muted (warm taupe) */
+  --color-clay-600: #645c51;
+  --color-clay-700: #4d463e;
+  --color-clay-800: #312d28;
+  --color-clay-900: #211e1a; /* brand: ink text */
+  --color-clay-950: #14110e;
+
+  /* Friendlier default radius + warm display serif for personality */
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --font-display: 'EB Garamond', ui-serif, Georgia, serif;
+}
+
+/* ── Nuxt UI design-token overrides ───────────────────────
+   Clean, airy surfaces: a soft near-white page with white cards that
+   lift off it via border + shadow. Terracotta + sage do the colour
+   work; the neutrals stay quiet. Light first. */
+:root {
+  --ui-bg: #ffffff; /* page — clean bright white */
+  --ui-bg-muted: var(--color-clay-100); /* search field / quiet fills */
+  --ui-bg-elevated: #ffffff; /* surfaces */
+  --ui-bg-accented: var(--color-clay-200);
+  --ui-border: var(--color-clay-200); /* hairlines #E9E5DE */
+  --ui-border-muted: var(--color-clay-100);
+  --ui-text: var(--color-clay-900); /* ink #211E1A */
+  --ui-text-muted: var(--color-clay-500); /* warm taupe #847B6E */
+  --ui-text-dimmed: var(--color-clay-400);
+  --ui-radius: var(--radius-md);
+}
+
+.dark {
+  --ui-bg: var(--color-clay-950);
+  --ui-bg-muted: var(--color-clay-900);
+  --ui-bg-elevated: var(--color-clay-800);
+  --ui-bg-accented: var(--color-clay-700);
+  --ui-border: var(--color-clay-800);
+  --ui-border-muted: var(--color-clay-900);
+  --ui-text: var(--color-clay-50);
+  --ui-text-muted: var(--color-clay-400);
+  --ui-text-dimmed: var(--color-clay-500);
+}
+
+body {
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  /* Full-bleed sections (e.g. the discover header) use 100vw via negative
+     margins; clip horizontal overflow so that never spawns a scrollbar. */
+  overflow-x: hidden;
+}
+
+button {
+  @apply cursor-pointer;
+}

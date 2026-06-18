@@ -134,7 +134,7 @@ CREATE INDEX "thing_userId_idx" ON "thing" ("userId");
 After writing, apply locally:
 
 ```bash
-wrangler d1 migrations apply {{APP_SLUG}} --local
+wrangler d1 migrations apply stems --local
 ```
 
 If you're working in this stack, save yourself five minutes a day: just run that command proactively whenever you've touched a migration file or pulled changes — don't wait for a "no such table" error to remind you.
@@ -164,19 +164,19 @@ Path: `.wrangler/state/v3/d1/miniflare-D1DatabaseObject/<hash>.sqlite`. Just a f
 
 ```bash
 # List users
-wrangler d1 execute {{APP_SLUG}} --local \
+wrangler d1 execute stems --local \
   --command "SELECT id, email, name, createdAt FROM user"
 
 # Delete a user (cascades to session/account)
-wrangler d1 execute {{APP_SLUG}} --local \
+wrangler d1 execute stems --local \
   --command "DELETE FROM user WHERE email='test@example.com'"
 
 # Nuke and rebuild local DB
 rm -rf .wrangler/state/v3/d1
-wrangler d1 migrations apply {{APP_SLUG}} --local
+wrangler d1 migrations apply stems --local
 
 # Production read
-wrangler d1 execute {{APP_SLUG}} --remote --env production \
+wrangler d1 execute stems --remote --env production \
   --command "SELECT count(*) FROM user"
 ```
 
@@ -184,10 +184,10 @@ wrangler d1 execute {{APP_SLUG}} --remote --env production \
 
 ```bash
 # Dump prod to a file for safekeeping or to seed a new env
-wrangler d1 export {{APP_SLUG}} --remote --env production --output prod-backup.sql
+wrangler d1 export stems --remote --env production --output prod-backup.sql
 
 # Restore into local
-wrangler d1 execute {{APP_SLUG}} --local --file prod-backup.sql
+wrangler d1 execute stems --local --file prod-backup.sql
 ```
 
 ### Time Travel

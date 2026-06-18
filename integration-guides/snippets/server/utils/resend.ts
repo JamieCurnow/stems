@@ -22,7 +22,7 @@ export const useResend = (event: H3Event): Resend => {
 /** Default From — must use a verified Resend domain. */
 export const mailFrom = (event: H3Event): string => {
   const env = event.context.cloudflare?.env
-  return env?.MAIL_FROM || '{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>'
+  return env?.MAIL_FROM || 'Stems <hello@stems.market>'
 }
 
 /**

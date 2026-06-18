@@ -6,7 +6,11 @@
   // .output/server/index.mjs + assets to .output/public/, and
   // `wrangler deploy [--env staging|production]` reads this file directly.
 
-  "name": "{{APP_SLUG}}",
+  "name": "stems",
+  // Cloudflare account to target. Required because this login has more than one
+  // account and the FILES R2 bucket uses `remote: true`, so `nuxt dev` must
+  // resolve an account non-interactively. (Jamie@island-web.ca's Account.)
+  "account_id": "619f1f85e2ab095025ecf7b40c6939e5",
   // The wrapper imports the Nitro-built worker AND re-exports every DO class
   // so wrangler bundles both. See .cloudflare/worker.ts.
   "main": ".cloudflare/worker.ts",
@@ -54,22 +58,24 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "{{APP_SLUG}}",
+      "database_name": "stems",
       "database_id": "LOCAL_PLACEHOLDER",
       "migrations_dir": "server/db/migrations"
     }
   ],
 
-  // Example R2 bucket — `remote: true` makes Miniflare proxy to the real
-  // bucket in dev so `nuxt dev` reads the same data as prod. Drop this
-  // section entirely if you don't need R2.
-  // "r2_buckets": [
-  //   {
-  //     "binding": "FILES",
-  //     "bucket_name": "{{APP_SLUG}}-files",
-  //     "remote": true
-  //   }
-  // ],
+  // Public file bucket (doc 06 image pipeline). Dev uses Miniflare's LOCAL R2
+  // simulation (no network, no auth) — uploads/images persist under
+  // .wrangler/state. Set `remote: true` only if you specifically need dev to
+  // read/write the real `stems-files` bucket (note: that makes `nuxt dev`
+  // establish a live remote connection on startup). The bucket stays private;
+  // images are served through our own /img Worker route, never via R2 public.
+  "r2_buckets": [
+    {
+      "binding": "FILES",
+      "bucket_name": "stems-files"
+    }
+  ],
 
   "env": {
     "staging": {
@@ -84,33 +90,38 @@
         "crons": ["* * * * *"]
       },
       "vars": {
-        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>",
-        "PUBLIC_BASE_URL": "https://staging.{{APP_DOMAIN}}"
+        "MAIL_FROM": "Stems <hello@stems.market>",
+        // No custom domain yet — staging deploys to workers.dev. After the
+        // first `wrangler deploy --env staging`, set this to the assigned
+        // https://stems-staging.<your-subdomain>.workers.dev URL so magic-link
+        // emails / absolute links point at the right host.
+        "PUBLIC_BASE_URL": "https://stems-staging.workers.dev"
         // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
         // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
       },
-      "name": "{{APP_SLUG}}-staging",
-      "workers_dev": false,
+      "name": "stems-staging",
+      // workers.dev URL until a custom domain is purchased. Flip back to false
+      // and restore the `routes` block below once stems.market is set up.
+      "workers_dev": true,
       "preview_urls": false,
       "d1_databases": [
         {
           "binding": "DB",
-          "database_name": "{{APP_SLUG}}-staging",
-          "database_id": "FILL_AFTER_WRANGLER_D1_CREATE",
+          "database_name": "stems-staging",
+          "database_id": "742c0b4f-95f8-4ca0-abfe-408deef86e85",
           "migrations_dir": "server/db/migrations"
         }
       ],
-      // "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
-      "routes": [
-        { "pattern": "staging.{{APP_DOMAIN}}", "custom_domain": true }
-        // If staging sits behind a basic-auth gate worker, add concrete-path
-        // route exceptions for Stripe webhooks here.
-      ]
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files-staging" }]
+      // Custom domain deferred until stems.market is purchased. Restore when ready:
+      // "routes": [{ "pattern": "staging.stems.market", "custom_domain": true }]
     },
 
     "production": {
-      "name": "{{APP_SLUG}}",
-      "workers_dev": false,
+      "name": "stems",
+      // workers.dev URL until a custom domain is purchased. Flip back to false
+      // and restore the `routes` block below once stems.market is set up.
+      "workers_dev": true,
       "preview_urls": false,
       "observability": { "logs": { "enabled": true, "invocation_logs": true } },
       "durable_objects": {
@@ -121,23 +132,25 @@
         "crons": ["* * * * *"]
       },
       "vars": {
-        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>",
-        "PUBLIC_BASE_URL": "https://{{APP_DOMAIN}}"
+        "MAIL_FROM": "Stems <hello@stems.market>",
+        // No custom domain yet — production deploys to workers.dev. After the
+        // first `wrangler deploy --env production`, set this to the assigned
+        // https://stems.<your-subdomain>.workers.dev URL.
+        "PUBLIC_BASE_URL": "https://stems.workers.dev"
         // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
         // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
       },
       "d1_databases": [
         {
           "binding": "DB",
-          "database_name": "{{APP_SLUG}}",
-          "database_id": "FILL_AFTER_WRANGLER_D1_CREATE",
+          "database_name": "stems",
+          "database_id": "8a393a82-2b3c-4ae3-a904-5d85eeda86b2",
           "migrations_dir": "server/db/migrations"
         }
       ],
-      // "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
-      "routes": [
-        { "pattern": "{{APP_DOMAIN}}", "custom_domain": true }
-      ]
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files-production" }]
+      // Custom domain deferred until stems.market is purchased. Restore when ready:
+      // "routes": [{ "pattern": "stems.market", "custom_domain": true }]
     }
   }
 }

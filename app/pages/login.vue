@@ -5,10 +5,10 @@ useSeoMeta({ title: 'Sign in', robots: 'noindex,nofollow' })
 
 const route = useRoute()
 
-// Kept in a const (not inlined in the template) so the {{APP_NAME}} token
-// can't end up nested inside a Vue interpolation — `{{ … 'Sign in to {{APP_NAME}}' }}`
+// Kept in a const (not inlined in the template) so the Stems token
+// can't end up nested inside a Vue interpolation — `{{ … 'Sign in to Stems' }}`
 // is a compile error before the placeholder is substituted.
-const appName = '{{APP_NAME}}'
+const appName = 'Stems'
 
 const email = ref('')
 const loading = ref(false)
@@ -21,7 +21,7 @@ const sent = ref(false)
 // user, so this Just Works for both.
 const redirectTo = computed(() => {
   const r = route.query.redirect
-  return typeof r === 'string' && r.startsWith('/') ? r : '/app'
+  return typeof r === 'string' && r.startsWith('/') ? r : '/account'
 })
 
 const referralCode = computed(() => {
@@ -57,46 +57,61 @@ function reset() {
 </script>
 
 <template>
-  <div class="mx-auto flex min-h-[calc(100dvh-12rem)] max-w-md items-center px-6 py-12">
-    <UCard class="w-full">
-      <template #header>
-        <h1 class="text-2xl font-semibold">
-          {{ sent ? 'Check your inbox' : `Sign in to ${appName}` }}
-        </h1>
-        <p class="text-sm text-gray-600">
-          {{
-            sent
-              ? `We've sent a sign-in link to ${email}. It works once and expires in 15 minutes.`
-              : "Enter your email and we'll send you a one-time sign-in link. No password needed."
-          }}
+  <div class="mx-auto flex min-h-[calc(100dvh-8rem)] max-w-sm flex-col justify-center px-6 py-12">
+    <!-- Sent state: calm, box-free confirmation -->
+    <div v-if="sent" class="text-center">
+      <div class="mx-auto flex size-14 items-center justify-center rounded-full bg-peach-100 text-primary">
+        <UIcon name="i-lucide-mail-check" class="size-7" />
+      </div>
+      <h1 class="mt-5 font-display text-3xl font-medium text-default">Check your inbox</h1>
+      <p class="mx-auto mt-2 max-w-xs text-sm text-muted">
+        We've sent a sign-in link to <span class="text-default">{{ email }}</span
+        >. It works once and expires in 15 minutes.
+      </p>
+      <p class="mt-6 text-sm text-muted">
+        Didn't get it? Check spam, or
+        <button type="button" class="font-medium text-primary hover:underline" @click="reset">
+          try a different email
+        </button>
+        .
+      </p>
+    </div>
+
+    <!-- Sign-in form -->
+    <div v-else>
+      <div class="text-center">
+        <h1 class="font-display text-3xl font-medium text-default">Sign in to {{ appName }}</h1>
+        <p class="mx-auto mt-2 max-w-xs text-balance text-sm text-muted">
+          Enter your email and we'll send you a one-time sign-in link. No password needed.
         </p>
-      </template>
+      </div>
 
       <UAlert
-        v-if="linkError && !sent"
+        v-if="linkError"
         icon="i-lucide-triangle-alert"
         color="warning"
         variant="subtle"
-        class="mb-4"
+        class="mt-6"
         title="That link didn't work"
         description="It may have expired or already been used. Request a fresh one below."
       />
 
       <UAlert
-        v-if="referralCode && !sent"
+        v-if="referralCode"
         icon="i-lucide-gift"
         color="success"
         variant="subtle"
-        class="mb-4"
+        class="mt-6"
         :title="`Referral applied: ${referralCode}`"
         description="Your discount will apply at checkout."
       />
 
-      <form v-if="!sent" class="flex flex-col gap-4" @submit.prevent="submit">
+      <form class="mt-7 flex flex-col gap-4" @submit.prevent="submit">
         <UFormField label="Email" required class="w-full">
           <UInput
             v-model="email"
             type="email"
+            size="lg"
             autocomplete="email"
             required
             placeholder="you@example.com"
@@ -104,17 +119,12 @@ function reset() {
           />
         </UFormField>
 
-        <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+        <p v-if="error" class="text-sm text-error">{{ error }}</p>
 
-        <UButton type="submit" :loading="loading" block> Email me a sign-in link </UButton>
+        <UButton type="submit" size="lg" :loading="loading" block class="font-medium">
+          Email me a sign-in link
+        </UButton>
       </form>
-
-      <div v-else class="flex flex-col gap-4">
-        <p class="text-sm text-gray-600">
-          Didn't get it? Check spam, or
-          <button type="button" class="font-medium underline" @click="reset">try a different email</button>.
-        </p>
-      </div>
-    </UCard>
+    </div>
   </div>
 </template>

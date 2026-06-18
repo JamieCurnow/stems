@@ -6,7 +6,7 @@
   // .output/server/index.mjs + assets to .output/public/, and
   // `wrangler deploy [--env staging|production]` reads this file directly.
 
-  "name": "{{APP_SLUG}}",
+  "name": "stems",
   // The wrapper imports the Nitro-built worker AND re-exports every DO class
   // so wrangler bundles both. See .cloudflare/worker.ts.
   "main": ".cloudflare/worker.ts",
@@ -54,7 +54,7 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "{{APP_SLUG}}",
+      "database_name": "stems",
       "database_id": "LOCAL_PLACEHOLDER",
       "migrations_dir": "server/db/migrations"
     }
@@ -66,7 +66,7 @@
   // "r2_buckets": [
   //   {
   //     "binding": "FILES",
-  //     "bucket_name": "{{APP_SLUG}}-files",
+  //     "bucket_name": "stems-files",
   //     "remote": true
   //   }
   // ],
@@ -84,32 +84,32 @@
         "crons": ["* * * * *"]
       },
       "vars": {
-        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>",
-        "PUBLIC_BASE_URL": "https://staging.{{APP_DOMAIN}}"
+        "MAIL_FROM": "Stems <hello@stems.market>",
+        "PUBLIC_BASE_URL": "https://staging.stems.market"
         // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
         // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
       },
-      "name": "{{APP_SLUG}}-staging",
+      "name": "stems-staging",
       "workers_dev": false,
       "preview_urls": false,
       "d1_databases": [
         {
           "binding": "DB",
-          "database_name": "{{APP_SLUG}}-staging",
+          "database_name": "stems-staging",
           "database_id": "FILL_AFTER_WRANGLER_D1_CREATE",
           "migrations_dir": "server/db/migrations"
         }
       ],
-      // "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
+      // "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files" }],
       "routes": [
-        { "pattern": "staging.{{APP_DOMAIN}}", "custom_domain": true }
+        { "pattern": "staging.stems.market", "custom_domain": true }
         // If staging sits behind a basic-auth gate worker, add concrete-path
         // route exceptions for Stripe webhooks here.
       ]
     },
 
     "production": {
-      "name": "{{APP_SLUG}}",
+      "name": "stems",
       "workers_dev": false,
       "preview_urls": false,
       "observability": { "logs": { "enabled": true, "invocation_logs": true } },
@@ -121,22 +121,22 @@
         "crons": ["* * * * *"]
       },
       "vars": {
-        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>",
-        "PUBLIC_BASE_URL": "https://{{APP_DOMAIN}}"
+        "MAIL_FROM": "Stems <hello@stems.market>",
+        "PUBLIC_BASE_URL": "https://stems.market"
         // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
         // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
       },
       "d1_databases": [
         {
           "binding": "DB",
-          "database_name": "{{APP_SLUG}}",
+          "database_name": "stems",
           "database_id": "FILL_AFTER_WRANGLER_D1_CREATE",
           "migrations_dir": "server/db/migrations"
         }
       ],
-      // "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
+      // "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files" }],
       "routes": [
-        { "pattern": "{{APP_DOMAIN}}", "custom_domain": true }
+        { "pattern": "stems.market", "custom_domain": true }
       ]
     }
   }

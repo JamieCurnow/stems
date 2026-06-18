@@ -54,7 +54,7 @@ export const useResend = (event: H3Event): Resend => {
 
 export const mailFrom = (event: H3Event): string =>
   event.context.cloudflare?.env?.MAIL_FROM
-    || '{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>'
+    || 'Stems <hello@stems.market>'
 
 export const publicBaseUrl = (event: H3Event): string => {
   const env = event.context.cloudflare?.env
@@ -81,7 +81,7 @@ export interface WelcomeProps {
 }
 
 const template: EmailTemplate<WelcomeProps> = ({ firstName }, { baseUrl }) => ({
-  subject: 'Welcome to {{APP_NAME}}',
+  subject: 'Welcome to Stems',
   preheader: 'Glad you\'re here.',
   html: `
     <p>Hey ${firstName ? escapeHtml(firstName) : 'there'},</p>
@@ -298,7 +298,7 @@ await db.insert(schema.emailSuppression)
   .onConflictDoNothing()
 ```
 
-Configure the webhook in the Resend Dashboard pointing at `https://{{APP_DOMAIN}}/api/resend/webhook`. Resend signs with Svix HMAC SHA-256; set `RESEND_WEBHOOK_SECRET` as a wrangler secret and the handler will require the `svix-signature` header.
+Configure the webhook in the Resend Dashboard pointing at `https://stems.market/api/resend/webhook`. Resend signs with Svix HMAC SHA-256; set `RESEND_WEBHOOK_SECRET` as a wrangler secret and the handler will require the `svix-signature` header.
 
 ---
 
@@ -330,7 +330,7 @@ Both gates run through `requireAdmin(event)` — header-based check against `ADM
 1. Add the domain in the Resend Dashboard → Domains.
 2. Resend gives you DNS records (TXT/MX/CNAME for SPF, DKIM, return-path). Add them at your DNS provider.
 3. Wait for verification. Until then, sends from that domain fail.
-4. Set `MAIL_FROM` in `wrangler.jsonc` per env: `"MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>"`.
+4. Set `MAIL_FROM` in `wrangler.jsonc` per env: `"MAIL_FROM": "Stems <hello@stems.market>"`.
 
 Test by hitting `/api/admin/email-test`. If it lands in the inbox, you're done.
 

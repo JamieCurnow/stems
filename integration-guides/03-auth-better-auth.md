@@ -254,10 +254,10 @@ npx better-auth generate \
 #    (delete CREATE TABLE statements for tables that already exist).
 
 # 4. Apply locally
-wrangler d1 migrations apply {{APP_SLUG}} --local
+wrangler d1 migrations apply stems --local
 
 # 5. Apply in prod (on deploy — both deploy workflows run this automatically)
-wrangler d1 migrations apply {{APP_SLUG}} --remote --env production
+wrangler d1 migrations apply stems --remote --env production
 ```
 
 ---
@@ -309,7 +309,7 @@ Use this on endpoints the admin UI calls **and** scripts hit. It returns an `Adm
 import type { H3Event } from 'h3'
 import { serverAuth } from './auth'
 
-const DEFAULT_ADMIN_EMAILS = ['{{ADMIN_EMAIL}}']
+const DEFAULT_ADMIN_EMAILS = ['jamie@island-web.ca']
 
 function adminEmails(event: H3Event): string[] {
   const env = event.context.cloudflare?.env

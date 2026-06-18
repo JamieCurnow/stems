@@ -5,10 +5,10 @@ useSeoMeta({ title: 'Sign in', robots: 'noindex,nofollow' })
 
 const route = useRoute()
 
-// Kept in a const (not inlined in the template) so the {{APP_NAME}} token
-// can't end up nested inside a Vue interpolation — `{{ … 'Sign in to {{APP_NAME}}' }}`
+// Kept in a const (not inlined in the template) so the Stems token
+// can't end up nested inside a Vue interpolation — `{{ … 'Sign in to Stems' }}`
 // is a compile error before the placeholder is substituted.
-const appName = '{{APP_NAME}}'
+const appName = 'Stems'
 
 const email = ref('')
 const loading = ref(false)

@@ -49,14 +49,14 @@ export function serverAuth(event: H3Event) {
           enabled: true,
           plans: [
             {
-              name: '{{APP_SLUG}}',
+              name: 'stems',
               priceId: env.STRIPE_PRICE_ID,
               freeTrial: { days: 7 }                  // optional
             }
           ],
           getCheckoutSessionParams: async (_data, req) => {
             const cookieHeader = req?.headers.get('cookie') ?? ''
-            const refMatch = cookieHeader.match(/(?:^|;\s*){{APP_REF_COOKIE}}=([^;]+)/)
+            const refMatch = cookieHeader.match(/(?:^|;\s*)stems_ref=([^;]+)/)
             const refCode = refMatch?.[1] ? decodeURIComponent(refMatch[1]) : null
 
             const baseParams: Stripe.Checkout.SessionCreateParams = {
@@ -152,7 +152,7 @@ export function serverAuth(event: H3Event) {
         create: {
           before: async (data, ctx) => {
             const cookieHeader = ctx?.request?.headers?.get?.('cookie') ?? ''
-            const m = cookieHeader.match(/(?:^|;\s*){{APP_REF_COOKIE}}=([^;]+)/)
+            const m = cookieHeader.match(/(?:^|;\s*)stems_ref=([^;]+)/)
             const refCode = m?.[1] ? decodeURIComponent(m[1]) : null
             if (!refCode) return { data }
             return { data: { ...data, referredByCode: refCode } }

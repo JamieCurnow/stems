@@ -25,7 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: staging
-      url: https://staging.{{APP_DOMAIN}}
+      # No custom domain yet — staging deploys to workers.dev. Update to the
+      # assigned workers.dev URL after the first deploy (or restore the custom
+      # domain once stems.market is purchased).
+      url: https://stems-staging.workers.dev
 
     steps:
       - name: Checkout
@@ -54,7 +57,7 @@ jobs:
           # rename column), pause this step and apply manually.
           # `--env staging` is REQUIRED — without it wrangler resolves the
           # DB via the top-level d1_databases binding (placeholder UUID).
-          command: d1 migrations apply {{APP_SLUG}}-staging --remote --env staging
+          command: d1 migrations apply stems-staging --remote --env staging
 
       - name: Deploy worker (staging)
         uses: cloudflare/wrangler-action@v3

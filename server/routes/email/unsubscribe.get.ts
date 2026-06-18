@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
     return `<!doctype html><meta charset="utf-8"><title>Unsubscribe</title>
 <div style="font-family:Inter,sans-serif;max-width:480px;margin:80px auto;padding:32px;text-align:center;color:#1B1B1B;">
   <h1>That link looks expired</h1>
-  <p>Drop us a note at <a href="mailto:{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}">{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}</a> and we'll sort it.</p>
+  <p>Drop us a note at <a href="mailto:hello@stems.market">hello@stems.market</a> and we'll sort it.</p>
 </div>`
   }
 
@@ -83,7 +83,7 @@ export default defineEventHandler(async (event) => {
   return `<!doctype html><meta charset="utf-8"><title>Unsubscribed</title>
 <div style="font-family:Inter,sans-serif;max-width:480px;margin:80px auto;padding:32px;text-align:center;color:#1B1B1B;">
   <h1>You're unsubscribed</h1>
-  <p>You won't get any more <strong>${niceCategory}</strong> emails from {{APP_NAME}}.</p>
+  <p>You won't get any more <strong>${niceCategory}</strong> emails from Stems.</p>
   <p style="color:#6B6B6B;font-size:14px;margin-top:24px;">Changed your mind? <a href="/settings">Manage preferences</a> when you're signed in.</p>
 </div>`
 })

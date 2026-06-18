@@ -1,5 +1,5 @@
 {
-  "name": "{{APP_SLUG}}",
+  "name": "stems",
   "private": true,
   "type": "module",
   "scripts": {

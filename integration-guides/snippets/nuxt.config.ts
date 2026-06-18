@@ -24,7 +24,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0, viewport-fit=cover' },
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-title', content: '{{APP_NAME}}' },
+        { name: 'apple-mobile-web-app-title', content: 'Stems' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
         { name: 'theme-color', content: '#000000' }
       ],
@@ -96,8 +96,8 @@ export default defineNuxtConfig({
 
   pwa: {
     manifest: {
-      name: '{{APP_NAME}}',
-      short_name: '{{APP_NAME}}',
+      name: 'Stems',
+      short_name: 'Stems',
       description: 'TODO: Your app description',
       lang: 'en',
       background_color: '#000000',

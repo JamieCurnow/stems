@@ -90,12 +90,13 @@
         "crons": ["* * * * *"]
       },
       "vars": {
-        "MAIL_FROM": "Stems <hello@stems.market>",
+        // Verified Resend domain is island-web.ca (stems.market not yet owned).
+        "MAIL_FROM": "Stems <hello@island-web.ca>",
         // No custom domain yet — staging deploys to workers.dev. After the
         // first `wrangler deploy --env staging`, set this to the assigned
         // https://stems-staging.<your-subdomain>.workers.dev URL so magic-link
         // emails / absolute links point at the right host.
-        "PUBLIC_BASE_URL": "https://stems-staging.workers.dev"
+        "PUBLIC_BASE_URL": "https://stems-staging.jamiecurnow.workers.dev"
         // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
         // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
       },

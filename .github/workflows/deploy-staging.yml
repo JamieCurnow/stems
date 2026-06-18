@@ -28,7 +28,7 @@ jobs:
       # No custom domain yet — staging deploys to workers.dev. Update to the
       # assigned workers.dev URL after the first deploy (or restore the custom
       # domain once stems.market is purchased).
-      url: https://stems-staging.workers.dev
+      url: https://stems-staging.jamiecurnow.workers.dev
 
     steps:
       - name: Checkout

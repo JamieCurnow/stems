@@ -1,0 +1,89 @@
+name: Deploy production
+
+# Manual-only. Click "Run workflow" → confirm → (if `production` GitHub
+# Environment has required reviewers configured) approve → ships.
+#
+# Pipeline:
+#   1. Fast-forward `releases/production` to `main` so the branch always
+#      points at exactly what's deployed in prod.
+#   2. Apply D1 migrations to the prod DB (forward-only — destructive
+#      migrations need manual handling).
+#   3. Deploy the Worker.
+#
+# `releases/production` is your audit trail: `git log releases/production`
+# shows everything that's ever been in prod, in deploy order.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Same gate as staging — set repo variable DEPLOY_ENABLED = true once
+    # production is provisioned. A manual dispatch before then skips cleanly
+    # instead of failing on placeholder config.
+    if: ${{ vars.DEPLOY_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    # Define this in GitHub: repo Settings → Environments → New environment
+    # → "production" → tick "Required reviewers" and add yourself.
+    environment:
+      name: production
+      url: https://{{APP_DOMAIN}}
+    permissions:
+      # We push to releases/production so the branch tracks deployments.
+      contents: write
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fast-forward releases/production to main
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin releases/production >/dev/null; then
+            git fetch origin releases/production:releases/production
+            git checkout releases/production
+            # Refuse to deploy if releases/production has commits not in main —
+            # that would mean someone hot-fixed prod directly. Reconcile manually.
+            git merge --ff-only main
+          else
+            git checkout -B releases/production main
+          fi
+          git push origin releases/production
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
+
+      - name: Apply D1 migrations (production)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # `--env production` is REQUIRED — without it wrangler resolves the
+          # database via the top-level d1_databases binding (placeholder UUID)
+          # and the API call fails.
+          command: d1 migrations apply {{APP_SLUG}} --remote --env production
+
+      - name: Deploy worker (production)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --env production

@@ -1,0 +1,42 @@
+{
+  "name": "{{APP_SLUG}}",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck",
+    "generate-pwa-assets": "pwa-assets-generator"
+  },
+  "dependencies": {
+    "@better-auth/stripe": "^1.6.10",
+    "@iconify-json/lucide": "^1.2.105",
+    "@nuxt/ui": "^4.7.1",
+    "@pinia/nuxt": "^0.11.3",
+    "@vite-pwa/nuxt": "^1.1.1",
+    "@vueuse/core": "^14.3.0",
+    "@vueuse/nuxt": "^14.3.0",
+    "better-auth": "^1.6.10",
+    "better-sqlite3": "^12.9.0",
+    "drizzle-orm": "^0.45.2",
+    "nuxt": "^4.4.2",
+    "pinia": "^3.0.4",
+    "resend": "^6.12.3",
+    "stripe": "^22.1.1",
+    "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@better-auth/cli": "1.5.0-beta.13",
+    "@cloudflare/workers-types": "^4.20260507.1",
+    "@nuxt/eslint": "^1.15.2",
+    "@types/better-sqlite3": "^7.6.13",
+    "@vite-pwa/assets-generator": "^1.0.2",
+    "eslint": "^10.3.0",
+    "typescript": "^6.0.3",
+    "vue-tsc": "^3.2.7",
+    "wrangler": "^4.89.1"
+  }
+}

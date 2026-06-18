@@ -1,0 +1,296 @@
+# 01 — Cloudflare + Nuxt + Nitro Setup
+
+The chassis under everything. Get this right and the rest is paint.
+
+---
+
+## Install
+
+```bash
+npx nuxi@latest init my-app
+cd my-app
+npm i better-auth drizzle-orm
+npm i -D @cloudflare/workers-types wrangler
+```
+
+Then **uninstall** anything Nitro tried to wire to a non-Cloudflare host (`@nuxthub/*`, etc.) — we drive the Cloudflare bundling ourselves.
+
+---
+
+## `nuxt.config.ts`
+
+The four lines that matter:
+
+```ts
+export default defineNuxtConfig({
+  // ≥ 2025-07-15 is mandatory. Nitro's cloudflareDev preset is gated on this date.
+  // Below it, the preset silently falls back to a generic dev runtime that
+  // doesn't inject Cloudflare bindings — your `event.context.cloudflare` will
+  // be `undefined` with NO warning logged. See 10-gotchas.md.
+  compatibilityDate: '2025-07-15',
+
+  nitro: {
+    preset: 'cloudflare-module',
+    cloudflare: {
+      deployConfig: false,    // ← let wrangler.jsonc be the single source of truth
+      nodeCompat: true        // ← enables node:* polyfills in the worker
+    }
+  }
+})
+```
+
+See `snippets/nuxt.config.ts` for the full file (PWA, fonts, runtimeConfig, markdown ignores, etc.).
+
+---
+
+## `wrangler.jsonc`
+
+This file lives at the project root and is read by:
+
+- Wrangler at deploy time (`wrangler deploy --env <env>`)
+- Nitro's `cloudflareDev` plugin at `nuxt dev` startup (it scans for `wrangler.json | wrangler.jsonc | wrangler.toml`)
+
+**Top-level fields = local dev bindings.** What's at the top of the file is what Miniflare exposes locally when you run `nuxt dev`. Don't deploy the top-level by accident — always pass `--env staging` or `--env production`.
+
+**`env.<name>` blocks = deployed envs.** Each block is *self-contained* — `wrangler deploy --env staging` does NOT merge top-level into the env block. So bindings that should be the same across envs have to be repeated in each env block (or auto-propagated by tooling — see [`09-deployment-cicd.md`](./09-deployment-cicd.md)).
+
+Minimal skeleton:
+
+```jsonc
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "{{APP_SLUG}}",
+  "main": ".cloudflare/worker.ts",
+  "compatibility_date": "2025-07-15",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "observability": { "logs": { "enabled": true, "invocation_logs": true } },
+
+  "assets": {
+    "directory": ".output/public/",
+    "binding": "ASSETS"
+  },
+
+  "workers_dev": false,
+
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "{{APP_SLUG}}",
+    "database_id": "LOCAL_PLACEHOLDER",
+    "migrations_dir": "server/db/migrations"
+  }],
+
+  "r2_buckets": [{
+    "binding": "FILES",
+    "bucket_name": "{{APP_SLUG}}-files",
+    "remote": true              // ← Miniflare proxies to the real R2 in dev
+  }],
+
+  "vars": {
+    "NUXT_PUBLIC_FEATURE_FLAG": "false"
+  },
+
+  "env": {
+    "staging": {
+      "name": "{{APP_SLUG}}-staging",
+      "workers_dev": false,
+      "preview_urls": false,
+      "d1_databases": [{
+        "binding": "DB",
+        "database_name": "{{APP_SLUG}}-staging",
+        "database_id": "<UUID after wrangler d1 create>",
+        "migrations_dir": "server/db/migrations"
+      }],
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
+      "vars": {
+        "PUBLIC_BASE_URL": "https://staging.{{APP_DOMAIN}}",
+        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>"
+      },
+      "durable_objects": {
+        "bindings": [{ "name": "EMAIL_SCHEDULER", "class_name": "EmailScheduler" }]
+      },
+      "migrations": [{ "tag": "v1", "new_sqlite_classes": ["EmailScheduler"] }],
+      "routes": [{ "pattern": "staging.{{APP_DOMAIN}}", "custom_domain": true }]
+    },
+
+    "production": {
+      "name": "{{APP_SLUG}}",
+      "workers_dev": false,
+      "preview_urls": false,
+      "d1_databases": [{
+        "binding": "DB",
+        "database_name": "{{APP_SLUG}}",
+        "database_id": "<UUID after wrangler d1 create>",
+        "migrations_dir": "server/db/migrations"
+      }],
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
+      "vars": {
+        "PUBLIC_BASE_URL": "https://{{APP_DOMAIN}}",
+        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>"
+      },
+      "durable_objects": {
+        "bindings": [{ "name": "EMAIL_SCHEDULER", "class_name": "EmailScheduler" }]
+      },
+      "migrations": [{ "tag": "v1", "new_sqlite_classes": ["EmailScheduler"] }],
+      "routes": [{ "pattern": "{{APP_DOMAIN}}", "custom_domain": true }]
+    }
+  }
+}
+```
+
+See `snippets/wrangler.jsonc` for an annotated copy.
+
+> **`durable_objects` is NOT declared at the top level.** If you add it there, `nuxt dev` blows up because Miniflare can't find the DO class (the wrapper at `.cloudflare/worker.ts` isn't used in dev). Only declare DOs in `env.<name>` blocks.
+
+---
+
+## The DO wrapper at `.cloudflare/worker.ts`
+
+```ts
+// @ts-ignore - generated by `nuxt build`; may not exist at typecheck time
+import nitroHandler from '../.output/server/index.mjs'
+
+// Re-export every DO class so wrangler can bind them.
+export { EmailScheduler } from '../server/durable-objects/EmailScheduler'
+
+export default nitroHandler
+```
+
+That's the minimal shape. Add more re-exports as you add more DO classes. The shipped `.cloudflare/worker.ts` also adds a `scheduled()` export that forwards cron triggers into Nitro — see `12-cron-triggers.md`.
+
+> **Why `@ts-ignore` and not `@ts-expect-error`?** Because `.output/server/index.mjs` may or may not exist depending on whether a local build has run. `@ts-expect-error` would trigger TS2578 (unused directive) once the file exists. `@ts-ignore` is inert in both states. (Also: don't write `@ts-` directives inside `//` comments in this file unless you mean them — the TS compiler parses them.)
+
+---
+
+## Cloudflare bindings types
+
+Hand-maintain `server/types/cloudflare.d.ts` so every `event.context.cloudflare.env.X` access is typed:
+
+```ts
+import type { D1Database, DurableObjectNamespace, ExecutionContext, R2Bucket } from '@cloudflare/workers-types'
+
+export interface CloudflareEnv {
+  DB: D1Database
+  FILES: R2Bucket
+  BETTER_AUTH_SECRET: string
+  BETTER_AUTH_URL: string
+  STRIPE_SECRET_KEY: string
+  STRIPE_WEBHOOK_SECRET: string
+  STRIPE_PRICE_ID: string
+  RESEND_API_KEY: string
+  MAIL_FROM: string
+  PUBLIC_BASE_URL: string
+  ADMIN_API_SECRET: string
+  EMAIL_SCHEDULER: DurableObjectNamespace
+  // ... add more as you add bindings/secrets
+}
+
+declare module 'h3' {
+  interface H3EventContext {
+    cloudflare: {
+      env: CloudflareEnv
+      context: ExecutionContext
+      request: Request
+    }
+    waitUntil: (promise: Promise<unknown>) => void
+  }
+}
+
+export {}
+```
+
+Update this file every time you add a binding to `wrangler.jsonc` or a wrangler secret.
+
+> **Don't include `wrangler types` output (`worker-configuration.d.ts`) in the TS program.** It declares the full Workers runtime globally (`declare function fetch`, workerd `RequestInit`, etc.) and those globals leak into the browser-side TS program where they clobber the DOM + ofetch types, breaking every `$fetch<T>()` call with TS2558. In `nuxt.config.ts` exclude it explicitly:
+>
+> ```ts
+> typescript: {
+>   tsConfig: {
+>     exclude: ['../worker-configuration.d.ts']
+>   }
+> }
+> ```
+
+---
+
+## `.env` for local dev
+
+Local dev (`nuxt dev`) runs Miniflare against `wrangler.jsonc`. Miniflare reads `.env` into the bindings env so the same `event.context.cloudflare.env.X` access pattern works in dev. **Never use `process.env`** — it's empty in the real Workers runtime, and you'll only notice in production.
+
+```bash
+# .env (gitignored)
+BETTER_AUTH_SECRET=<openssl rand -hex 32>
+BETTER_AUTH_URL=http://localhost:3000
+
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PRICE_ID=price_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+RESEND_API_KEY=re_...
+MAIL_FROM={{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>
+PUBLIC_BASE_URL=http://localhost:3000
+ADMIN_API_SECRET=<openssl rand -hex 32>
+```
+
+See `snippets/.env.example` for the annotated template.
+
+---
+
+## `package.json` essentials
+
+```json
+{
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck"
+  }
+}
+```
+
+Wrangler is intentionally **not** in the `scripts` block — it's invoked directly (`npx wrangler ...`) or via `cloudflare/wrangler-action` in CI. Keeps the scripts list short.
+
+---
+
+## First-run sanity check
+
+```bash
+# 1. Create the D1 database for local dev
+wrangler d1 create {{APP_SLUG}}
+# Copy the database_id from the output into wrangler.jsonc → top-level d1_databases[0].database_id
+
+# 2. Run any migrations against local D1
+wrangler d1 migrations apply {{APP_SLUG}} --local
+
+# 3. Start the dev server
+npm run dev
+```
+
+Hit `http://localhost:3000` — the app should render (the starter ships a real app, not the Nuxt welcome page). To prove bindings are wired concretely, add a one-shot debug endpoint:
+
+```ts
+// server/api/debug/env.get.ts — DELETE after smoke-testing
+export default defineEventHandler((event) => {
+  const env = event.context.cloudflare?.env
+  return {
+    hasDB: !!env?.DB,
+    hasSecret: !!env?.BETTER_AUTH_SECRET,
+    bindingNames: env ? Object.keys(env) : []
+  }
+})
+```
+
+`curl localhost:3000/api/debug/env` should return `{ hasDB: true, hasSecret: true, bindingNames: [...] }`. If `hasDB` is false, jump to [`10-gotchas.md`](./10-gotchas.md) → "D1 binding DB not found" — it's almost always either the `compatibilityDate` or a missing `wrangler.jsonc`.
+
+---
+
+## Files to copy from `snippets/`
+
+- `snippets/nuxt.config.ts`
+- `snippets/wrangler.jsonc`
+- `snippets/.cloudflare/worker.ts`
+- `snippets/server/types/cloudflare.d.ts`
+- `snippets/.env.example`
+- `snippets/.gitignore` (make sure `.wrangler/` is in there)

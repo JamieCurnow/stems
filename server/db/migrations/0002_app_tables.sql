@@ -1,0 +1,13 @@
+-- Placeholder for your app's own tables. Add what you need; nothing here is
+-- required by the template stack.
+--
+-- Example:
+--
+-- CREATE TABLE "item" (
+--   "id"        text NOT NULL PRIMARY KEY,
+--   "userId"    text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+--   "title"     text NOT NULL,
+--   "createdAt" text NOT NULL,
+--   "updatedAt" text NOT NULL
+-- );
+-- CREATE INDEX "item_userId_idx" ON "item" ("userId");

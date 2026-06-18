@@ -1,0 +1,9 @@
+<!-- Placeholder monochrome icon for Android 13+ themed icons.
+     - Transparent background.
+     - Solid silhouette of your mark in any colour (Android will tint it). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <g transform="translate(12,12) scale(0.82) translate(-12,-12)">
+    <!-- TODO: your silhouette here. Example placeholder: -->
+    <circle cx="12" cy="12" r="6" fill="#000000"/>
+  </g>
+</svg>

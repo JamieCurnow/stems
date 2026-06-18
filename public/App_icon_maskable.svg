@@ -1,0 +1,13 @@
+<!-- Placeholder maskable icon. Replace with your brand mark.
+     - Full-bleed coloured background (no transparency).
+     - Mark scaled to fit inside Android's adaptive-icon safe zone
+       (inner ~80% of the 24-unit viewBox).
+     - Wrap your mark in <g transform="translate(12,12) scale(0.82) translate(-12,-12)">
+       so it survives circular/squircle masks. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <rect width="24" height="24" fill="#000000"/>
+  <g transform="translate(12,12) scale(0.82) translate(-12,-12)">
+    <!-- TODO: your mark here. Example placeholder: -->
+    <circle cx="12" cy="12" r="6" fill="#FFFFFF"/>
+  </g>
+</svg>

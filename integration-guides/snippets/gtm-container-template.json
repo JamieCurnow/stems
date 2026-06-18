@@ -1,0 +1,400 @@
+{
+    "exportFormatVersion": 2,
+    "exportTime": "2026-05-27 00:00:00",
+    "containerVersion": {
+        "container": {
+            "name": "{{CONTAINER_NAME}}",
+            "publicId": "GTM-XXXXXXX",
+            "usageContext": [
+                "WEB"
+            ],
+            "features": {
+                "supportUserPermissions": true,
+                "supportEnvironments": true,
+                "supportWorkspaces": true,
+                "supportGtagConfigs": false,
+                "supportBuiltInVariables": true,
+                "supportClients": false,
+                "supportFolders": true,
+                "supportTags": true,
+                "supportTemplates": true,
+                "supportTriggers": true,
+                "supportVariables": true,
+                "supportVersions": true,
+                "supportZones": true,
+                "supportTransformations": false
+            },
+            "tagIds": [
+                "GTM-XXXXXXX"
+            ]
+        },
+        "tag": [
+            {
+                "tagId": "5",
+                "name": "GA4 — Set user properties",
+                "type": "html",
+                "parameter": [
+                    {
+                        "type": "TEMPLATE",
+                        "key": "html",
+                        "value": "<script>\n  (function() {\n    var props = {{DLV - user_properties}};\n    if (window.gtag && props) {\n      gtag('set', 'user_properties', props);\n    }\n  })();\n</script>"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "supportDocumentWrite",
+                        "value": "false"
+                    }
+                ],
+                "firingTriggerId": [
+                    "4"
+                ],
+                "tagFiringOption": "ONCE_PER_EVENT",
+                "monitoringMetadata": {
+                    "type": "MAP"
+                },
+                "consentSettings": {
+                    "consentStatus": "NOT_SET"
+                }
+            },
+            {
+                "tagId": "26",
+                "name": "GA4 — Set user_id",
+                "type": "html",
+                "parameter": [
+                    {
+                        "type": "TEMPLATE",
+                        "key": "html",
+                        "value": "<script>\n  (function() {\n    var id = {{DLV - user_id}};\n    if (window.gtag && id) {\n      gtag('config', '{{GA4_MEASUREMENT_ID}}', { user_id: String(id) });\n    }\n  })();\n</script>"
+                    },
+                    {
+                        "type": "BOOLEAN",
+                        "key": "supportDocumentWrite",
+                        "value": "false"
+                    }
+                ],
+                "firingTriggerId": [
+                    "19"
+                ],
+                "tagFiringOption": "ONCE_PER_EVENT",
+                "monitoringMetadata": {
+                    "type": "MAP"
+                },
+                "consentSettings": {
+                    "consentStatus": "NOT_SET"
+                }
+            },
+            {
+                "tagId": "38",
+                "name": "GA4 — Event (catch-all)",
+                "type": "gaawe",
+                "parameter": [
+                    {
+                        "type": "BOOLEAN",
+                        "key": "sendEcommerceData",
+                        "value": "false"
+                    },
+                    {
+                        "type": "LIST",
+                        "key": "eventSettingsTable",
+                        "list": [
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "cta_location" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - cta_location}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "cta_label" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - cta_label}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "destination" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - destination}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "question_label" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - question_label}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "section_id" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - section_id}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "method" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - method}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "has_referral_code" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - has_referral_code}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "has_referral" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - has_referral}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "error_message" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - error_message}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "currency" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - currency}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "value" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - value}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "provider" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - provider}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "code_hash" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - code_hash}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "channel" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - channel}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "is_first_session" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - is_first_session}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "source" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - source}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "from" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - from}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "to" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - to}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "mode" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - mode}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "transaction_id" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - transaction_id}}" }
+                            ]},
+                            { "type": "MAP", "map": [
+                                { "type": "TEMPLATE", "key": "parameter", "value": "items" },
+                                { "type": "TEMPLATE", "key": "parameterValue", "value": "{{DLV - items}}" }
+                            ]}
+                        ]
+                    },
+                    {
+                        "type": "TEMPLATE",
+                        "key": "eventName",
+                        "value": "{{Event}}"
+                    },
+                    {
+                        "type": "TEMPLATE",
+                        "key": "measurementIdOverride",
+                        "value": "{{GA4_MEASUREMENT_ID}}"
+                    }
+                ],
+                "firingTriggerId": [
+                    "17"
+                ],
+                "tagFiringOption": "ONCE_PER_EVENT",
+                "monitoringMetadata": {
+                    "type": "MAP"
+                },
+                "consentSettings": {
+                    "consentStatus": "NOT_SET"
+                }
+            },
+            {
+                "tagId": "39",
+                "name": "GA4 — Configuration",
+                "type": "googtag",
+                "parameter": [
+                    {
+                        "type": "TEMPLATE",
+                        "key": "tagId",
+                        "value": "{{GA4_MEASUREMENT_ID}}"
+                    }
+                ],
+                "firingTriggerId": [
+                    "2147479553"
+                ],
+                "tagFiringOption": "ONCE_PER_EVENT",
+                "monitoringMetadata": {
+                    "type": "MAP"
+                },
+                "consentSettings": {
+                    "consentStatus": "NOT_SET"
+                }
+            }
+        ],
+        "trigger": [
+            {
+                "triggerId": "4",
+                "name": "Custom Event — set_user_properties",
+                "type": "CUSTOM_EVENT",
+                "customEventFilter": [
+                    {
+                        "type": "EQUALS",
+                        "parameter": [
+                            { "type": "TEMPLATE", "key": "arg0", "value": "{{_event}}" },
+                            { "type": "TEMPLATE", "key": "arg1", "value": "set_user_properties" }
+                        ]
+                    }
+                ]
+            },
+            {
+                "triggerId": "17",
+                "name": "Custom Event — App events",
+                "type": "CUSTOM_EVENT",
+                "customEventFilter": [
+                    {
+                        "type": "MATCH_REGEX",
+                        "parameter": [
+                            { "type": "TEMPLATE", "key": "arg0", "value": "{{_event}}" },
+                            { "type": "TEMPLATE", "key": "arg1", "value": "^(cta_click|faq_open|scroll_section_view|sign_up_started|sign_up|login|sign_up_failed|magic_link_requested|magic_link_request_failed|begin_checkout|checkout_redirect|manage_subscription_clicked|referral_link_copy|referral_link_share|app_open)$" }
+                        ]
+                    }
+                ]
+            },
+            {
+                "triggerId": "19",
+                "name": "Custom Event — set_user_id",
+                "type": "CUSTOM_EVENT",
+                "customEventFilter": [
+                    {
+                        "type": "EQUALS",
+                        "parameter": [
+                            { "type": "TEMPLATE", "key": "arg0", "value": "{{_event}}" },
+                            { "type": "TEMPLATE", "key": "arg1", "value": "set_user_id" }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "variable": [
+            { "variableId": "3", "name": "DLV - user_properties", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "user_properties" }
+            ]},
+            { "variableId": "6", "name": "DLV - items", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "items" }
+            ]},
+            { "variableId": "8", "name": "DLV - currency", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "currency" }
+            ]},
+            { "variableId": "9", "name": "DLV - mode", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "mode" }
+            ]},
+            { "variableId": "11", "name": "DLV - question_label", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "question_label" }
+            ]},
+            { "variableId": "12", "name": "DLV - from", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "from" }
+            ]},
+            { "variableId": "13", "name": "DLV - cta_label", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "cta_label" }
+            ]},
+            { "variableId": "15", "name": "DLV - provider", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "provider" }
+            ]},
+            { "variableId": "18", "name": "DLV - to", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "to" }
+            ]},
+            { "variableId": "21", "name": "DLV - value", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "value" }
+            ]},
+            { "variableId": "22", "name": "DLV - method", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "method" }
+            ]},
+            { "variableId": "23", "name": "DLV - has_referral", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "has_referral" }
+            ]},
+            { "variableId": "24", "name": "DLV - cta_location", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "cta_location" }
+            ]},
+            { "variableId": "25", "name": "DLV - user_id", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "user_id" }
+            ]},
+            { "variableId": "27", "name": "DLV - section_id", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "section_id" }
+            ]},
+            { "variableId": "28", "name": "DLV - error_message", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "error_message" }
+            ]},
+            { "variableId": "29", "name": "DLV - source", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "source" }
+            ]},
+            { "variableId": "30", "name": "DLV - has_referral_code", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "has_referral_code" }
+            ]},
+            { "variableId": "31", "name": "DLV - is_first_session", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "is_first_session" }
+            ]},
+            { "variableId": "33", "name": "DLV - destination", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "destination" }
+            ]},
+            { "variableId": "35", "name": "DLV - code_hash", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "code_hash" }
+            ]},
+            { "variableId": "36", "name": "DLV - transaction_id", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "transaction_id" }
+            ]},
+            { "variableId": "37", "name": "DLV - channel", "type": "v", "parameter": [
+                { "type": "INTEGER", "key": "dataLayerVersion", "value": "2" },
+                { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" },
+                { "type": "TEMPLATE", "key": "name", "value": "channel" }
+            ]}
+        ],
+        "builtInVariable": [
+            { "type": "PAGE_URL", "name": "Page URL" },
+            { "type": "PAGE_HOSTNAME", "name": "Page Hostname" },
+            { "type": "PAGE_PATH", "name": "Page Path" },
+            { "type": "REFERRER", "name": "Referrer" },
+            { "type": "EVENT", "name": "Event" }
+        ]
+    }
+}

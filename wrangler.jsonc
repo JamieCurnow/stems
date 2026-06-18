@@ -1,0 +1,143 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // Single source of truth for ALL Cloudflare Worker config across local dev,
+  // staging, and production. The Nuxt build emits the worker bundle to
+  // .output/server/index.mjs + assets to .output/public/, and
+  // `wrangler deploy [--env staging|production]` reads this file directly.
+
+  "name": "{{APP_SLUG}}",
+  // The wrapper imports the Nitro-built worker AND re-exports every DO class
+  // so wrangler bundles both. See .cloudflare/worker.ts.
+  "main": ".cloudflare/worker.ts",
+  "compatibility_date": "2025-07-15",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  },
+
+  "assets": {
+    "directory": ".output/public/",
+    "binding": "ASSETS"
+  },
+
+  // EmailScheduler DO binding is declared per-environment below — NOT at the
+  // top level. In `nuxt dev`, Miniflare runs the Nitro bundle directly
+  // without the wrapper, so the DO class isn't discoverable. `scheduleEmail`
+  // detects the missing binding and falls back to D1 + the runner endpoint
+  // for local testing.
+
+  // Top-level config has two roles:
+  //   1. Local dev source — Nitro's cloudflareDev plugin reads this at
+  //      `nuxt dev` startup; whatever's declared here is what Miniflare
+  //      exposes locally.
+  //   2. Inheritance template — if you use the optional internal CLI, it
+  //      copies `r2_buckets`, `vars`, etc. from this block into each env,
+  //      stripping dev-only flags like `remote: true`. Anything env-specific
+  //      (worker name, D1, routes) is overridden in each env.<name> block.
+  // Don't deploy this top-level by accident — always pass `--env staging` or
+  // `--env production` when deploying.
+  "workers_dev": false,
+
+  "vars": {
+    // Public-by-name (NUXT_PUBLIC_*) keys are baked into the client payload via
+    // Nuxt's runtimeConfig — committing them here is no different from
+    // publishing them on the site.
+    // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
+    // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "{{APP_SLUG}}",
+      "database_id": "LOCAL_PLACEHOLDER",
+      "migrations_dir": "server/db/migrations"
+    }
+  ],
+
+  // Example R2 bucket — `remote: true` makes Miniflare proxy to the real
+  // bucket in dev so `nuxt dev` reads the same data as prod. Drop this
+  // section entirely if you don't need R2.
+  // "r2_buckets": [
+  //   {
+  //     "binding": "FILES",
+  //     "bucket_name": "{{APP_SLUG}}-files",
+  //     "remote": true
+  //   }
+  // ],
+
+  "env": {
+    "staging": {
+      "observability": { "logs": { "enabled": true, "invocation_logs": true } },
+      "durable_objects": {
+        "bindings": [{ "name": "EMAIL_SCHEDULER", "class_name": "EmailScheduler" }]
+      },
+      "migrations": [{ "tag": "v1", "new_sqlite_classes": ["EmailScheduler"] }],
+      // Cron triggers live per-env (not top-level). Each entry fires the
+      // `scheduled()` export in .cloudflare/worker.ts. Route by event.cron.
+      "triggers": {
+        "crons": ["* * * * *"]
+      },
+      "vars": {
+        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>",
+        "PUBLIC_BASE_URL": "https://staging.{{APP_DOMAIN}}"
+        // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
+        // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
+      },
+      "name": "{{APP_SLUG}}-staging",
+      "workers_dev": false,
+      "preview_urls": false,
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "{{APP_SLUG}}-staging",
+          "database_id": "FILL_AFTER_WRANGLER_D1_CREATE",
+          "migrations_dir": "server/db/migrations"
+        }
+      ],
+      // "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
+      "routes": [
+        { "pattern": "staging.{{APP_DOMAIN}}", "custom_domain": true }
+        // If staging sits behind a basic-auth gate worker, add concrete-path
+        // route exceptions for Stripe webhooks here.
+      ]
+    },
+
+    "production": {
+      "name": "{{APP_SLUG}}",
+      "workers_dev": false,
+      "preview_urls": false,
+      "observability": { "logs": { "enabled": true, "invocation_logs": true } },
+      "durable_objects": {
+        "bindings": [{ "name": "EMAIL_SCHEDULER", "class_name": "EmailScheduler" }]
+      },
+      "migrations": [{ "tag": "v1", "new_sqlite_classes": ["EmailScheduler"] }],
+      "triggers": {
+        "crons": ["* * * * *"]
+      },
+      "vars": {
+        "MAIL_FROM": "{{APP_NAME}} <{{MAIL_FROM_LOCAL}}@{{APP_DOMAIN}}>",
+        "PUBLIC_BASE_URL": "https://{{APP_DOMAIN}}"
+        // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
+        // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "{{APP_SLUG}}",
+          "database_id": "FILL_AFTER_WRANGLER_D1_CREATE",
+          "migrations_dir": "server/db/migrations"
+        }
+      ],
+      // "r2_buckets": [{ "binding": "FILES", "bucket_name": "{{APP_SLUG}}-files" }],
+      "routes": [
+        { "pattern": "{{APP_DOMAIN}}", "custom_domain": true }
+      ]
+    }
+  }
+}

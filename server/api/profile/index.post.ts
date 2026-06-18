@@ -1,22 +1,9 @@
 import { eq } from 'drizzle-orm'
 import { useDb } from '~~/server/utils/db'
 import { requireUser } from '~~/server/utils/requireUser'
+import { readZodBody } from '~~/server/utils/validation'
+import { profileCreateSchema } from '~~/server/utils/profileSchemas'
 import { profile } from '~~/server/db/schema'
-import { normaliseHandle, validateHandle } from '~~/shared/utils/handle'
-
-interface CreateProfileBody {
-  handle?: unknown
-  farmName?: unknown
-  locationName?: unknown
-  postcode?: unknown
-  isGrower?: unknown
-}
-
-const trimmedString = (v: unknown): string | null => {
-  if (typeof v !== 'string') return null
-  const t = v.trim()
-  return t.length ? t : null
-}
 
 /**
  * Create the signed-in user's profile during onboarding.
@@ -38,23 +25,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 409, statusMessage: 'You already have a profile' })
   }
 
-  const body = (await readBody(event)) as CreateProfileBody
-
-  const handleError =
-    typeof body.handle === 'string' ? validateHandle(body.handle) : 'A username is required.'
-  if (handleError) {
-    throw createError({ statusCode: 400, statusMessage: handleError })
-  }
-  const handle = normaliseHandle(body.handle as string)
-
-  const farmName = trimmedString(body.farmName)
-  if (!farmName || farmName.length > 80) {
-    throw createError({ statusCode: 400, statusMessage: 'A farm name of 1–80 characters is required.' })
-  }
-
-  const locationName = trimmedString(body.locationName)
-  const postcode = trimmedString(body.postcode)
-  const isGrower = body.isGrower !== false // default on; only an explicit false opts out
+  const { handle, farmName, locationName, postcode, isGrower } = await readZodBody(event, profileCreateSchema)
 
   // Re-check availability before the insert for a friendlier error than the
   // raw constraint failure (the unique index is still the source of truth).

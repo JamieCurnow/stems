@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { useDb } from '~~/server/utils/db'
 import { requireUser } from '~~/server/utils/requireUser'
+import { getSafeRouterParam } from '~~/server/utils/validation'
 import { flower } from '~~/server/db/schema'
 
 /**
@@ -11,8 +12,7 @@ export default defineEventHandler(async (event) => {
   const user = await requireUser(event)
   const db = useDb(event)
 
-  const id = getRouterParam(event, 'id')
-  if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing flower id' })
+  const id = getSafeRouterParam(event, 'id')
 
   const existing = await db.select({ growerId: flower.growerId }).from(flower).where(eq(flower.id, id)).get()
   if (!existing) throw createError({ statusCode: 404, statusMessage: 'Flower not found' })

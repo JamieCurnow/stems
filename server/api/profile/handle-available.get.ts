@@ -1,8 +1,12 @@
 import { eq } from 'drizzle-orm'
+import { z } from 'zod'
 import { useDb } from '~~/server/utils/db'
 import { requireUser } from '~~/server/utils/requireUser'
+import { getZodQuery } from '~~/server/utils/validation'
 import { profile } from '~~/server/db/schema'
 import { normaliseHandle, validateHandle } from '~~/shared/utils/handle'
+
+const querySchema = z.object({ handle: z.string({ error: 'Missing handle' }) })
 
 /**
  * Live availability check for the onboarding handle claim.
@@ -15,10 +19,7 @@ import { normaliseHandle, validateHandle } from '~~/shared/utils/handle'
 export default defineEventHandler(async (event) => {
   await requireUser(event)
 
-  const raw = getQuery(event).handle
-  if (typeof raw !== 'string') {
-    throw createError({ statusCode: 400, statusMessage: 'Missing handle' })
-  }
+  const { handle: raw } = getZodQuery(event, querySchema)
 
   const error = validateHandle(raw)
   if (error) return { available: false, error }

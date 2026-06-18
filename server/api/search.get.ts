@@ -1,5 +1,7 @@
 import { and, desc, eq, max, sql } from 'drizzle-orm'
+import { z } from 'zod'
 import { useDb } from '~~/server/utils/db'
+import { getZodQuery } from '~~/server/utils/validation'
 import { imgUrl } from '~~/server/utils/img'
 import { flower, profile } from '~~/server/db/schema'
 
@@ -45,14 +47,31 @@ const SEARCH_GROWERS_ONLY = true
 const DEFAULT_LIMIT = 20
 const MAX_LIMIT = 50
 
+/**
+ * A query int that never 400s: parse, fall back to `def` if absent/garbage,
+ * then clamp into [min, max]. A bad `?limit=` shouldn't break public browse.
+ */
+const clampedInt = (def: number, min: number, max: number) =>
+  z.preprocess((v) => {
+    const n = typeof v === 'string' ? Number.parseInt(v, 10) : typeof v === 'number' ? v : NaN
+    if (!Number.isFinite(n)) return def
+    return Math.min(Math.max(n, min), max)
+  }, z.number())
+
+const querySchema = z.object({
+  q: z
+    .string()
+    .optional()
+    .default('')
+    .transform((s) => s.trim()),
+  limit: clampedInt(DEFAULT_LIMIT, 1, MAX_LIMIT),
+  cursor: clampedInt(0, 0, Number.MAX_SAFE_INTEGER)
+})
+
 export default defineEventHandler(async (event): Promise<GrowerCardDto[]> => {
   const db = useDb(event)
-  const query = getQuery(event)
 
-  const q = typeof query.q === 'string' ? query.q.trim() : ''
-
-  const limit = clampInt(query.limit, DEFAULT_LIMIT, 1, MAX_LIMIT)
-  const offset = clampInt(query.cursor, 0, 0, Number.MAX_SAFE_INTEGER)
+  const { q, limit, cursor: offset } = getZodQuery(event, querySchema)
 
   // Latest of profile.updatedAt and any non-archived flower.updatedAt, in ms.
   const flowerCount = sql<number>`count(${flower.id})`.as('flowerCount')
@@ -126,13 +145,6 @@ export default defineEventHandler(async (event): Promise<GrowerCardDto[]> => {
     }
   })
 })
-
-/** Parse a query param to a bounded integer, falling back to `fallback`. */
-function clampInt(raw: unknown, fallback: number, min: number, maxV: number): number {
-  const n = typeof raw === 'string' ? Number.parseInt(raw, 10) : NaN
-  if (!Number.isFinite(n)) return fallback
-  return Math.min(Math.max(n, min), maxV)
-}
 
 /** Escape LIKE wildcards in user input so `%`/`_`/`\` are matched literally. */
 function escapeLike(s: string): string {

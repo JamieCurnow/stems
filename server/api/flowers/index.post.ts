@@ -1,17 +1,20 @@
 import { eq, max } from 'drizzle-orm'
+import { z } from 'zod'
 import { useDb } from '~~/server/utils/db'
 import type { Db } from '~~/server/utils/db'
 import { requireUser } from '~~/server/utils/requireUser'
+import { readZodBody } from '~~/server/utils/validation'
 import { imgUrl } from '~~/server/utils/img'
 import { flower, flowerPhoto, type FlowerRow } from '~~/server/db/schema'
 import { bunchPrice } from '~~/shared/utils/price'
 import { MAX_STEMS_AVAILABLE } from '~~/shared/utils/flowers'
 import type { FlowerDto } from '~~/shared/types/flower'
 
-/* ── Shared validation/coercion (also imported by [id].patch.ts) ──────────────
-   Manual guards, no zod (per roadmap). Prices are integer pence end-to-end:
+/* ── Shared flower validation (also imported by [id].patch.ts) ────────────────
+   Zod schemas, not hand-rolled coercion. Prices are integer pence end-to-end:
    the client converts at the <input> boundary, so the server rejects
-   non-integers. */
+   non-integers. Optional text trims and treats blank as null; ints accept a
+   blank string / null as "unset". */
 
 const MAX_PRICE_PENCE = 1_000_000 // £10,000
 const MAX_STEM_LENGTH = 300 // cm
@@ -20,66 +23,74 @@ const MAX_NOTES = 300
 const MAX_NAME = 120
 const MAX_TEXT = 120
 
-export const coerceText = (v: unknown, field: string, maxLen = MAX_TEXT): string | null => {
-  if (v == null) return null
-  if (typeof v !== 'string') {
-    throw createError({ statusCode: 400, statusMessage: `${field} must be text` })
-  }
-  const t = v.trim()
-  if (!t.length) return null
-  if (t.length > maxLen) {
-    throw createError({ statusCode: 400, statusMessage: `${field} is too long (max ${maxLen})` })
-  }
-  return t
-}
+/** Optional free text: trims, blank → null, enforces a max length. */
+const optionalText = (label: string, maxLen = MAX_TEXT) =>
+  z
+    .preprocess(
+      (v) => (typeof v === 'string' ? v.trim() : v),
+      z
+        .string({ error: `${label} must be text` })
+        .max(maxLen, `${label} is too long (max ${maxLen})`)
+        .nullish()
+    )
+    .transform((v) => (v == null || v === '' ? null : v))
 
-export const coerceRequiredText = (v: unknown, field: string, maxLen = MAX_NAME): string => {
-  const t = coerceText(v, field, maxLen)
-  if (!t) throw createError({ statusCode: 400, statusMessage: `${field} is required` })
-  return t
-}
+/** Required free text: trims, must be non-empty within the max length. */
+const requiredText = (label: string, maxLen = MAX_NAME) =>
+  z.preprocess(
+    (v) => (typeof v === 'string' ? v.trim() : v),
+    z
+      .string({ error: `${label} is required` })
+      .min(1, `${label} is required`)
+      .max(maxLen, `${label} is too long (max ${maxLen})`)
+  )
 
-export const coerceInt = (v: unknown, field: string, maxVal: number): number | null => {
-  if (v == null || v === '') return null
-  const n = typeof v === 'number' ? v : Number(v)
-  if (!Number.isFinite(n) || !Number.isInteger(n)) {
-    throw createError({ statusCode: 400, statusMessage: `${field} must be a whole number` })
-  }
-  if (n < 0) throw createError({ statusCode: 400, statusMessage: `${field} cannot be negative` })
-  if (n > maxVal) throw createError({ statusCode: 400, statusMessage: `${field} is too large` })
-  return n
-}
+/** Optional whole number ≥ 0: blank string / null → null. */
+const optionalInt = (label: string, maxVal: number) =>
+  z.preprocess(
+    (v) => (v === '' || v == null ? null : v),
+    z
+      .number({ error: `${label} must be a whole number` })
+      .int(`${label} must be a whole number`)
+      .min(0, `${label} cannot be negative`)
+      .max(maxVal, `${label} is too large`)
+      .nullable()
+  )
 
-// Boolean flags: accept a real boolean (absent/null → false).
-export const coerceBool = (v: unknown, field: string): boolean => {
-  if (v == null) return false
-  if (typeof v !== 'boolean') {
-    throw createError({ statusCode: 400, statusMessage: `${field} must be true or false` })
-  }
-  return v
-}
+/** Boolean flag (absent/null → false). */
+const boolFlag = (label: string) =>
+  z.preprocess((v) => v ?? false, z.boolean({ error: `${label} must be true or false` }))
 
-export const coerceStemLength = (v: unknown) => coerceInt(v, 'Stem length', MAX_STEM_LENGTH)
-export const coerceStemsPerBunch = (v: unknown) => coerceInt(v, 'Stems per bunch', MAX_STEMS_PER_BUNCH)
-export const coercePrice = (v: unknown, field: string) => coerceInt(v, field, MAX_PRICE_PENCE)
-export const coerceNotes = (v: unknown) => coerceText(v, 'Notes', MAX_NOTES)
-
-// Stems available: null (absent/blank) = "Available", 0 = sold out, >0 = count.
-export const coerceStemsAvailable = (v: unknown) => coerceInt(v, 'Stems available', MAX_STEMS_AVAILABLE)
-
-/** Validate a list of R2 photo keys; each must start with `public/`. */
-export const coercePhotoKeys = (v: unknown): string[] => {
-  if (v == null) return []
-  if (!Array.isArray(v)) {
-    throw createError({ statusCode: 400, statusMessage: 'photoKeys must be an array' })
-  }
-  return v.map((k) => {
-    if (typeof k !== 'string' || !k.startsWith('public/')) {
-      throw createError({ statusCode: 400, statusMessage: 'Invalid photo key' })
+/** A list of R2 photo keys; each must start with `public/` (absent → []). */
+const photoKeysSchema = z.preprocess(
+  (v) => v ?? [],
+  z.array(
+    z.string().refine((k) => k.startsWith('public/'), 'Invalid photo key'),
+    {
+      error: 'photoKeys must be an array'
     }
-    return k
-  })
+  )
+)
+
+/* The editable fields of a flower. `flowerCreateSchema` requires `name` and
+   defaults absent optionals; `flowerPatchSchema` is `.partial()` so only the
+   keys actually present in the PATCH body are touched. */
+const editableFlowerShape = {
+  name: requiredText('Name'),
+  variety: optionalText('Variety'),
+  color: optionalText('Colour'),
+  stemLengthCm: optionalInt('Stem length', MAX_STEM_LENGTH),
+  stemsPerBunch: optionalInt('Stems per bunch', MAX_STEMS_PER_BUNCH),
+  pricePerStem: optionalInt('Price per stem', MAX_PRICE_PENCE),
+  pricePerBunch: optionalInt('Price per bunch', MAX_PRICE_PENCE),
+  openToOffers: boolFlag('Open to offers'),
+  notes: optionalText('Notes', MAX_NOTES),
+  stemsAvailable: optionalInt('Stems available', MAX_STEMS_AVAILABLE),
+  photoKeys: photoKeysSchema
 }
+
+export const flowerCreateSchema = z.object(editableFlowerShape)
+export const flowerPatchSchema = z.object(editableFlowerShape).partial()
 
 /** Build the DTO returned by create/update from a row + its photo keys. */
 export const toFlowerDto = (row: FlowerRow, photoKeys: string[]): FlowerDto => ({
@@ -119,19 +130,7 @@ export default defineEventHandler(async (event): Promise<FlowerDto> => {
   const user = await requireUser(event)
   const db = useDb(event)
 
-  const body = (await readBody(event)) as Record<string, unknown>
-
-  const name = coerceRequiredText(body.name, 'Name')
-  const variety = coerceText(body.variety, 'Variety')
-  const color = coerceText(body.color, 'Colour')
-  const stemLengthCm = coerceStemLength(body.stemLengthCm)
-  const stemsPerBunch = coerceStemsPerBunch(body.stemsPerBunch)
-  const pricePerStem = coercePrice(body.pricePerStem, 'Price per stem')
-  const pricePerBunch = coercePrice(body.pricePerBunch, 'Price per bunch')
-  const openToOffers = coerceBool(body.openToOffers, 'Open to offers')
-  const notes = coerceNotes(body.notes)
-  const stemsAvailable = coerceStemsAvailable(body.stemsAvailable)
-  const photoKeys = coercePhotoKeys(body.photoKeys)
+  const { photoKeys, ...fields } = await readZodBody(event, flowerCreateSchema)
 
   // sortOrder = max+1 for this grower (so new flowers land at the bottom).
   const maxRow = await db
@@ -149,16 +148,7 @@ export default defineEventHandler(async (event): Promise<FlowerDto> => {
     .values({
       id,
       growerId: user.id,
-      name,
-      variety,
-      color,
-      stemLengthCm,
-      stemsPerBunch,
-      pricePerStem,
-      pricePerBunch,
-      openToOffers,
-      stemsAvailable,
-      notes,
+      ...fields,
       sortOrder,
       isArchived: false,
       createdAt: now,

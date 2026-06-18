@@ -1,7 +1,13 @@
 import { eq, inArray } from 'drizzle-orm'
+import { z } from 'zod'
 import { useDb } from '~~/server/utils/db'
 import { requireUser } from '~~/server/utils/requireUser'
+import { readZodBody } from '~~/server/utils/validation'
 import { flower } from '~~/server/db/schema'
+
+const reorderSchema = z.object({
+  ids: z.array(z.string(), { error: 'ids must be an array of strings' })
+})
 
 /**
  * PATCH /api/flowers/reorder — body `{ ids: string[] }`. Assigns sortOrder by
@@ -13,12 +19,7 @@ export default defineEventHandler(async (event) => {
   const user = await requireUser(event)
   const db = useDb(event)
 
-  const body = (await readBody(event)) as { ids?: unknown }
-  const ids = body.ids
-  if (!Array.isArray(ids) || ids.some((i) => typeof i !== 'string')) {
-    throw createError({ statusCode: 400, statusMessage: 'ids must be an array of strings' })
-  }
-  const list = ids as string[]
+  const { ids: list } = await readZodBody(event, reorderSchema)
   if (!list.length) return { ok: true }
 
   // Ownership: every supplied id must exist and belong to this grower.

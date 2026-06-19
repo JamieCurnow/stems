@@ -78,6 +78,23 @@ Add / edit flower form. Renders **inline** on a dedicated page (`/flowers/new`, 
 
 ---
 
+## `<FlowerGallery>`
+
+Horizontally swipeable image gallery for the read-only flower drawer (a flower can carry several square photos, cover first). Native CSS scroll-snap rail — no carousel library — so it coexists cleanly with the `UDrawer` it lives in: `touch-action: pan-x` hands horizontal gestures to the browser (snap between photos) and lets vertical gestures fall through to vaul's drag-to-close. Position dots are tappable (desktop) and indicative (touch); hidden for a single photo. Frame is `aspect-square` capped at `max-h-[46vh]` so the whole sheet fits without an inner scroll. Key it by flower id so the rail resets to the cover per flower.
+
+### Props
+
+- `photos`: `string[]` (required) — resolved `/img` URLs, cover first. Empty → flower icon placeholder.
+- `alt`: `string` (required) — alt text (the flower name).
+
+### Example
+
+```vue
+<FlowerGallery :key="selected.id" :photos="selected.photoUrls" :alt="selected.name" />
+```
+
+---
+
 ## `<GrowerCard>`
 
 One grower row in the discovery feed. Avatar-led, borderless, links the whole row to `/@handle`. Shows `@handle · location`, an "N in season" pill when the grower has stock, and a relative last-active time. Photo-less growers get a deterministic warm tint + serif initials (`avatarTint` / `avatarInitials`).
@@ -232,3 +249,5 @@ Granular cookie-preferences modal (Strictly functional [always on] / Analytics /
 - **Object-URL ownership transfers on `uploaded`.** `<ImageCropModal>` hands the parent a local object URL for instant preview; the parent revokes it on remove/unmount.
 - **Borderless feed language.** Cards (`<FlowerCard>`, `<GrowerCard>`) render as rows that sit directly on the page; the parent `<ul>`/`<div>` draws the `divide-y divide-default` hairlines. No card boxes or shadows — see `DESIGN.md`.
 - **Buttons are pills app-wide** via `app.config.ts` (`ui.button.slots.base = 'rounded-full'`); don't add `rounded-full` per-button.
+- **Drawers drag-to-close from anywhere**, not just the handle. Vaul's default `container` slot is `overflow-y-auto` — an inner scroll area that eats vertical touch drags everywhere except the handle (which sits outside it), the "reach for the top" jank. Set globally in `app.config.ts` (`ui.drawer.slots.container = 'overflow-y-visible'`): the whole short bottom-sheet becomes one draggable surface; taps still fire (vaul only drags past a movement threshold). A drawer that genuinely needs scrolling must override `ui.container` back to `overflow-y-auto`.
+- **Swipeable gallery inside a draggable drawer.** `<FlowerGallery>` mixes a horizontal swipe (change photo) with the drawer's vertical drag (close) on one surface by using a native scroll-snap rail + `touch-action: pan-x` — the browser arbitrates the axes, no JS carousel fighting vaul for pointer capture.

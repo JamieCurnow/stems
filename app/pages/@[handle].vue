@@ -389,17 +389,8 @@ useHead(() => ({
     <UDrawer v-model:open="detailOpen">
       <template #body>
         <div v-if="selected" class="mx-auto w-full max-w-md space-y-4">
-          <div class="aspect-square w-full overflow-hidden rounded-xl bg-muted">
-            <img
-              v-if="selected.photoUrls[0]"
-              :src="selected.photoUrls[0]"
-              :alt="selected.name"
-              class="size-full object-cover"
-            />
-            <div v-else class="flex size-full items-center justify-center text-dimmed">
-              <UIcon name="i-lucide-flower-2" class="size-12" />
-            </div>
-          </div>
+          <!-- Keyed by flower id so the rail resets to the cover for each flower. -->
+          <FlowerGallery :key="selected.id" :photos="selected.photoUrls" :alt="selected.name" />
 
           <div>
             <div class="flex items-start justify-between gap-3">

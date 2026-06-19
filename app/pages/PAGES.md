@@ -61,9 +61,15 @@ Claim a handle + create the profile (`layout: default`, middleware `['auth', 'on
 
 The grower's working surface — "My Flowers" (`layout: app`, middleware `['auth', 'onboarding']`, `robots: noindex`). Non-growers are bounced to `/account` (`watchEffect` on `profile.isGrower`).
 
-- Loads `useFetch('/api/flowers')`. Owns the add/edit `<FlowerForm>` drawer; the tab-bar centre `+` navigates here with `?add=1`, consumed client-side (`onMounted` + a query watch) so a re-click re-triggers.
+- Loads `useFetch('/api/flowers', { key: 'my-flowers' })`. Add/edit are **dedicated pages** (not a drawer): the Add buttons + the tab-bar centre `+` navigate to `/flowers/new`; the card Edit action navigates to `/flowers/[id]/edit`. Those pages update the shared `'my-flowers'` cache (`useNuxtData`) in place so a save reflects here without a refetch.
 - Inline stems-available quick-edit PATCHes `stemsAvailable` only, applied **optimistically** (reverts + toast on failure). Duplicate ("same flower, new colour") POSTs a copy without the derived bunch price. Archive soft-deletes optimistically.
 - Client-side CSV export (prices in £, stock as words, UTF-8 BOM for Excel).
+
+---
+
+## `/flowers/new` (flowers/new.vue) & `/flowers/[id]/edit` (flowers/[id]/edit.vue)
+
+Full-page add/edit forms (`layout: app`, middleware `['auth', 'onboarding']`, `robots: noindex`), grower-gated like `/flowers`. Both render `<FlowerForm>` inline. The edit page fetches the flower via `useRequestFetch()` against `GET /api/flowers/[id]` (cookie-forwarding; 404/403 handled by the endpoint). On `@saved` they patch the shared `'my-flowers'` cache (`useNuxtData`) and `navigateTo('/flowers')`; `@cancel` / the back chevron navigate back.
 
 ---
 

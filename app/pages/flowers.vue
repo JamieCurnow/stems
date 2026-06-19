@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // "My Flowers" — the grower's working surface. Grower-only; non-growers are
-// bounced to /account. Owns the Add button + the add/edit drawer (the tab-bar
-// center "+" navigates here, so this page is the single owner of that flow).
+// bounced to /account. Add/edit live on dedicated pages (/flowers/new and
+// /flowers/[id]/edit); this page navigates to them and shares its flower list
+// cache (key 'my-flowers') so saves reflect here without a refetch.
 //
 // The single highest-frequency action is updating stems available — handled
 // inline on each <FlowerCard> via a number input, PATCHing stemsAvailable only
@@ -22,30 +23,20 @@ watchEffect(() => {
   if (profile.value && !profile.value.isGrower) navigateTo('/account')
 })
 
-// Load the grower's flowers (SSR-friendly).
+// Load the grower's flowers (SSR-friendly). The explicit key lets the add/edit
+// pages update this cached list in place via useNuxtData('my-flowers').
 const { data: flowers } = await useFetch<FlowerDto[]>('/api/flowers', {
+  key: 'my-flowers',
   default: () => []
 })
 
-// ── Add / edit drawer ───────────────────────────────────────────────────────
-const formOpen = ref(false)
-const editing = ref<FlowerDto | null>(null)
-
+// ── Add / edit (dedicated pages, not a drawer) ──────────────────────────────
 function openAdd() {
-  editing.value = null
-  formOpen.value = true
+  navigateTo('/flowers/new')
 }
 
 function openEdit(flower: FlowerDto) {
-  editing.value = flower
-  formOpen.value = true
-}
-
-function onSaved(saved: FlowerDto) {
-  const list = flowers.value ?? []
-  const idx = list.findIndex((f) => f.id === saved.id)
-  if (idx >= 0) list[idx] = saved
-  else list.push(saved)
+  navigateTo(`/flowers/${flower.id}/edit`)
 }
 
 // ── Inline stems-available change (optimistic) ──────────────────────────────
@@ -161,21 +152,6 @@ function exportCsv() {
   a.click()
   URL.revokeObjectURL(url)
 }
-
-// Open the add drawer when arriving via the tab-bar "+" (it navigates with
-// ?add=1). Consume the flag on the client only: onMounted covers landing on the
-// URL, and a (non-immediate) query watch covers the "+" being pressed while
-// we're already on /flowers (no remount). Clearing the flag client-side avoids
-// an SSR redirect that would strip the query before the drawer can open, and
-// lets a re-click re-trigger it.
-const route = useRoute()
-function consumeAddQuery() {
-  if (route.query.add !== '1') return
-  openAdd()
-  navigateTo({ query: {} }, { replace: true })
-}
-onMounted(consumeAddQuery)
-watch(() => route.query.add, consumeAddQuery)
 </script>
 
 <template>
@@ -218,7 +194,5 @@ watch(() => route.query.add, consumeAddQuery)
         @archive="archive"
       />
     </div>
-
-    <FlowerForm v-model:open="formOpen" :flower="editing" @saved="onSaved" />
   </div>
 </template>

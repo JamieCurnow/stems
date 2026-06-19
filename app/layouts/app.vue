@@ -6,10 +6,10 @@
 //   defineExpose / useState — here we read it from page meta-driven props is
 // avoided; instead the header is optional and rendered by the page itself.
 //
-// The center Add action emits from the tab bar. The /flowers page opens its
-// add-flower drawer automatically when it sees ?add=1.
+// The center Add action emits from the tab bar; it navigates to the dedicated
+// add-flower page.
 function onAdd() {
-  navigateTo('/flowers?add=1')
+  navigateTo('/flowers/new')
 }
 </script>
 

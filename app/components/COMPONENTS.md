@@ -16,7 +16,7 @@ None.
 
 ### Emits
 
-- `add` — the centre `+` button was tapped. The `app` layout listens and navigates to `/flowers?add=1`.
+- `add` — the centre `+` button was tapped. The `app` layout listens and navigates to `/flowers/new`.
 
 ### Example
 
@@ -59,21 +59,21 @@ Shared flower row used by the grower's `/flowers` manager (`editable`) and read-
 
 ## `<FlowerForm>`
 
-Add / edit flower form. Renders inside a `UDrawer` (bottom sheet) on mobile and a `UModal` on desktop (SSR-safe breakpoint switch via a mounted flag). Prices are entered in pounds and converted to pence (`parsePounds`) on save; the bunch price auto-derives as a placeholder and is only persisted when explicitly overridden. Photos are managed via `<ImageGalleryUploader>`; the full desired key set is sent as `photoKeys` (the server replaces the flower's photos).
+Add / edit flower form. Renders **inline** on a dedicated page (`/flowers/new`, `/flowers/[id]/edit`) — no drawer/modal chrome of its own; the form is the page. Action row (Cancel / Save) is sticky to the bottom of the viewport. Prices are entered in pounds and converted to pence (`parsePounds`) on save; the bunch price auto-derives as a placeholder and is only persisted when explicitly overridden. Photos are managed via `<ImageGalleryUploader>`; the full desired key set is sent as `photoKeys` (the server replaces the flower's photos).
 
 ### Props
 
-- `flower`: `FlowerDto | null` (optional) — the flower to edit, or null/undefined to add.
+- `flower`: `FlowerDto | null` (optional) — the flower to edit, or null/undefined to add. Seeded reactively, so it can arrive async (the edit page fetches it).
 
-### Model / Emits
+### Emits
 
-- `v-model:open`: `boolean` — drawer/modal open state (owned by the parent).
-- `saved`: `[flower: FlowerDto]` — emitted with the fresh DTO after a successful POST/PATCH.
+- `saved`: `[flower: FlowerDto]` — emitted with the fresh DTO after a successful POST/PATCH. The page updates the cached list and navigates back.
+- `cancel`: `[]` — Cancel pressed; the page navigates back.
 
 ### Example
 
 ```vue
-<FlowerForm v-model:open="formOpen" :flower="editing" @saved="onSaved" />
+<FlowerForm :flower="editing" @saved="onSaved" @cancel="navigateTo('/flowers')" />
 ```
 
 ---
@@ -227,7 +227,8 @@ Granular cookie-preferences modal (Strictly functional [always on] / Analytics /
 
 - **Directory prefix is the component name.** `Flower/Card.vue` is `<FlowerCard>`, `Image/CropModal.vue` is `<ImageCropModal>`, `Layout/CookieConsent.vue` is `<LayoutCookieConsent>`. Name new files with that in mind.
 - **A `v-model` for an R2 key must be the _default_ model**, never `v-model:key`. `key` is consumed by Vue's renderer as the VNode key and never reaches the component, so two-way binding silently breaks. See `<ImageUploader>`.
-- **Drawer-on-mobile / modal-on-desktop pattern.** `<FlowerForm>` and `<ContactSheet>` start as a `UDrawer` to match SSR, then switch to `UModal` once a `mounted` flag flips on `≥640px` — gating on `mounted` avoids a hydration mismatch (`useMediaQuery` is `false` during SSR).
+- **Drawer-on-mobile / modal-on-desktop pattern.** `<ContactSheet>` starts as a `UDrawer` to match SSR, then switches to `UModal` once a `mounted` flag flips on `≥640px` — gating on `mounted` avoids a hydration mismatch (`useMediaQuery` is `false` during SSR). (`<FlowerForm>` previously used this too but is now a full inline page.)
+- **Image inputs omit `capture`.** `<ImageCropModal>`'s file `<input>` has `accept="image/*"` but **no** `capture` attribute — `capture` forces the camera on mobile and blocks gallery selection. Leaving it off lets the OS offer both library and camera.
 - **Object-URL ownership transfers on `uploaded`.** `<ImageCropModal>` hands the parent a local object URL for instant preview; the parent revokes it on remove/unmount.
 - **Borderless feed language.** Cards (`<FlowerCard>`, `<GrowerCard>`) render as rows that sit directly on the page; the parent `<ul>`/`<div>` draws the `divide-y divide-default` hairlines. No card boxes or shadows — see `DESIGN.md`.
 - **Buttons are pills app-wide** via `app.config.ts` (`ui.button.slots.base = 'rounded-full'`); don't add `rounded-full` per-button.

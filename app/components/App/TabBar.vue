@@ -43,8 +43,8 @@ const tabs = computed<Tab[]>(() =>
 )
 
 function onAdd() {
-  // The center Add opens the add-flower drawer (doc 07). For now emit so the
-  // layout can decide; falls back to navigating growers to /flowers.
+  // The center Add navigates to the add-flower page; emit so the layout owns the
+  // navigation (it routes to /flowers/new).
   emit('add')
 }
 </script>
@@ -67,7 +67,7 @@ function onAdd() {
         </NuxtLink>
       </li>
 
-      <!-- Center raised Add action: growers only. Opens the add-flower drawer. -->
+      <!-- Center raised Add action: growers only. Opens the add-flower page. -->
       <li v-if="isGrower" class="flex flex-1 items-center justify-center sm:flex-initial sm:px-2">
         <UButton
           icon="i-lucide-plus"

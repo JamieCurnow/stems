@@ -205,14 +205,10 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="contents">
-    <input
-      ref="fileInput"
-      type="file"
-      accept="image/*"
-      capture="environment"
-      class="hidden"
-      @change="onFileChange"
-    />
+    <!-- No `capture` attribute: on mobile this lets the OS offer the photo
+         library AND the camera. Forcing `capture` would open the camera only,
+         blocking gallery selection. -->
+    <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFileChange" />
 
     <!-- Crop modal -->
     <UModal v-model:open="cropOpen" title="Frame your photo">

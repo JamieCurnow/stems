@@ -3,19 +3,16 @@ import { authClient } from '~/utils/auth-client'
 // Bottom tab bar for the signed-in app shell. Fixed to the viewport bottom,
 // thumb-reachable, with safe-area padding for the iOS home indicator.
 //
-// Grower-only tabs (My Flowers + the center Add action) are gated on an
-// `isGrower` flag. The useProfile() composable that owns this state is built
-// in doc 04 and doesn't exist yet, so we read a defensively-defaulted
-// useState('profile') here — null until doc 04 hydrates it.
-//
-// TODO(doc04): wire isGrower from useProfile() once that composable lands;
-// replace the useState read below (or have useProfile() populate the same key).
-interface ProfileState {
-  isGrower?: boolean
-}
-
-const profile = useState<ProfileState | null>('profile', () => null)
-const isGrower = computed(() => profile.value?.isGrower ?? false)
+// Grower-only tabs (My Flowers + the center Add action) are gated on the shared
+// profile's `isGrower` flag, owned by useProfile(). The profile is loaded
+// client-side by plugins/profile.client.ts whenever there's a session, so the
+// grower tabs light up on every page — including public ones like /discover
+// (the PWA start_url) that don't run the onboarding middleware. We must NOT
+// seed our own default here: useProfile() uses `undefined` to mean "not yet
+// fetched", and a competing `null` default would wedge it (ensure() only
+// fetches when undefined), hiding the grower tabs and bouncing to onboarding.
+const { profile } = useProfile()
+const isGrower = computed(() => !!profile.value?.isGrower)
 
 // Auth-aware: logged-out visitors get a "Sign in" tab instead of "Profile"
 // (which would just bounce them to /login), so the entry point is obvious.

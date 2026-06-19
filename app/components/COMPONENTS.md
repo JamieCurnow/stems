@@ -151,6 +151,30 @@ Share affordance for a grower's public page. Uses the Web Share API on mobile, f
 
 ---
 
+## `<ContactPhoneInput>`
+
+Two-part phone entry: a searchable dial-code picker (`USelectMenu`, defaults to `+44`) joined to a national-number `UInput` via `UFieldGroup`. v-models a single **E.164** string (`+447700900000`) so callers store/validate one canonical value — pairs with `normaliseWhatsapp` (`shared/utils/contact.ts`). Mask-only (no per-country rules); strips a leading national trunk zero so `07700…` under `+44` becomes `+447700…` rather than the broken `+4407700…`. Dial codes + the `splitE164` re-hydration helper live in `app/utils/phoneDialCodes.ts`.
+
+### Props
+
+- `defaultDialCode`: `string` (default `'+44'`) — seeds the picker when there's no value yet.
+- `placeholder`: `string` (default `'Phone number'`) — national-number input placeholder.
+- `disabled`: `boolean` (default `false`)
+- `size`: `'sm' | 'md' | 'lg' | 'xl'` (default `'lg'`)
+
+### Model / Emits
+
+- `v-model` (default): `string` — the full E.164 number, or `''` when blank.
+- `data`: `[{ isValid: boolean; dialCode: string; nationalNumber: string }]` — split parts + mask-only validity, for parents that want them.
+
+### Example
+
+```vue
+<ContactPhoneInput v-model="state.whatsapp" placeholder="7700 900000" class="w-full" />
+```
+
+---
+
 ## `<ImageUploader>`
 
 Single-photo crop-and-upload control (avatars, banners). Owns the preview/dropzone chrome and the stored R2 key (via the **default** v-model — `key` is a Vue-reserved attribute, so it must be the default model, not `v-model:key`). The crop+upload engine is `<ImageCropModal>`.
@@ -251,3 +275,4 @@ Granular cookie-preferences modal (Strictly functional [always on] / Analytics /
 - **Buttons are pills app-wide** via `app.config.ts` (`ui.button.slots.base = 'rounded-full'`); don't add `rounded-full` per-button.
 - **Drawers drag-to-close from anywhere**, not just the handle. Vaul's default `container` slot is `overflow-y-auto` — an inner scroll area that eats vertical touch drags everywhere except the handle (which sits outside it), the "reach for the top" jank. Set globally in `app.config.ts` (`ui.drawer.slots.container = 'overflow-y-visible'`): the whole short bottom-sheet becomes one draggable surface; taps still fire (vaul only drags past a movement threshold). A drawer that genuinely needs scrolling must override `ui.container` back to `overflow-y-auto`.
 - **Swipeable gallery inside a draggable drawer.** `<FlowerGallery>` mixes a horizontal swipe (change photo) with the drawer's vertical drag (close) on one surface by using a native scroll-snap rail + `touch-action: pan-x` — the browser arbitrates the axes, no JS carousel fighting vaul for pointer capture.
+- **Phone entry is split dial-code + national, bound as one E.164 string.** `<ContactPhoneInput>` keeps the country code in a separate picker so it's always explicit (the original `wa.me` bug was national numbers like `07123…` with no country code). It strips a leading trunk zero from the national part — right for the UK-first default (`+44`) but note it would also drop the kept-zero of trunk-retaining countries (e.g. Italy `+39 06…`); acceptable for a UK marketplace. The canonical-format guard still runs server-side via `normaliseWhatsapp`.

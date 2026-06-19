@@ -8,7 +8,7 @@
 import { useTimeAgo } from '@vueuse/core'
 import { normaliseHandle } from '~~/shared/utils/handle'
 import { avatarInitials, avatarTint } from '~~/shared/utils/avatar'
-import { stemsLabel } from '~~/shared/utils/flowers'
+import { availabilityStatusMeta, isSoldOut, stemsCountLabel, stemsLabel } from '~~/shared/utils/flowers'
 import { bunchPrice, formatPence } from '~~/shared/utils/price'
 import { contactOptions } from '~~/shared/utils/contact'
 import type { PublicProfileDto } from '~~/shared/types/profile'
@@ -39,8 +39,8 @@ const flowers = computed(() => data.value!.flowers)
 const tint = computed(() => avatarTint(profile.value.handle))
 const initials = computed(() => avatarInitials(profile.value.farmName))
 
-// "● N in season" — anything in stock right now (not an explicit 0 = sold out).
-const inSeasonCount = computed(() => flowers.value.filter((f) => f.stemsAvailable !== 0).length)
+// "● N in season" — anything in stock right now (not sold out by count or status).
+const inSeasonCount = computed(() => flowers.value.filter((f) => !isSoldOut(f)).length)
 
 function subtitleFor(f: FlowerDto) {
   return [f.variety, f.color, f.stemLengthCm != null ? `${f.stemLengthCm}cm` : null]
@@ -53,6 +53,22 @@ function priceLineFor(f: FlowerDto) {
   const b = bunchPrice(f)
   if (b != null) parts.push(`${formatPence(b)}/bunch`)
   return parts.join(' · ')
+}
+
+// Stem-count line for a flower. With a status badge already showing, a null
+// count needs no line; without a status we fall back to "Available" so the row
+// always signals something. A 0 count reads "Sold out" unless the status
+// already says so (avoid a duplicate).
+function stemsTextFor(f: FlowerDto) {
+  if (f.stemsAvailable == null) return f.availabilityStatus ? null : 'Available'
+  if (f.stemsAvailable === 0 && f.availabilityStatus === 'sold_out') return null
+  return stemsCountLabel(f.stemsAvailable)
+}
+// The status badge carries the colour pop, so the stem line stays muted when one
+// is shown; otherwise it greens up (in stock) or dims (sold out).
+function stemsClassFor(f: FlowerDto) {
+  if (isSoldOut(f)) return 'text-dimmed'
+  return f.availabilityStatus ? 'text-muted' : 'font-medium text-success'
 }
 
 const websiteUrl = computed(() => {
@@ -320,7 +336,7 @@ useHead(() => ({
             <button
               type="button"
               class="group flex w-full items-center gap-4 py-4 text-left transition-colors duration-200 hover:bg-clay-900/[0.015] focus:outline-none focus-visible:bg-clay-900/[0.025]"
-              :class="{ 'opacity-60': flower.stemsAvailable === 0 }"
+              :class="{ 'opacity-60': isSoldOut(flower) }"
               :aria-label="`View ${flower.name} details`"
               @click="openDetail(flower)"
             >
@@ -348,14 +364,23 @@ useHead(() => ({
                   {{ subtitleFor(flower) }}
                 </p>
 
-                <p class="mt-1.5 flex items-center gap-1.5 text-sm">
-                  <span :class="flower.stemsAvailable === 0 ? 'text-dimmed' : 'font-medium text-success'">
-                    {{ stemsLabel(flower.stemsAvailable) }}
-                  </span>
-                  <template v-if="priceLineFor(flower)">
-                    <span class="text-dimmed">·</span>
-                    <span class="truncate text-muted">{{ priceLineFor(flower) }}</span>
-                  </template>
+                <!-- Availability + price stack vertically (they don't fit on one
+                     row): status badge, then stem count, then price. -->
+                <UBadge
+                  v-if="availabilityStatusMeta(flower.availabilityStatus)"
+                  :color="availabilityStatusMeta(flower.availabilityStatus)!.color"
+                  variant="subtle"
+                  size="sm"
+                  class="mt-1.5"
+                  :label="availabilityStatusMeta(flower.availabilityStatus)!.label"
+                />
+
+                <p v-if="stemsTextFor(flower)" class="mt-1 text-sm" :class="stemsClassFor(flower)">
+                  {{ stemsTextFor(flower) }}
+                </p>
+
+                <p v-if="priceLineFor(flower)" class="mt-0.5 truncate text-sm text-muted">
+                  {{ priceLineFor(flower) }}
                 </p>
 
                 <span
@@ -398,12 +423,18 @@ useHead(() => ({
                 <h3 class="font-display text-2xl font-medium text-default">{{ selected.name }}</h3>
                 <p v-if="detailSubtitle" class="text-sm text-muted">{{ detailSubtitle }}</p>
               </div>
-              <span
-                class="shrink-0 text-sm font-medium"
-                :class="selected.stemsAvailable === 0 ? 'text-dimmed' : 'text-success'"
-              >
-                {{ stemsLabel(selected.stemsAvailable) }}
-              </span>
+              <div class="flex shrink-0 flex-col items-end gap-1">
+                <UBadge
+                  v-if="availabilityStatusMeta(selected.availabilityStatus)"
+                  :color="availabilityStatusMeta(selected.availabilityStatus)!.color"
+                  variant="subtle"
+                  size="sm"
+                  :label="availabilityStatusMeta(selected.availabilityStatus)!.label"
+                />
+                <span class="text-sm font-medium" :class="isSoldOut(selected) ? 'text-dimmed' : 'text-success'">
+                  {{ stemsLabel(selected.stemsAvailable) }}
+                </span>
+              </div>
             </div>
 
             <p v-if="detailPriceLine" class="mt-3 text-lg font-medium text-default">{{ detailPriceLine }}</p>

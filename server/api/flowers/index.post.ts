@@ -7,7 +7,8 @@ import { readZodBody } from '~~/server/utils/validation'
 import { imgUrl } from '~~/server/utils/img'
 import { flower, flowerPhoto, type FlowerRow } from '~~/server/db/schema'
 import { bunchPrice } from '~~/shared/utils/price'
-import { MAX_STEMS_AVAILABLE } from '~~/shared/utils/flowers'
+import { AVAILABILITY_STATUS_VALUES, MAX_STEMS_AVAILABLE } from '~~/shared/utils/flowers'
+import type { AvailabilityStatus } from '~~/shared/utils/flowers'
 import type { FlowerDto } from '~~/shared/types/flower'
 
 /* ── Shared flower validation (also imported by [id].patch.ts) ────────────────
@@ -61,6 +62,12 @@ const optionalInt = (label: string, maxVal: number) =>
 const boolFlag = (label: string) =>
   z.preprocess((v) => v ?? false, z.boolean({ error: `${label} must be true or false` }))
 
+/** Optional categorical availability status: blank string / null → null. */
+const availabilityStatusSchema = z.preprocess(
+  (v) => (v === '' || v == null ? null : v),
+  z.enum(AVAILABILITY_STATUS_VALUES, { error: 'Invalid availability status' }).nullable()
+)
+
 /** A list of R2 photo keys; each must start with `public/` (absent → []). */
 const photoKeysSchema = z.preprocess(
   (v) => v ?? [],
@@ -85,6 +92,7 @@ const editableFlowerShape = {
   pricePerBunch: optionalInt('Price per bunch', MAX_PRICE_PENCE),
   openToOffers: boolFlag('Open to offers'),
   notes: optionalText('Notes', MAX_NOTES),
+  availabilityStatus: availabilityStatusSchema,
   stemsAvailable: optionalInt('Stems available', MAX_STEMS_AVAILABLE),
   photoKeys: photoKeysSchema
 }
@@ -103,6 +111,7 @@ export const toFlowerDto = (row: FlowerRow, photoKeys: string[]): FlowerDto => (
   pricePerStem: row.pricePerStem,
   pricePerBunch: bunchPrice(row),
   openToOffers: row.openToOffers,
+  availabilityStatus: row.availabilityStatus as AvailabilityStatus | null,
   stemsAvailable: row.stemsAvailable,
   notes: row.notes,
   sortOrder: row.sortOrder,

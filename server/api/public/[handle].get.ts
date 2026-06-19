@@ -3,6 +3,7 @@ import { useDb } from '~~/server/utils/db'
 import { imgUrl } from '~~/server/utils/img'
 import { flower, flowerPhoto, profile } from '~~/server/db/schema'
 import { bunchPrice } from '~~/shared/utils/price'
+import { isSoldOut } from '~~/shared/utils/flowers'
 import { normaliseHandle } from '~~/shared/utils/handle'
 import type { FlowerDto } from '~~/shared/types/flower'
 import type { PublicProfileDto } from '~~/shared/types/profile'
@@ -79,6 +80,7 @@ export default defineEventHandler(
           pricePerStem: flower.pricePerStem,
           pricePerBunch: flower.pricePerBunch,
           openToOffers: flower.openToOffers,
+          availabilityStatus: flower.availabilityStatus,
           stemsAvailable: flower.stemsAvailable,
           notes: flower.notes,
           sortOrder: flower.sortOrder,
@@ -106,6 +108,7 @@ export default defineEventHandler(
             pricePerStem: r.pricePerStem,
             pricePerBunch: bunchPrice(r),
             openToOffers: r.openToOffers,
+            availabilityStatus: r.availabilityStatus as FlowerDto['availabilityStatus'],
             stemsAvailable: r.stemsAvailable,
             notes: r.notes,
             sortOrder: r.sortOrder,
@@ -120,11 +123,10 @@ export default defineEventHandler(
         }
       }
 
-      // Keep the query's order, then stable-sort sold-out flowers (0 stems) last —
-      // they still appear (signals range + "ask me") but below in-stock flowers.
-      flowers = [...byId.values()].sort(
-        (a, b) => (a.stemsAvailable === 0 ? 1 : 0) - (b.stemsAvailable === 0 ? 1 : 0)
-      )
+      // Keep the query's order, then stable-sort sold-out flowers last — they
+      // still appear (signals range + "ask me") but below in-stock flowers.
+      // Sold-out = explicit 0 count OR the 'sold_out' status (see isSoldOut).
+      flowers = [...byId.values()].sort((a, b) => (isSoldOut(a) ? 1 : 0) - (isSoldOut(b) ? 1 : 0))
     }
 
     // Short edge cache — public + only changes when the grower edits. Correctness

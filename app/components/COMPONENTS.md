@@ -28,7 +28,7 @@ None.
 
 ## `<FlowerCard>`
 
-Shared flower row used by the grower's `/flowers` manager (`editable`) and read-only contexts. Borderless (Toast × Instagram language) — the parent list draws the hairline divider. In editable mode it shows the inline stems-available quick-edit (commits on blur/enter) and an overflow menu (Edit / Duplicate / Archive).
+Shared flower row used by the grower's `/flowers` manager (`editable`) and read-only contexts. Borderless (Toast × Instagram language) — the parent list draws the hairline divider. Shows the availability status as a coloured `UBadge` (when set). In editable mode it shows the inline stems-available quick-edit (commits on blur/enter) and an overflow menu (Edit / Duplicate / Archive); the sold-out dim honours both an explicit `0` count and the `sold_out` status (`isSoldOut`).
 
 ### Props
 
@@ -59,7 +59,7 @@ Shared flower row used by the grower's `/flowers` manager (`editable`) and read-
 
 ## `<FlowerForm>`
 
-Add / edit flower form. Renders **inline** on a dedicated page (`/flowers/new`, `/flowers/[id]/edit`) — no drawer/modal chrome of its own; the form is the page. Action row (Cancel / Save) is sticky to the bottom of the viewport. Prices are entered in pounds and converted to pence (`parsePounds`) on save; the bunch price auto-derives as a placeholder and is only persisted when explicitly overridden. Photos are managed via `<ImageGalleryUploader>`; the full desired key set is sent as `photoKeys` (the server replaces the flower's photos).
+Add / edit flower form. Renders **inline** on a dedicated page (`/flowers/new`, `/flowers/[id]/edit`) — no drawer/modal chrome of its own; the form is the page. Action row (Cancel / Save) is sticky to the bottom of the viewport. Prices are entered in pounds and converted to pence (`parsePounds`) on save; the bunch price auto-derives as a placeholder and is only persisted when explicitly overridden. Availability is two optional fields side by side — a status `USelect` (`AVAILABILITY_STATUSES`, with a "No status" clear option) and a numeric stems input. Photos are managed via `<ImageGalleryUploader>`; the full desired key set is sent as `photoKeys` (the server replaces the flower's photos).
 
 ### Props
 

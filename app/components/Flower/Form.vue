@@ -13,6 +13,7 @@
 // photoKeys on save; the server replaces the flower's photos with that set.
 
 import { bunchPrice, formatPence, parsePounds } from '~~/shared/utils/price'
+import { AVAILABILITY_STATUSES, type AvailabilityStatus } from '~~/shared/utils/flowers'
 import type { FlowerDto } from '~~/shared/types/flower'
 
 const props = defineProps<{
@@ -40,10 +41,17 @@ interface FormState {
   pricePerStemPounds: string
   pricePerBunchPounds: string
   openToOffers: boolean
+  availabilityStatus: AvailabilityStatus | null
   stemsAvailable: number | null
   notes: string
   photoKeys: string[]
 }
+
+// Status options for the select, plus a leading "No status" to clear it.
+const statusItems = [
+  { label: 'No status', value: null },
+  ...AVAILABILITY_STATUSES.map((s) => ({ label: s.label, value: s.value }))
+]
 
 // FlowerDto exposes resolved /img URLs, not raw R2 keys, but imgUrl() is a
 // lossless transform (public/x.webp ↔ /img/x.webp), so we can reverse it to get
@@ -65,6 +73,7 @@ function blank(): FormState {
     pricePerStemPounds: '',
     pricePerBunchPounds: '',
     openToOffers: false,
+    availabilityStatus: null,
     stemsAvailable: null,
     notes: '',
     photoKeys: []
@@ -98,6 +107,7 @@ watch(
       state.pricePerBunchPounds = explicit ? penceToPounds(f.pricePerBunch) : ''
       bunchOverridden.value = explicit
       state.openToOffers = f.openToOffers
+      state.availabilityStatus = f.availabilityStatus
       state.stemsAvailable = f.stemsAvailable
       state.notes = f.notes ?? ''
       state.photoKeys = (f.photoUrls ?? []).map(urlToKey) // existing gallery, cover first
@@ -148,6 +158,7 @@ async function save() {
     pricePerStem: isFilled(state.pricePerStemPounds) ? parsePounds(state.pricePerStemPounds) : null,
     pricePerBunch: bunchOverridden.value ? parsePounds(state.pricePerBunchPounds) : null,
     openToOffers: state.openToOffers,
+    availabilityStatus: state.availabilityStatus,
     stemsAvailable: state.stemsAvailable,
     notes: state.notes.trim() || null,
     // The gallery holds the full desired set (kept + added, cover first); the
@@ -268,24 +279,34 @@ async function save() {
       />
     </UFormField>
 
-    <UFormField
-      label="Stems available"
-      help="How many stems you have now. Leave blank for “Available”, or set 0 if sold out."
-    >
-      <UInput
-        v-model.number="state.stemsAvailable"
-        type="number"
-        inputmode="numeric"
-        min="0"
-        placeholder="e.g. 120"
-        size="lg"
-        class="w-full"
-      >
-        <template #trailing>
-          <span class="text-sm text-muted">stems</span>
-        </template>
-      </UInput>
-    </UFormField>
+    <!-- Availability: a categorical status and/or a stem count — both optional,
+         set whichever you like. -->
+    <div class="grid grid-cols-2 gap-4">
+      <UFormField label="Status" help="An at-a-glance hint.">
+        <USelect
+          v-model="state.availabilityStatus"
+          :items="statusItems"
+          placeholder="No status"
+          size="lg"
+          class="w-full"
+        />
+      </UFormField>
+      <UFormField label="Stems available" help="Leave blank, or 0 if sold out.">
+        <UInput
+          v-model.number="state.stemsAvailable"
+          type="number"
+          inputmode="numeric"
+          min="0"
+          placeholder="e.g. 120"
+          size="lg"
+          class="w-full"
+        >
+          <template #trailing>
+            <span class="text-sm text-muted">stems</span>
+          </template>
+        </UInput>
+      </UFormField>
+    </div>
 
     <UFormField label="Notes">
       <UTextarea

@@ -1,3 +1,5 @@
+import type { AvailabilityStatus } from '~~/shared/utils/flowers'
+
 export interface FlowerDto {
   id: string
   name: string
@@ -8,6 +10,8 @@ export interface FlowerDto {
   pricePerStem: number | null // pence
   pricePerBunch: number | null // pence (resolved or override)
   openToOffers: boolean // grower will consider offers on the price
+  // Categorical availability hint (Good / Limited / … / Available soon), or null.
+  availabilityStatus: AvailabilityStatus | null
   // Stems available: null = available (count unspecified), 0 = sold out, >0 = count.
   stemsAvailable: number | null
   notes: string | null

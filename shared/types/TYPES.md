@@ -17,6 +17,7 @@ The client-facing shape of a flower (`shared/types/flower.ts`). Returned by the 
 - `pricePerStem`: `number | null` — pence
 - `pricePerBunch`: `number | null` — pence (explicit override, else derived from stem × count via `bunchPrice`)
 - `openToOffers`: `boolean`
+- `availabilityStatus`: `AvailabilityStatus | null` — categorical hint (`good` / `limited` / `very_limited` / `sold_out` / `midweek` / `next_week` / `soon`), or `null`. Set independently of `stemsAvailable` — a grower may use either, both, or neither. See `shared/utils/flowers.ts`.
 - `stemsAvailable`: `number | null` — `null` = available (count unspecified), `0` = sold out, `>0` = count
 - `notes`: `string | null`
 - `sortOrder`: `number`
@@ -58,5 +59,5 @@ These aren't in `shared/types/` but are part of the shared contract and worth kn
 
 - **DTOs ≠ rows.** API responses use the `*Dto` types here (resolved `/img` URLs, prices in pence, epoch-ms timestamps), built from Drizzle rows via mappers like `toFlowerDto()`. Never return raw rows that leak R2 keys or private columns — the public profile endpoint hand-picks columns for exactly this reason.
 - **No `BaseDocument` / `ToMongoDoc` / `_id` here.** This app is Cloudflare D1 + Drizzle, not MongoDB. Persisted-entity types come from `$inferSelect` on the Drizzle schema; there's no ObjectId, no `created`/`updated` ISO-string base.
-- **`stemsAvailable` tri-state** (`null` / `0` / `>0`) recurs everywhere — see `shared/utils/flowers.ts` (`isInStock`, `isSoldOut`, `stemsLabel`) for the canonical helpers.
+- **Availability has two independent signals** — a categorical `availabilityStatus` and a numeric `stemsAvailable` tri-state (`null` / `0` / `>0`). Sold-out is derivable from EITHER (a `0` count or the `sold_out` status), so use the canonical helpers in `shared/utils/flowers.ts` (`isInStock`/`isSoldOut` take a flower-like object; `stemsLabel`, `stemsCountLabel`, `availabilityStatusMeta`, `availabilityStatusLabel`) rather than checking `stemsAvailable === 0` directly.
 - **Prices are pence end-to-end.** The only pounds↔pence conversion happens at the form `<input>` boundary (`parsePounds` / `formatPence` in `shared/utils/price.ts`).

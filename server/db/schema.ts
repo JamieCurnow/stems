@@ -218,8 +218,12 @@ export const flower = sqliteTable(
     pricePerBunch: integer('pricePerBunch'), // pence; optional override, else derived
     // Grower will consider offers rather than only the listed price.
     openToOffers: integer('openToOffers', { mode: 'boolean' }).notNull().default(false),
+    // Categorical availability hint the grower picks from a fixed list (see
+    // AVAILABILITY_STATUS_VALUES in shared/utils/flowers.ts). null = none. Set
+    // independently of `stemsAvailable` — a grower may use either or both.
+    availabilityStatus: text('availabilityStatus'),
     // Stems currently available: null = available (count unspecified), 0 = sold
-    // out, >0 = that many stems. Replaced the old categorical `availability`.
+    // out, >0 = that many stems.
     stemsAvailable: integer('stemsAvailable'),
     notes: text('notes'),
     sortOrder: integer('sortOrder').notNull().default(0),

@@ -10,6 +10,7 @@
 
 import type { FlowerDto } from '~~/shared/types/flower'
 import { bunchPrice, formatPence } from '~~/shared/utils/price'
+import { availabilityStatusLabel } from '~~/shared/utils/flowers'
 
 definePageMeta({ middleware: ['auth', 'onboarding'], layout: 'app' })
 
@@ -72,6 +73,7 @@ async function duplicate(flower: FlowerDto) {
         pricePerStem: flower.pricePerStem,
         // Don't copy the derived bunch price as an override.
         pricePerBunch: null,
+        availabilityStatus: flower.availabilityStatus,
         stemsAvailable: flower.stemsAvailable,
         notes: flower.notes
       }
@@ -123,6 +125,7 @@ function exportCsv() {
     'Stems per bunch',
     'Price per stem',
     'Price per bunch',
+    'Status',
     'Stems available',
     'Notes'
   ]
@@ -135,6 +138,7 @@ function exportCsv() {
       f.stemsPerBunch,
       formatPence(f.pricePerStem),
       formatPence(bunchPrice(f)),
+      availabilityStatusLabel(f.availabilityStatus),
       stemsLabel(f.stemsAvailable),
       f.notes
     ]

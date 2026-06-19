@@ -16,7 +16,7 @@
 //   duplicate     [flower: FlowerDto]
 //   archive       [flower: FlowerDto]
 
-import { stemsLabel } from '~~/shared/utils/flowers'
+import { availabilityStatusMeta, isSoldOut, stemsLabel } from '~~/shared/utils/flowers'
 import { bunchPrice, formatPence } from '~~/shared/utils/price'
 import type { FlowerDto } from '~~/shared/types/flower'
 
@@ -36,6 +36,9 @@ const emit = defineEmits<{
 }>()
 
 const thumb = computed(() => props.flower.photoUrls[0] ?? null)
+
+const soldOut = computed(() => isSoldOut(props.flower))
+const statusMeta = computed(() => availabilityStatusMeta(props.flower.availabilityStatus))
 
 const subtitle = computed(() =>
   [
@@ -97,7 +100,7 @@ const menuItems = computed(() => [
 <template>
   <!-- Borderless row (Toast × Instagram): sits directly on the page; the parent
        list draws the hairline divider. No card box or shadow. -->
-  <div class="flex items-start gap-4 py-4" :class="{ 'opacity-60': flower.stemsAvailable === 0 }">
+  <div class="flex items-start gap-4 py-4" :class="{ 'opacity-60': soldOut }">
     <!-- Portrait thumbnail -->
     <div class="aspect-[4/5] w-24 shrink-0 overflow-hidden rounded-lg bg-muted">
       <img v-if="thumb" :src="thumb" :alt="flower.name" class="size-full object-cover" loading="lazy" />
@@ -136,9 +139,18 @@ const menuItems = computed(() => [
         </span>
       </p>
 
-      <!-- Stems available: inline quick-edit when editable, static label otherwise.
-           Empty = "Available", 0 = sold out, n = that many stems. -->
-      <div class="mt-1.5">
+      <!-- Availability: a status badge (if set) + the stem count. In editable
+           mode the count is an inline quick-edit (empty = "Available", 0 = sold
+           out, n = that many stems); read-only contexts show a static label. -->
+      <div class="mt-1.5 flex flex-wrap items-center gap-2">
+        <UBadge
+          v-if="statusMeta"
+          :color="statusMeta.color"
+          variant="subtle"
+          size="sm"
+          :label="statusMeta.label"
+        />
+
         <UInput
           v-if="editable"
           :model-value="flower.stemsAvailable?.toString() ?? ''"
@@ -156,7 +168,7 @@ const menuItems = computed(() => [
           </template>
         </UInput>
 
-        <span v-else class="text-sm" :class="flower.stemsAvailable === 0 ? 'text-dimmed' : 'text-muted'">
+        <span v-else class="text-sm" :class="soldOut ? 'text-dimmed' : 'text-muted'">
           {{ stemsLabel(flower.stemsAvailable) }}
         </span>
       </div>

@@ -132,9 +132,7 @@ The send/preferences/scheduling layer:
 
 ## Analytics
 
-### `sendServerEvent(event, { name, userId?, params? })` — `analytics.ts`
-
-Server-side GA4 Measurement Protocol (used from Stripe webhooks, referral redirects). Synthesises a deterministic `client_id` from the user id so server events stitch to browser events; flags hits as non-personalised. **Soft-fails** (quiet no-op) when the measurement id / api secret is missing — analytics must never block billing or auth.
+None. Google Analytics (client GTM + server-side GA4 Measurement Protocol) was removed. The Stripe webhook and the `/r/[code]` referral redirect carry `// TODO(posthog)` seams where conversion events (`purchase`, `trial_start`, `subscription_cancelled`, `subscription_reactivated`, `referral_landed`) used to fire. The cookie-consent system (`useConsent` + `<LayoutCookieConsent>`) is kept dormant, ready for a future provider (e.g. PostHog).
 
 ---
 

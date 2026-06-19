@@ -3,7 +3,6 @@ import { eq } from 'drizzle-orm'
 import { useStripe, stripeCryptoProvider } from '~~/server/utils/stripe'
 import { useDb } from '~~/server/utils/db'
 import { grantReferrerReward } from '~~/server/utils/referrals'
-import { sendServerEvent } from '~~/server/utils/analytics'
 import * as schema from '~~/server/db/schema'
 
 /**
@@ -73,21 +72,10 @@ export default defineEventHandler(async (event) => {
       stripe
     })
 
-    // GA4 conversion. Every `invoice.paid` with `subscription_cycle` is treated
-    // as a `purchase` — GA4 dedupes by transaction_id (invoice.id) so MRR
-    // reports stay accurate. To split into `purchase` (first cycle) and
-    // `subscription_renewed` (renewals), track a `firstPaidInvoiceAt` column
-    // on the subscription row and gate the event name on it.
-    await sendServerEvent(event, {
-      name: 'purchase',
-      userId: subRow.referenceId,
-      params: {
-        transaction_id: invoice.id,
-        value: invoice.amount_paid != null ? invoice.amount_paid / 100 : undefined,
-        currency: invoice.currency?.toUpperCase(),
-        ...(grant?.granted ? { referral_redeemed: true } : {})
-      }
-    })
+    // TODO(posthog): capture a 'purchase' conversion here. Every `invoice.paid`
+    // with `subscription_cycle` is a paid cycle; dedupe on transaction_id
+    // (invoice.id), include value (invoice.amount_paid / 100), currency, and
+    // referral_redeemed when `grant?.granted`.
 
     // Hook in your other post-payment side-effects here. E.g.:
     //   await maybeSendPostPayment(event, subRow.referenceId)
@@ -96,22 +84,8 @@ export default defineEventHandler(async (event) => {
 
   // Trial-start conversion. `customer.subscription.created` with status=trialing
   // fires once per subscription.
-  if (stripeEvent.type === 'customer.subscription.created') {
-    const sub = stripeEvent.data.object as Stripe.Subscription
-    if (sub.status === 'trialing') {
-      const db = useDb(event)
-      const subRow = await db.query.subscription.findFirst({
-        where: eq(schema.subscription.stripeSubscriptionId, sub.id)
-      })
-      if (subRow) {
-        await sendServerEvent(event, {
-          name: 'trial_start',
-          userId: subRow.referenceId,
-          params: { transaction_id: sub.id }
-        })
-      }
-    }
-  }
+  // TODO(posthog): capture a 'trial_start' conversion here — look up the local
+  // subscription row by sub.id for the userId, transaction_id = sub.id.
 
   // Cancellation flow — trigger your cancellation-confirmed email and any
   // win-back drip. Stripe sets `cancel_at_period_end` for paid cancels and
@@ -126,18 +100,10 @@ export default defineEventHandler(async (event) => {
       sub.cancel_at_period_end === true ||
       sub.cancel_at != null
 
-    const db = useDb(event)
-    const subRow = await db.query.subscription.findFirst({
-      where: eq(schema.subscription.stripeSubscriptionId, sub.id)
-    })
-    const userId = subRow?.referenceId
-
     if (isCancellation) {
-      await sendServerEvent(event, {
-        name: 'subscription_cancelled',
-        userId,
-        params: { transaction_id: sub.id }
-      })
+      // TODO(posthog): capture 'subscription_cancelled' (transaction_id = sub.id).
+      // Look up the local subscription row by sub.id for the userId when you
+      // also wire the cancellation-confirmed email + any win-back drip.
       // await maybeSendCancellation(event, sub)
     } else if (stripeEvent.type === 'customer.subscription.updated') {
       // Only treat this as a reactivation if the previous version of the sub
@@ -149,11 +115,7 @@ export default defineEventHandler(async (event) => {
         .previous_attributes
       const wasPendingCancel = prev?.cancel_at_period_end === true || prev?.cancel_at != null
       if (wasPendingCancel) {
-        await sendServerEvent(event, {
-          name: 'subscription_reactivated',
-          userId,
-          params: { transaction_id: sub.id }
-        })
+        // TODO(posthog): capture 'subscription_reactivated' (transaction_id = sub.id).
         // await cancelScheduledEmails(event, { userId, dedupePrefix: 'winback-' })
       }
     }

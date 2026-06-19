@@ -109,7 +109,7 @@ async function submit() {
     <header class="mb-7 text-center">
       <h1 class="font-display text-3xl font-medium text-default">Claim your Stems page</h1>
       <p class="mt-2 text-sm text-muted">
-        This is your shareable link —
+        This is your shareable link -
         <span class="font-medium text-primary"
           >stems.app/@{{ normaliseHandle(state.handle) || 'yourname' }}</span
         >
@@ -161,7 +161,7 @@ async function submit() {
         <UInput v-model="state.farmName" placeholder="e.g. Bramble & Bloom" maxlength="80" class="w-full" />
       </UFormField>
 
-      <UFormField label="Location" help="Where you grow — shown on your page.">
+      <UFormField label="Location" help="Where you grow - shown on your page.">
         <UInput v-model="state.locationName" placeholder="e.g. Bissoe, Cornwall" class="w-full" />
       </UFormField>
 

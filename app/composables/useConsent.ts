@@ -1,10 +1,15 @@
 /**
- * Consent Mode v2 — cookie-backed user choice.
+ * Cookie-backed consent choice (analytics + marketing).
  *
  * Stored in a first-party cookie (not localStorage) so SSR / edge code can
- * read it on the first request and Consent Mode is honest on the very
- * first render. Every change re-pushes `gtag('consent', 'update', …)` so
- * tags react immediately.
+ * read it on the first request — the choice is honest on the very first
+ * render. Currently no analytics or marketing tags are wired up, so this is
+ * dormant: it records the user's preference and nothing reads it yet.
+ *
+ * When an analytics provider is added (e.g. PostHog), have it consult
+ * `state.value.analytics` on boot and react to `set()` — opt the SDK in/out
+ * instead of the old Google Consent Mode `gtag('consent', …)` pushes that
+ * used to live here.
  *
  * Bump CONSENT_VERSION when categories change — old cookies invalidate and
  * the banner re-shows.
@@ -28,23 +33,6 @@ const DENIED_DEFAULT: ConsentChoice = {
   decidedAt: ''
 }
 
-function gtag(...args: unknown[]) {
-  if (typeof window === 'undefined') return
-  const w = window as unknown as { gtag?: (...args: unknown[]) => void }
-  // Calls before gtm.js boots are queued by the stub installed in
-  // analytics.client.ts. Safe to call eagerly.
-  w.gtag?.(...args)
-}
-
-function pushUpdate(choice: ConsentChoice) {
-  gtag('consent', 'update', {
-    analytics_storage: choice.analytics ? 'granted' : 'denied',
-    ad_storage: choice.marketing ? 'granted' : 'denied',
-    ad_user_data: choice.marketing ? 'granted' : 'denied',
-    ad_personalization: choice.marketing ? 'granted' : 'denied'
-  })
-}
-
 export function useConsent() {
   const cookie = useCookie<ConsentChoice | null>(CONSENT_COOKIE, {
     maxAge: SIX_MONTHS,
@@ -60,14 +48,12 @@ export function useConsent() {
   )
 
   function set(input: { analytics: boolean; marketing: boolean }) {
-    const next: ConsentChoice = {
+    cookie.value = {
       analytics: input.analytics,
       marketing: input.marketing,
       version: CONSENT_VERSION,
       decidedAt: new Date().toISOString()
     }
-    cookie.value = next
-    pushUpdate(next)
   }
 
   return {

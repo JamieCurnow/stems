@@ -32,11 +32,6 @@ export interface CloudflareEnv {
   ADMIN_API_SECRET: string
   ADMIN_EMAILS?: string // comma-separated extras
 
-  // Analytics — all optional; sendServerEvent is a no-op when unset
-  NUXT_PUBLIC_GTM_ID?: string
-  NUXT_PUBLIC_GA4_MEASUREMENT_ID?: string
-  GA4_API_SECRET?: string
-
   EMAIL_SCHEDULER: DurableObjectNamespace
 }
 

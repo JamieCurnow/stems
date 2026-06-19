@@ -12,6 +12,11 @@ This file documents the pages in the app — route, purpose, layout, and any spe
 | `flowers.vue`       | `/flowers`      | `app`     | `auth`, `onboarding` (grower-only) |
 | `account/index.vue` | `/account`      | `app`     | `auth`, `onboarding`               |
 | `account/edit.vue`  | `/account/edit` | `app`     | `auth`, `onboarding`               |
+| `about.vue`         | `/about`        | `default` | public (coming-soon)               |
+| `blog.vue`          | `/blog`         | `default` | public (coming-soon)               |
+| `policies.vue`      | `/policies`     | `default` | public                             |
+| `privacy.vue`       | `/privacy`      | `default` | public                             |
+| `cookies.vue`       | `/cookies`      | `default` | public                             |
 
 ---
 
@@ -28,6 +33,7 @@ PUBLIC grower discovery — the app's main entry. Reachable logged-out; signed-i
 - Branded hero (name + slogan over a blurred floral wash). The "List your flowers" CTA is logged-out-only, gated on `session.isPending` to avoid flashing for signed-in users.
 - Search box → `useFetch('/api/search', { query: { q: debouncedQ } })`. Term debounced ~250ms (`refDebounced`); empty term returns the recently-active browse list.
 - Renders `<GrowerCard>` rows in a borderless feed; skeleton, "nothing matched" (with an invite-a-grower mailto), and "first blooms coming soon" empty states.
+- A quiet utility nav (`About · Blog · Policies`) sits in the hero between the sign-in CTA and the sticky search, styled like the `Local · Seasonal · Grown` eyebrow. Always shown; links to the standalone `default`-layout public pages.
 
 ---
 
@@ -71,6 +77,17 @@ The grower's working surface — "My Flowers" (`layout: app`, middleware `['auth
 ## `/flowers/new` (flowers/new.vue) & `/flowers/[id]/edit` (flowers/[id]/edit.vue)
 
 Full-page add/edit forms (`layout: app`, middleware `['auth', 'onboarding']`, `robots: noindex`), grower-gated like `/flowers`. Both render `<FlowerForm>` inline. The edit page fetches the flower via `useRequestFetch()` against `GET /api/flowers/[id]` (cookie-forwarding; 404/403 handled by the endpoint). On `@saved` they patch the shared `'my-flowers'` cache (`useNuxtData`) and `navigateTo('/flowers')`; `@cancel` / the back chevron navigate back.
+
+---
+
+## `/about`, `/blog`, `/policies`, `/privacy`, `/cookies` — public legal/marketing pages
+
+Standalone, shareable web pages on the slim `default` chrome (Stems wordmark + sign-in), reachable from the discover-hero `About · Blog · Policies` nav. Entity for all legal copy is **Guardline Ltd** (England & Wales, company no. 13323382); contact `hello@stems.market`.
+
+- `/about` & `/blog` — branded "coming soon" pages (centred icon + `font-display` heading + a "Discover growers" button). Placeholders until real content / a blog exist.
+- `/policies` — small hub linking to the privacy + cookie policies; the home for legal pages as more get added (e.g. terms).
+- `/privacy` — UK GDPR privacy policy, **Stems-specific**: magic-link auth (no passwords stored), public-by-design grower pages, and the deliberate no-in-app-messaging contact handoff (we don't see/send/store buyer↔grower conversations). Subprocessors: Stripe, Cloudflare (D1/R2), Resend. (No analytics currently — GA was removed.)
+- `/cookies` — cookie table reflecting the **real**, functional-only cookies (`better-auth.session_token`, `stems_consent`, `stems_ref`). Copy states no analytics/marketing cookies are currently used. The "Change your preferences" button reuses the live consent system — `useConsent()` + `<LayoutConsentManageDialog>` (same dialog the banner opens), kept dormant and ready for a future provider (e.g. PostHog).
 
 ---
 

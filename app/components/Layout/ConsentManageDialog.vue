@@ -26,7 +26,7 @@ function save() {
     <template #body>
       <div class="space-y-4">
         <p class="text-sm text-neutral-600 dark:text-neutral-400">
-          Choose which categories of cookies you're happy with. Strictly functional cookies are always on —
+          Choose which categories of cookies you're happy with. Strictly functional cookies are always on -
           without them sign-in and billing wouldn't work.
         </p>
 

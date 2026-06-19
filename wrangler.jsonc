@@ -48,11 +48,8 @@
   "workers_dev": false,
 
   "vars": {
-    // Public-by-name (NUXT_PUBLIC_*) keys are baked into the client payload via
-    // Nuxt's runtimeConfig — committing them here is no different from
-    // publishing them on the site.
-    // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
-    // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
+    // No public (NUXT_PUBLIC_*) vars are set currently. Anything added here is
+    // baked into the client payload — i.e. effectively published on the site.
   },
 
   "d1_databases": [
@@ -97,8 +94,6 @@
         // https://stems-staging.<your-subdomain>.workers.dev URL so magic-link
         // emails / absolute links point at the right host.
         "PUBLIC_BASE_URL": "https://stems-staging.jamiecurnow.workers.dev"
-        // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
-        // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
       },
       "name": "stems-staging",
       // workers.dev URL until a custom domain is purchased. Flip back to false
@@ -137,8 +132,6 @@
         // Production is served from the stems.market custom domain (see the
         // `routes` block below). Magic-link emails + absolute links use this.
         "PUBLIC_BASE_URL": "https://stems.market"
-        // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
-        // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
       },
       "d1_databases": [
         {

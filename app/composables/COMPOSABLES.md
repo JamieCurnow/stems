@@ -67,7 +67,7 @@ await startCheckout({ successPath: '/billing/success' })
 
 ## `useConsent`
 
-Consent Mode v2, backed by a first-party cookie (`stems_consent`) so SSR/edge code can read it on the first request. Every change re-pushes `gtag('consent', 'update', …)`. Bump `CONSENT_VERSION` (in the composable) when categories change — old cookies invalidate and the banner re-shows.
+Cookie-backed cookie-consent choice, stored in a first-party cookie (`stems_consent`) so SSR/edge code can read it on the first request. **Dormant** — no analytics or marketing tags are wired up yet (Google Analytics was removed), so this just records the user's preference; nothing reads it. When a provider is added (e.g. PostHog), have it consult `state.value.analytics` on boot and react to `set()`. Bump `CONSENT_VERSION` (in the composable) when categories change — old cookies invalidate and the banner re-shows.
 
 ### Usage
 
@@ -88,40 +88,9 @@ consent.set({ analytics: true, marketing: false })
 
 ---
 
-## `useAnalytics`
-
-Typed wrapper around `dataLayer.push` — the single choke-point for client-side analytics. Server-side and pre-GTM calls safely no-op (GTM's stub flushes the queue once it boots).
-
-### Usage
-
-```ts
-const { track, setUserId, setUserProperties } = useAnalytics()
-track('cta_click', { cta_location: 'hero', cta_label: 'Start trial' })
-```
-
-### Returns
-
-- `track(name, params?)` — push a custom event.
-- `setUserId(id | null)` — push a `set_user_id` event.
-- `setUserProperties(props)` — push a `set_user_properties` event.
-
----
-
-## `useAnalyticsIdentity`
-
-Client-only. Watches the auth session + `useState('billing-status')` and pushes `set_user_id` / `set_user_properties` to the dataLayer when either changes. Call once from `app.vue`:
-
-```ts
-if (import.meta.client) await useAnalyticsIdentity()
-```
-
-Typed `async` so future trait-enrichment fetches won't be a breaking change, though it's synchronous underneath.
-
----
-
 ## Learnings
 
-- **State is shared via `useState`, not Pinia.** `useProfile` (`'profile'`) and `useSubscription` (`'billing-status'`) own the two cross-component state keys. `<AppTabBar>` and `useAnalyticsIdentity` read those same keys directly — keep the key strings in sync. Pinia is installed but no stores exist (see `app/stores/STORES.md`).
+- **State is shared via `useState`, not Pinia.** `useProfile` (`'profile'`) and `useSubscription` (`'billing-status'`) own the two cross-component state keys. `<AppTabBar>` reads those same keys directly — keep the key strings in sync. Pinia is installed but no stores exist (see `app/stores/STORES.md`).
 - **One owner per `useState` default — never seed `'profile'` elsewhere.** `useProfile` defaults `'profile'` to `undefined` (= "not fetched"); `ensure()` only fetches when it's `undefined`. A consumer that seeds its own default (e.g. `<AppTabBar>` once did `useState('profile', () => null)`) wins the race on public pages like `/discover` (the PWA `start_url`, no onboarding middleware) and wedges the state at `null` — so `ensure()` never fetches: grower tabs vanish and Profile bounces to `/onboarding`. Consumers must read `const { profile } = useProfile()`, not re-declare the state.
 - **`profile.client.ts` loads the profile from the session.** Public app-layout pages don't run the onboarding middleware, so nothing would load the profile there. The client plugin watches `authClient.useSession()` and fetches `/api/profile/me` (keyed by user id) whenever a session is present — lighting up the grower shell on every page and recovering from a stale/SSR-missing profile. It clears the state only on a confirmed sign-out (not while the session is still resolving), so an SSR-hydrated profile doesn't flash off.
 - **Auth is client-resolved.** `authClient.useSession()` (no `useFetch`) returns a reactive ref but only resolves on the client, so SSR/first paint look "logged out". Gate logged-out-only UI on `session.isPending` to avoid a flash for already-signed-in users; pass `useFetch` (as `useAuth` does) when you need the value hydrated during SSR.

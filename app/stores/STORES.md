@@ -12,7 +12,7 @@ There are **no Pinia stores in this app yet**. `@pinia/nuxt` is installed and re
 | Subscription / billing status | `useSubscription()` (`app/composables/useSubscription.ts`) | `'billing-status'`         |
 | Auth session                  | `useAuth()` → Better Auth `authClient.useSession()`        | — (managed by Better Auth) |
 
-`<AppTabBar>` and `useAnalyticsIdentity()` read those same `useState` keys directly, so the key strings must stay in sync across files.
+`<AppTabBar>` reads those same `useState` keys directly, so the key strings must stay in sync across files.
 
 ### When to reach for Pinia instead
 

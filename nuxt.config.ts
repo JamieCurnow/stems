@@ -59,16 +59,6 @@ export default defineNuxtConfig({
     }
   },
 
-  runtimeConfig: {
-    public: {
-      // Filled at runtime from NUXT_PUBLIC_GTM_ID / NUXT_PUBLIC_GA4_MEASUREMENT_ID
-      // (wrangler vars in deployed envs, .env in local dev). Empty by default —
-      // analytics plugins no-op when the keys aren't set, so dev/preview stay quiet.
-      gtmId: '',
-      ga4MeasurementId: ''
-    }
-  },
-
   // Keep catalog markdown alongside source files without Nuxt auto-scanning them.
   ignore: ['**/*.md'],
 

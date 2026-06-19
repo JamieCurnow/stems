@@ -79,7 +79,7 @@ ${preheaderHtml}
 export function renderLayoutText({ bodyText, unsubscribeUrl, recipientEmail }: LayoutTextArgs): string {
   return `${bodyText.trim()}
 
-Stems — the marketplace for local-grown flowers.
+Stems - the marketplace for local-grown flowers.
 
 You're getting this at ${recipientEmail}.
 Unsubscribe: ${unsubscribeUrl}

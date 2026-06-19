@@ -207,7 +207,7 @@ Drains the `scheduledEmail` queue (`runScheduledEmailQueue`). Fired every minute
 
 ### `POST /api/stripe/webhook`
 
-App-specific Stripe side-effects (Better Auth's Stripe plugin owns `/api/auth/stripe/webhook` for core subscription state). Verifies with `constructEventAsync` + `stripeCryptoProvider` against `STRIPE_REFERRAL_WEBHOOK_SECRET`. Handles `invoice.paid` (subscription_cycle → credit referrer + GA4 `purchase`), `customer.subscription.created` (trialing → `trial_start`), and subscription updated/deleted (cancellation / reactivation events).
+App-specific Stripe side-effects (Better Auth's Stripe plugin owns `/api/auth/stripe/webhook` for core subscription state). Verifies with `constructEventAsync` + `stripeCryptoProvider` against `STRIPE_REFERRAL_WEBHOOK_SECRET`. Handles `invoice.paid` (subscription_cycle → credit the referrer) and detects trialing / cancellation / reactivation transitions. Those branches carry `// TODO(posthog)` seams where GA4 conversion events used to fire.
 
 - **Auth:** Stripe signature · **Response:** `{ received: true, ... }`
 
@@ -227,7 +227,7 @@ Catch-all forwarding every `/api/auth/*` request to Better Auth: magic-link sign
 
 ### `GET /r/[code]`
 
-Referral landing redirect. Validates the code, drops a 30-day `stems_ref` cookie, fires a hashed `referral_landed` GA4 event, then 302s to `/login?ref=CODE`.
+Referral landing redirect. Validates the code, drops a 30-day `stems_ref` cookie (a `// TODO(posthog)` seam marks where a hashed `referral_landed` event used to fire), then 302s to `/login?ref=CODE`.
 
 ### `GET /img/[...path]`
 

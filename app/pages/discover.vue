@@ -43,7 +43,7 @@ const showSignedOutCta = computed(() => !session.value.isPending && !isAuthed.va
 const inviteMailto = computed(() => {
   const subject = encodeURIComponent('Join me on Stems')
   const body = encodeURIComponent(
-    "I'm looking for local flower growers on Stems — you should set up a page: https://stems.app"
+    "I'm looking for local flower growers on Stems - you should set up a page: https://stems.app"
   )
   return `mailto:?subject=${subject}&body=${body}`
 })
@@ -84,6 +84,19 @@ const inviteMailto = computed(() => {
             or sign in
           </UButton>
         </div>
+
+        <!-- Quiet utility nav, styled like the eyebrow above. Points at the
+             standalone public pages (default layout). Always shown. -->
+        <nav
+          class="mt-6 flex items-center justify-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted"
+          aria-label="More"
+        >
+          <NuxtLink to="/about" class="transition-colors hover:text-primary">About</NuxtLink>
+          <span class="text-dimmed" aria-hidden="true">·</span>
+          <NuxtLink to="/blog" class="transition-colors hover:text-primary">Blog</NuxtLink>
+          <span class="text-dimmed" aria-hidden="true">·</span>
+          <NuxtLink to="/policies" class="transition-colors hover:text-primary">Policies</NuxtLink>
+        </nav>
       </div>
     </header>
 
@@ -156,7 +169,7 @@ const inviteMailto = computed(() => {
     <div v-else class="flex flex-col items-center gap-3 px-6 py-20 text-center">
       <UIcon name="i-lucide-flower-2" class="size-7 text-primary" />
       <p class="font-display text-2xl font-medium text-default">First blooms coming soon</p>
-      <p class="max-w-xs text-sm text-muted">New growers are setting up their pages — check back shortly.</p>
+      <p class="max-w-xs text-sm text-muted">New growers are setting up their pages - check back shortly.</p>
     </div>
   </div>
 </template>

@@ -173,7 +173,7 @@ function exportCsv() {
       <UIcon name="i-lucide-flower-2" class="size-7 text-primary" />
       <p class="font-display text-2xl font-medium text-default">Your flower list is empty</p>
       <p class="max-w-xs text-sm text-muted">
-        Everything you add shows up on your shareable Stems page — share the link and buyers see your live
+        Everything you add shows up on your shareable Stems page - share the link and buyers see your live
         availability.
       </p>
       <UButton

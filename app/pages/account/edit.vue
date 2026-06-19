@@ -263,12 +263,12 @@ async function save() {
 
         <UFormField
           label="WhatsApp"
-          help="Pick your country code, then your number — e.g. +44 then 7700 900000."
+          help="Pick your country code, then your number - e.g. +44 then 7700 900000."
         >
           <ContactPhoneInput v-model="state.whatsapp" placeholder="7700 900000" class="w-full" />
         </UFormField>
 
-        <UFormField label="Contact email" help="A public address for orders — not your login email.">
+        <UFormField label="Contact email" help="A public address for orders - not your login email.">
           <UInput
             v-model="state.contactEmail"
             type="email"

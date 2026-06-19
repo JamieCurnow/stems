@@ -136,7 +136,7 @@ const ogImage = computed(() => {
 const pageDescription = computed(() => {
   const bio = profile.value.bio?.trim()
   if (bio) return bio.length > 160 ? `${bio.slice(0, 157)}…` : bio
-  return `${profile.value.farmName} on Stems — the marketplace for local-grown flowers.`
+  return `${profile.value.farmName} on Stems - the marketplace for local-grown flowers.`
 })
 const pageTitle = computed(() => `${profile.value.farmName} (@${profile.value.handle}) · Stems`)
 
@@ -313,7 +313,7 @@ useHead(() => ({
         <UIcon name="i-lucide-flower-2" class="size-7 text-primary" />
         <p class="font-display text-2xl font-medium text-default">No blooms listed yet</p>
         <p class="max-w-xs text-sm text-muted">
-          {{ profile.farmName }} hasn't added any flowers — check back soon.
+          {{ profile.farmName }} hasn't added any flowers - check back soon.
         </p>
       </div>
 

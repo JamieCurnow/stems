@@ -13,7 +13,7 @@ import { defineConfig } from '@vite-pwa/assets-generator/config'
  *   4. Commit SVGs + regenerated PNGs together
  */
 
-const background = '#000000'
+const background = '#E38475'
 
 export default defineConfig({
   headLinkOptions: { preset: '2023' },

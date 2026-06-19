@@ -317,8 +317,11 @@ useHead(() => ({
         </p>
       </div>
 
-      <!-- Availability: a borderless feed of flowers on hairline dividers. -->
-      <section v-else class="mt-9">
+      <!-- Availability: a borderless feed of flowers on hairline dividers.
+           Extra bottom padding when a grower is contactable so the floating
+           "Contact to buy" button (which hovers above the nav) doesn't overlap
+           the last flower. -->
+      <section v-else class="mt-9" :class="{ 'pb-16 sm:pb-24': hasContact }">
         <div class="mb-1 flex items-baseline justify-between px-1">
           <h2 class="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Availability</h2>
           <span v-if="inSeasonCount" class="inline-flex items-center gap-1.5 text-xs text-success">
@@ -470,7 +473,7 @@ useHead(() => ({
     >
       <div
         v-if="showFloatingContact"
-        class="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+4.25rem)] z-30 flex justify-center px-4"
+        class="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+4.25rem)] z-30 flex justify-center px-4 sm:bottom-24"
       >
         <UButton
           color="primary"

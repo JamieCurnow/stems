@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ProfileRow } from '~~/server/db/schema'
+import { normaliseWhatsapp } from '~~/shared/utils/contact'
 
 // Owner-facing edit form. Gated so `profile` is a row by the time we render.
 definePageMeta({ middleware: ['auth', 'onboarding'], layout: 'app' })
@@ -57,10 +58,10 @@ function validate(): string | null {
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return 'Please enter a valid contact email.'
   }
-  const waDigits = state.whatsapp.replace(/\D/g, '')
-  if (state.whatsapp.trim() && (waDigits.length < 7 || waDigits.length > 15)) {
-    return 'Enter a valid WhatsApp number, including the country code.'
-  }
+  const wa = normaliseWhatsapp(state.whatsapp)
+  if (wa.error) return wa.error
+  // Persist & show the canonical "+44…" form we just validated.
+  state.whatsapp = wa.value ?? ''
   return null
 }
 

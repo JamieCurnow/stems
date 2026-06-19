@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { normaliseHandle, validateHandle } from '~~/shared/utils/handle'
+import { normaliseWhatsapp } from '~~/shared/utils/contact'
 
 /**
  * Zod schemas for the profile create (onboarding) + patch (edit) endpoints.
@@ -84,20 +85,16 @@ const website = z
     return parsed.toString()
   })
 
-/** WhatsApp number: keep the grower's formatting, sanity-check 7–15 digits. */
+/** WhatsApp number: require a country code and store canonical E.164 (powers wa.me). */
 const whatsapp = z
   .preprocess((v) => (typeof v === 'string' ? v.trim() : v), z.string().nullish())
   .transform((v, ctx) => {
-    if (v == null || v === '') return null
-    const digits = v.replace(/\D/g, '')
-    if (digits.length < 7 || digits.length > 15) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Enter a valid WhatsApp number, including the country code.'
-      })
+    const { value, error } = normaliseWhatsapp(v)
+    if (error) {
+      ctx.addIssue({ code: 'custom', message: error })
       return z.NEVER
     }
-    return v
+    return value ?? null
   })
 
 /** Public contact email, blank → null. */

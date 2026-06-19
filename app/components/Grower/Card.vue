@@ -59,8 +59,8 @@ const tint = computed(() => avatarTint(props.grower.handle))
 
       <p class="mt-1.5 flex items-center gap-1.5 text-xs">
         <template v-if="hasStock">
-          <span class="size-1.5 shrink-0 rounded-full bg-primary" />
-          <span class="font-medium text-primary">{{ grower.flowerCount }} in season</span>
+          <span class="size-1.5 shrink-0 rounded-full bg-success" />
+          <span class="font-medium text-success">{{ grower.flowerCount }} in season</span>
           <span class="text-dimmed">·</span>
         </template>
         <span class="truncate text-dimmed">

@@ -1,16 +1,12 @@
 <script setup lang="ts">
-// Horizontally swipeable image gallery for the read-only flower drawer. A flower
-// can now carry several photos (square crops), so the cover image alone isn't
+// Horizontally swipeable image gallery for the read-only flower detail page. A
+// flower can carry several photos (square crops), so the cover image alone isn't
 // enough.
 //
-// The tricky bit: this lives inside a `UDrawer` (vaul) bottom sheet that closes
-// on a vertical drag. We must swipe *horizontally* through photos AND swipe
-// *vertically* to dismiss the drawer — from the same surface, feeling native on
-// touch. Rather than wrestle a JS carousel for pointer capture against vaul, we
-// lean on the browser's own gesture arbitration: a native scroll-snap rail with
-// `touch-action: pan-x`. The browser owns horizontal panning (buttery snap);
-// every other axis (i.e. vertical) is left untouched, so those pointer events
-// fall straight through to vaul and drag the sheet down. Zero conflict.
+// We lean on the browser's own gesture arbitration: a native scroll-snap rail
+// with `touch-action: pan-x`. The browser owns horizontal panning (buttery
+// snap); every other axis (i.e. vertical) is left untouched, so a vertical drag
+// scrolls the page as normal. No JS carousel, no pointer-capture fights.
 const props = defineProps<{
   /** Resolved /img URLs, cover first. */
   photos: string[]

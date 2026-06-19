@@ -5,7 +5,7 @@
 // bottom nav) so navigation is consistent with the rest of the app — the tab
 // bar already handles the logged-out case (Discover + Sign in). The availability
 // list is a borderless feed (Toast × Instagram language) — see DESIGN.md.
-import { useElementVisibility, useTimeAgo } from '@vueuse/core'
+import { useTimeAgo } from '@vueuse/core'
 import { normaliseHandle } from '~~/shared/utils/handle'
 import { avatarInitials, avatarTint } from '~~/shared/utils/avatar'
 import { availabilityText, isSoldOut } from '~~/shared/utils/flowers'
@@ -68,24 +68,13 @@ const instagramUrl = computed(() =>
   profile.value.instagram ? `https://instagram.com/${profile.value.instagram}` : null
 )
 
-// "Contact to buy" — only shown when the grower has given at least one way to
-// reach them. Opens a sheet of deep links (no in-app messaging).
+// "Contact" — only shown when the grower has given at least one way to reach
+// them. Opens a sheet of deep links (no in-app messaging).
 const hasContact = computed(() => contactOptions(profile.value).length > 0)
 const contactOpen = ref(false)
 function openContact() {
-  // Close the flower detail first so the two sheets don't stack.
-  detailOpen.value = false
   contactOpen.value = true
 }
-
-// Floating "Contact to buy": once the inline hero CTA scrolls out of view, a
-// large fixed button hovers just above the bottom nav so buyers can always reach
-// the grower. Hidden while the flower drawer is open (it has its own buy CTA).
-const contactInlineRef = ref<HTMLElement | null>(null)
-const contactInlineVisible = useElementVisibility(contactInlineRef)
-const showFloatingContact = computed(
-  () => hasContact.value && !contactInlineVisible.value && !detailOpen.value
-)
 
 // "Updated X ago" — from the most recently edited visible flower. Omitted when
 // there are no flowers (nothing to signal freshness about).
@@ -94,35 +83,6 @@ const lastUpdated = computed(() => {
   return Math.max(...flowers.value.map((f) => f.updatedAt))
 })
 const updatedAgo = useTimeAgo(() => lastUpdated.value ?? Date.now())
-
-// Read-only flower detail (public): page-managed so we don't depend on the
-// card's editable-only events. Tapping a card opens a drawer with full info.
-const selected = ref<FlowerDto | null>(null)
-const detailOpen = ref(false)
-function openDetail(flower: FlowerDto) {
-  selected.value = flower
-  detailOpen.value = true
-}
-const detailSubtitle = computed(() =>
-  selected.value ? [selected.value.variety, selected.value.color].filter(Boolean).join(' · ') : ''
-)
-const detailMeta = computed(() => {
-  const f = selected.value
-  if (!f) return ''
-  const parts: string[] = []
-  if (f.stemLengthCm != null) parts.push(`${f.stemLengthCm}cm long`)
-  if (f.stemsPerBunch != null) parts.push(`${f.stemsPerBunch} per bunch`)
-  return parts.join(' · ')
-})
-const detailPriceLine = computed(() => {
-  const f = selected.value
-  if (!f) return ''
-  const parts: string[] = []
-  if (f.pricePerStem != null) parts.push(`${formatPence(f.pricePerStem)}/stem`)
-  const b = bunchPrice(f)
-  if (b != null) parts.push(`${formatPence(b)}/bunch`)
-  return parts.join(' · ')
-})
 
 // ── SEO / social sharing ──────────────────────────────────────────────────
 // OG image must be an ABSOLUTE URL for link unfurlers. The DTO carries app-root
@@ -233,9 +193,8 @@ useHead(() => ({
       <div class="flex flex-col items-center text-center">
         <p v-if="profile.bio" class="mt-5 max-w-prose whitespace-pre-line text-default">{{ profile.bio }}</p>
 
-        <!-- Contact CTA — the primary action: reach the grower to buy. Wrapped so
-             we can track when it scrolls off and surface the floating button. -->
-        <div v-if="hasContact" ref="contactInlineRef" class="mt-5">
+        <!-- Contact CTA — the primary action: reach the grower to buy. -->
+        <div v-if="hasContact" class="mt-5">
           <UButton
             color="primary"
             size="md"
@@ -243,7 +202,7 @@ useHead(() => ({
             class="rounded-full px-5 font-medium"
             @click="openContact"
           >
-            Contact to buy
+            Contact
           </UButton>
         </div>
 
@@ -317,11 +276,9 @@ useHead(() => ({
         </p>
       </div>
 
-      <!-- Availability: a borderless feed of flowers on hairline dividers.
-           Extra bottom padding when a grower is contactable so the floating
-           "Contact to buy" button (which hovers above the nav) doesn't overlap
-           the last flower. -->
-      <section v-else class="mt-9" :class="{ 'pb-16 sm:pb-24': hasContact }">
+      <!-- Availability: a borderless feed of flowers on hairline dividers. Each
+           row links to the flower's own page (/@handle/<id>). -->
+      <section v-else class="mt-9">
         <div class="mb-1 flex items-baseline justify-between px-1">
           <h2 class="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Availability</h2>
           <span v-if="inSeasonCount" class="inline-flex items-center gap-1.5 text-xs text-success">
@@ -332,12 +289,11 @@ useHead(() => ({
 
         <ul class="divide-y divide-default">
           <li v-for="flower in flowers" :key="flower.id">
-            <button
-              type="button"
+            <NuxtLink
+              :to="`/@${profile.handle}/${flower.id}`"
               class="group flex w-full items-center gap-4 py-4 text-left transition-colors duration-200 hover:bg-clay-900/[0.015] focus:outline-none focus-visible:bg-clay-900/[0.025]"
               :class="{ 'opacity-60': isSoldOut(flower) }"
               :aria-label="`View ${flower.name} details`"
-              @click="openDetail(flower)"
             >
               <!-- Portrait thumbnail -->
               <div class="aspect-[4/5] w-24 shrink-0 overflow-hidden rounded-lg bg-muted">
@@ -398,96 +354,13 @@ useHead(() => ({
                 name="i-lucide-arrow-up-right"
                 class="size-4 shrink-0 text-dimmed opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-primary group-hover:opacity-100"
               />
-            </button>
+            </NuxtLink>
           </li>
         </ul>
       </section>
     </div>
 
-    <!-- Read-only flower detail (page-managed; card's editable events are off) -->
-    <!-- Title omitted: the serif name in the body leads (no duplicate header). -->
-    <UDrawer v-model:open="detailOpen">
-      <template #body>
-        <div v-if="selected" class="mx-auto w-full max-w-md space-y-4">
-          <!-- Keyed by flower id so the rail resets to the cover for each flower. -->
-          <FlowerGallery :key="selected.id" :photos="selected.photoUrls" :alt="selected.name" />
-
-          <div>
-            <div>
-              <h3 class="font-display text-2xl font-medium text-default">{{ selected.name }}</h3>
-              <p v-if="detailSubtitle" class="text-sm text-muted">{{ detailSubtitle }}</p>
-            </div>
-
-            <!-- Availability reads exactly as it does in the listing. -->
-            <p class="mt-2 text-sm text-muted">
-              Availability:
-              <span class="font-medium" :class="isSoldOut(selected) ? 'text-dimmed' : 'text-default'">
-                {{ availabilityText(selected) }}
-              </span>
-            </p>
-
-            <p v-if="detailPriceLine" class="mt-3 text-lg font-medium text-default">{{ detailPriceLine }}</p>
-            <span
-              v-if="selected.openToOffers"
-              class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success"
-            >
-              <UIcon name="i-lucide-tag" class="size-3.5" />
-              Open to offers
-            </span>
-            <p v-if="detailMeta" class="mt-1 text-sm text-muted">{{ detailMeta }}</p>
-            <p class="mt-1 text-xs text-dimmed">Updated {{ timeAgo(selected.updatedAt) }}</p>
-
-            <div v-if="selected.notes" class="mt-4">
-              <h4 class="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Notes</h4>
-              <p class="mt-1.5 whitespace-pre-line text-sm text-default">{{ selected.notes }}</p>
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <!-- Buy CTA, scoped to the flower being viewed. -->
-      <template v-if="hasContact" #footer>
-        <UButton
-          color="primary"
-          size="lg"
-          block
-          icon="i-lucide-message-circle"
-          class="font-medium"
-          @click="openContact"
-        >
-          Contact to buy
-        </UButton>
-      </template>
-    </UDrawer>
-
-    <!-- Floating "Contact to buy": hovers above the bottom nav once the inline
-         hero CTA scrolls out of view. Centered, primary, pill-shaped, with a gap
-         above the nav so the two don't touch. -->
-    <Transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="translate-y-4 opacity-0"
-      enter-to-class="translate-y-0 opacity-100"
-      leave-active-class="transition duration-150 ease-in"
-      leave-from-class="translate-y-0 opacity-100"
-      leave-to-class="translate-y-4 opacity-0"
-    >
-      <div
-        v-if="showFloatingContact"
-        class="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+4.25rem)] z-30 flex justify-center px-4 sm:bottom-24"
-      >
-        <UButton
-          color="primary"
-          size="lg"
-          icon="i-lucide-message-circle"
-          class="rounded-full px-7 font-medium shadow-lg shadow-primary/25"
-          @click="openContact"
-        >
-          Contact to buy
-        </UButton>
-      </div>
-    </Transition>
-
-    <!-- Single shared contact sheet, opened from the header or a flower drawer. -->
+    <!-- Single shared contact sheet, opened from the header CTA. -->
     <ContactSheet v-if="hasContact" v-model:open="contactOpen" :profile="profile" />
   </div>
 </template>

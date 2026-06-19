@@ -97,7 +97,7 @@ Horizontally swipeable image gallery for the read-only flower drawer (a flower c
 
 ## `<GrowerCard>`
 
-One grower row in the discovery feed. Avatar-led, borderless, links the whole row to `/@handle`. Shows `@handle · location`, an "N in season" pill when the grower has stock, and a relative last-active time. Photo-less growers get a deterministic warm tint + serif initials (`avatarTint` / `avatarInitials`).
+One grower row in the discovery feed. Avatar-led, borderless, links the whole row to `/@handle`. Shows `@handle · location`, an "N in season" indicator (green `success` dot + label) when the grower has stock, and a relative last-active time. Photo-less growers get a deterministic warm tint + serif initials (`avatarTint` / `avatarInitials`).
 
 ### Props
 

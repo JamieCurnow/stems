@@ -280,7 +280,7 @@ async function save() {
           />
         </UFormField>
 
-        <UFormField label="Preferred method" help="Shown first when buyers tap “Contact to buy”.">
+        <UFormField label="Preferred method" help="Shown first when buyers tap “Contact”.">
           <USelect v-model="state.preferredContact" :items="preferredOptions" class="w-full" />
         </UFormField>
       </section>

@@ -37,15 +37,25 @@ PUBLIC grower discovery — the app's main entry. Reachable logged-out; signed-i
 
 ---
 
-## `/@:handle` (@[handle].vue)
+## `/@:handle` (@[handle]/index.vue)
 
 PUBLIC grower page — the shareable wedge. SSR-rendered so link previews (WhatsApp/iMessage/Instagram) resolve and availability is in the first paint.
 
-- Fetches `/api/public/<bareHandle>` (the route param's leading `@` is stripped via `normaliseHandle`); throws a 404 page on miss.
-- Hero (banner or blurred floral wash + avatar/initials, name, handle, location), bio, links, an inline "Contact to buy" (opens `<ContactSheet>`), `<ShareButton>`, and an "Updated X ago" line from the freshest visible flower.
-- A floating "Contact to buy" pill hovers just above the bottom nav once the inline CTA scrolls out of view (`useElementVisibility`), so buyers can always reach the grower.
-- Availability is a borderless feed; each row shows an "Availability: …" line (`availabilityText`, plain text — no badge), price, and a per-flower "Updated X ago" (`timeAgo`). Tapping a flower opens a read-only detail `UDrawer` (page-managed, not the card's editable events) that reads the same availability/updated lines. Sold-out flowers are dimmed and sorted last (done server-side).
+- Fetches `/api/public/<bareHandle>` (the route param's leading `@` is stripped via `normaliseHandle`), keyed `public-profile-<handle>`; throws a 404 page on miss.
+- Hero (banner or blurred floral wash + avatar/initials, name, handle, location), bio, links, an inline "Contact" button (opens `<ContactSheet>`), `<ShareButton>`, and an "Updated X ago" line from the freshest visible flower.
+- Availability is a borderless feed; each row is a `<NuxtLink>` to `/@handle/<flowerId>` showing an "Availability: …" line (`availabilityText`, plain text — no badge), price, and a per-flower "Updated X ago" (`timeAgo`). Sold-out flowers are dimmed and sorted last (done server-side).
 - Full `useSeoMeta` (OG/Twitter, absolute OG image resolved against the request origin) + JSON-LD (`LocalBusiness`/`Person`).
+
+---
+
+## `/@:handle/:flowerId` (@[handle]/[flowerId].vue)
+
+PUBLIC, read-only flower detail — a real page (previously a bottom drawer, which couldn't scroll when a flower ran taller than the viewport). SSR-rendered so an individual flower is shareable.
+
+- Reuses the grower-page payload via the SAME `useFetch` key (`public-profile-<handle>`), so arriving from the listing is instant (no refetch) and the profile is on hand for the contact sheet. Resolves the flower by `id` from `flowers`; 404s on an unknown/archived id.
+- `<FlowerGallery>` (keyed by id), serif name, subtitle, the same "Availability: …" line, price, "Open to offers" badge, stem/bunch meta, "Updated X ago", notes, and a "Contact" CTA (`<ContactSheet>`).
+- Back affordance is a button calling `router.back()` when app history exists (so the grower list's saved scroll position is restored) — falling back to `/@handle` for deep-links. Scroll restoration on back is otherwise Nuxt's default + the cached payload (stable list height, no refetch).
+- Per-flower `useSeoMeta` (OG `product`, first photo as the absolute OG image).
 
 ---
 

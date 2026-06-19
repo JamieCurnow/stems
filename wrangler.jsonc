@@ -120,8 +120,8 @@
 
     "production": {
       "name": "stems",
-      // workers.dev URL until a custom domain is purchased. Flip back to false
-      // and restore the `routes` block below once stems.market is set up.
+      // Served from the stems.market custom domain (see `routes` below). The
+      // .workers.dev URL stays enabled as a fallback during DNS cut-over.
       "workers_dev": true,
       "preview_urls": false,
       "observability": { "logs": { "enabled": true, "invocation_logs": true } },
@@ -134,10 +134,9 @@
       },
       "vars": {
         "MAIL_FROM": "Stems <hello@stems.market>",
-        // No custom domain yet — production deploys to workers.dev. After the
-        // first `wrangler deploy --env production`, set this to the assigned
-        // https://stems.<your-subdomain>.workers.dev URL.
-        "PUBLIC_BASE_URL": "https://stems.workers.dev"
+        // Production is served from the stems.market custom domain (see the
+        // `routes` block below). Magic-link emails + absolute links use this.
+        "PUBLIC_BASE_URL": "https://stems.market"
         // "NUXT_PUBLIC_GTM_ID": "GTM-XXXXXXX",
         // "NUXT_PUBLIC_GA4_MEASUREMENT_ID": "G-XXXXXXXXXX"
       },
@@ -149,9 +148,10 @@
           "migrations_dir": "server/db/migrations"
         }
       ],
-      "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files-production" }]
-      // Custom domain deferred until stems.market is purchased. Restore when ready:
-      // "routes": [{ "pattern": "stems.market", "custom_domain": true }]
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "stems-files-production" }],
+      // Requires stems.market to be an active zone in the island-web.ca
+      // Cloudflare account — the deploy fails here if the zone isn't added yet.
+      "routes": [{ "pattern": "stems.market", "custom_domain": true }]
     }
   }
 }

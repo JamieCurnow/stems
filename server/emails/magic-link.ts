@@ -15,7 +15,7 @@ const template: EmailTemplate<MagicLinkProps> = ({ url }) => {
       <p>Hey,</p>
       <p>Here's your sign-in link. Tap it and you're in. No password to remember, nothing to type.</p>
       <p style="margin:28px 0;">
-        <a href="${href}" style="display:inline-block;background:#0066CC;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:6px;font-weight:600;">Sign in to Stems</a>
+        <a href="${href}" style="display:inline-block;background:#E38475;color:#ffffff;text-decoration:none;padding:13px 26px;border-radius:9999px;font-weight:600;">Sign in to Stems</a>
       </p>
       <p style="font-size:14px;color:#6B6B6B;">The link works once and expires in 15 minutes. If the button doesn't work, paste this into your browser:</p>
       <p style="font-size:13px;color:#6B6B6B;word-break:break-all;">${href}</p>

@@ -44,6 +44,11 @@ function previewFor(key: string): string {
 const canAddMore = computed(() => keys.value.length < props.max)
 
 function onUploaded({ key, url }: { key: string; url: string }) {
+  // A multi-select batch can overshoot the cap — drop the overflow cleanly.
+  if (keys.value.length >= props.max) {
+    URL.revokeObjectURL(url)
+    return
+  }
   localPreviews.set(key, url)
   keys.value = [...keys.value, key]
 }
@@ -134,6 +139,12 @@ onBeforeUnmount(() => {
       {{ keys.length }}/{{ max }} photos · the cover shows first in your shop.
     </p>
 
-    <ImageCropModal ref="crop" :max-size="maxSize" @uploaded="onUploaded" @uploading="uploading = $event" />
+    <ImageCropModal
+      ref="crop"
+      :max-size="maxSize"
+      multiple
+      @uploaded="onUploaded"
+      @uploading="uploading = $event"
+    />
   </div>
 </template>

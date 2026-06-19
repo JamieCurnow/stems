@@ -63,7 +63,8 @@ const querySchema = z.object({
     .string()
     .optional()
     .default('')
-    .transform((s) => s.trim()),
+    // Strip a leading '@' so "@handle" searches match the bare stored handle.
+    .transform((s) => s.trim().replace(/^@+/, '')),
   limit: clampedInt(DEFAULT_LIMIT, 1, MAX_LIMIT),
   cursor: clampedInt(0, 0, Number.MAX_SAFE_INTEGER)
 })

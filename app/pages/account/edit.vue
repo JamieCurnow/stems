@@ -44,6 +44,41 @@ const preferredOptions = computed(() => {
 const uploading = ref(false)
 const saving = ref(false)
 
+// ── Unsaved-changes guard ───────────────────────────────────────────────────
+// Snapshot the form as first seeded; anything that differs makes the page dirty.
+const snapshot = () => JSON.stringify({ ...state, avatarKey: avatarKey.value, bannerKey: bannerKey.value })
+const initial = snapshot()
+const isDirty = computed(() => snapshot() !== initial)
+
+// Set once we've either saved or the user chose to discard, so the in-flight
+// navigation isn't re-intercepted.
+let allowLeave = false
+const leaveOpen = ref(false)
+let pendingTo: string | null = null
+
+onBeforeRouteLeave((to) => {
+  if (allowLeave || !isDirty.value) return true
+  pendingTo = to.fullPath
+  leaveOpen.value = true
+  return false
+})
+
+function discardAndLeave() {
+  allowLeave = true
+  leaveOpen.value = false
+  if (pendingTo) navigateTo(pendingTo)
+}
+
+// Catch full-page exits (refresh / tab close / back to a non-SPA URL) too.
+if (import.meta.client) {
+  useEventListener(window, 'beforeunload', (e) => {
+    if (isDirty.value && !allowLeave) {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+  })
+}
+
 // Client-side validation mirrors the server guards so we fail fast & inline.
 function validate(): string | null {
   const farmName = state.farmName.trim()
@@ -95,6 +130,7 @@ async function save() {
       }
     })
     set(updated)
+    allowLeave = true // saved — don't prompt on the way out
     await navigateTo('/account')
   } catch (e) {
     const message =
@@ -269,5 +305,18 @@ async function save() {
         :disabled="uploading || saving"
       />
     </UForm>
+
+    <!-- Unsaved-changes confirmation -->
+    <UModal v-model:open="leaveOpen" title="Discard changes?">
+      <template #body>
+        <p class="text-sm text-muted">You have unsaved changes. Leave this page without saving them?</p>
+      </template>
+      <template #footer>
+        <div class="flex w-full justify-end gap-2">
+          <UButton label="Keep editing" color="neutral" variant="ghost" @click="leaveOpen = false" />
+          <UButton label="Discard" color="error" @click="discardAndLeave" />
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>

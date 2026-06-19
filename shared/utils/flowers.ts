@@ -78,3 +78,24 @@ export function stemsCountLabel(stems: number | null | undefined): string | null
   const noun = stems === 1 ? 'stem' : 'stems'
   return `${stems.toLocaleString()} ${noun}`
 }
+
+/**
+ * Single plain-text availability value, rendered after an "Availability:" label
+ * on buyer-facing listings. Combines whichever signals are set:
+ *   sold out          → "Sold out"
+ *   status only       → "Good"
+ *   count only        → "120 stems"
+ *   both              → "Good · 120 stems"
+ *   neither           → "Available"
+ */
+export function availabilityText(f: AvailabilitySignals): string {
+  if (isSoldOut(f)) return 'Sold out'
+  const parts: string[] = []
+  const status = availabilityStatusLabel(f.availabilityStatus)
+  if (status) parts.push(status)
+  if (f.stemsAvailable != null && f.stemsAvailable > 0) {
+    const noun = f.stemsAvailable === 1 ? 'stem' : 'stems'
+    parts.push(`${f.stemsAvailable.toLocaleString()} ${noun}`)
+  }
+  return parts.length ? parts.join(' · ') : 'Available'
+}

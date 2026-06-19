@@ -36,8 +36,9 @@ PUBLIC grower discovery — the app's main entry. Reachable logged-out; signed-i
 PUBLIC grower page — the shareable wedge. SSR-rendered so link previews (WhatsApp/iMessage/Instagram) resolve and availability is in the first paint.
 
 - Fetches `/api/public/<bareHandle>` (the route param's leading `@` is stripped via `normaliseHandle`); throws a 404 page on miss.
-- Hero (banner or blurred floral wash + avatar/initials, name, handle, location), bio, links, "Contact to buy" (opens `<ContactSheet>`), `<ShareButton>`, and an "Updated X ago" line from the freshest visible flower.
-- Availability is a borderless feed; tapping a flower opens a read-only detail `UDrawer` (page-managed, not the card's editable events). Sold-out flowers are dimmed and sorted last (done server-side).
+- Hero (banner or blurred floral wash + avatar/initials, name, handle, location), bio, links, an inline "Contact to buy" (opens `<ContactSheet>`), `<ShareButton>`, and an "Updated X ago" line from the freshest visible flower.
+- A floating "Contact to buy" pill hovers just above the bottom nav once the inline CTA scrolls out of view (`useElementVisibility`), so buyers can always reach the grower.
+- Availability is a borderless feed; each row shows an "Availability: …" line (`availabilityText`, plain text — no badge), price, and a per-flower "Updated X ago" (`timeAgo`). Tapping a flower opens a read-only detail `UDrawer` (page-managed, not the card's editable events) that reads the same availability/updated lines. Sold-out flowers are dimmed and sorted last (done server-side).
 - Full `useSeoMeta` (OG/Twitter, absolute OG image resolved against the request origin) + JSON-LD (`LocalBusiness`/`Person`).
 
 ---
@@ -81,7 +82,7 @@ Owner's identity home (`layout: app`, middleware `['auth', 'onboarding']`). Avat
 
 ## `/account/edit` (account/edit.vue)
 
-Owner-facing profile edit form (`layout: app`, middleware `['auth', 'onboarding']`). Avatar + banner via `<ImageUploader>`, about/links/contact fields, grower toggle. Handle is **read-only in V1** (renaming would break shared links). Client-side `validate()` mirrors the server guards for fast inline errors; saves via `PATCH /api/profile`, then `useProfile().set(updated)` and navigates back to `/account`.
+Owner-facing profile edit form (`layout: app`, middleware `['auth', 'onboarding']`). Avatar + banner via `<ImageUploader>`, about/links/contact fields, grower toggle. Handle is **read-only in V1** (renaming would break shared links). Client-side `validate()` mirrors the server guards for fast inline errors; saves via `PATCH /api/profile`, then `useProfile().set(updated)` and navigates back to `/account`. Unsaved-changes guard: a snapshot/`isDirty` diff drives an `onBeforeRouteLeave` confirm modal (and a `beforeunload` prompt) so edits aren't lost; a successful save (or "Discard") sets an `allowLeave` flag to bypass it.
 
 ---
 

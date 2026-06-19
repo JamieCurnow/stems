@@ -282,7 +282,7 @@ async function save() {
     <!-- Availability: a categorical status and/or a stem count — both optional,
          set whichever you like. -->
     <div class="grid grid-cols-2 gap-4">
-      <UFormField label="Status" help="An at-a-glance hint.">
+      <UFormField label="Availability status" help="An at-a-glance hint.">
         <USelect
           v-model="state.availabilityStatus"
           :items="statusItems"

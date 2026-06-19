@@ -19,10 +19,13 @@
 interface Props {
   maxSize?: number
   aspect?: number
+  // Allow picking several photos at once; they're framed one after another.
+  multiple?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   maxSize: 1280,
-  aspect: 1
+  aspect: 1,
+  multiple: false
 })
 
 const emit = defineEmits<{
@@ -55,15 +58,32 @@ function pick() {
 }
 defineExpose({ pick })
 
+// Files awaiting framing. When `multiple`, a single pick can enqueue several;
+// each is framed + uploaded in turn before the next opens.
+const queue = ref<File[]>([])
+
 function onFileChange(e: Event) {
   const input = e.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file) return
-  if (!file.type.startsWith('image/')) {
+  const files = Array.from(input.files ?? [])
+  // Allow re-selecting the same file(s) later.
+  input.value = ''
+  if (!files.length) return
+
+  const images = files.filter((f) => f.type.startsWith('image/'))
+  if (!images.length) {
     toast.add({ title: 'That file is not an image', color: 'error' })
-    input.value = ''
     return
   }
+
+  queue.value = images
+  loadNext()
+}
+
+// Pull the next queued file into the framing modal. Skips files that fail to
+// decode so one bad image doesn't stall the rest of the batch.
+function loadNext() {
+  const file = queue.value.shift()
+  if (!file) return
 
   // Revoke any previous source url before replacing.
   if (sourceUrl.value) URL.revokeObjectURL(sourceUrl.value)
@@ -79,10 +99,9 @@ function onFileChange(e: Event) {
   }
   img.onerror = () => {
     toast.add({ title: 'Could not read that image', color: 'error' })
+    loadNext()
   }
   img.src = sourceUrl.value
-  // Allow re-selecting the same file later.
-  input.value = ''
 }
 
 // ── Drag to reposition ────────────────────────────────────────────────────
@@ -104,11 +123,32 @@ function onPointerMove(e: PointerEvent) {
   if (!dragging) return
   offset.x = startOffX + (e.clientX - startX)
   offset.y = startOffY + (e.clientY - startY)
+  clampOffset()
 }
 function onPointerUp(e: PointerEvent) {
   dragging = false
   ;(e.target as HTMLElement).releasePointerCapture?.(e.pointerId)
 }
+
+// Keep the framed image covering the stage — never let a drag (or a zoom-out)
+// expose an empty edge. The image is drawn cover-fit × zoom, so the slack on
+// each axis is half the overflow; clamp the pan offset within that.
+function clampOffset() {
+  const img = sourceImg.value
+  const stage = stageRef.value
+  if (!img || !stage) return
+  const stageW = stage.clientWidth
+  const stageH = stage.clientHeight
+  const cover = Math.max(stageW / img.width, stageH / img.height)
+  const scale = cover * zoom.value
+  const maxX = Math.max(0, (img.width * scale - stageW) / 2)
+  const maxY = Math.max(0, (img.height * scale - stageH) / 2)
+  offset.x = Math.min(maxX, Math.max(-maxX, offset.x))
+  offset.y = Math.min(maxY, Math.max(-maxY, offset.y))
+}
+
+// Zooming out shrinks the slack, so re-clamp to avoid an exposed edge.
+watch(zoom, clampOffset)
 
 // Background-size/position for the live preview inside the square stage.
 // We render the image as a CSS background using cover semantics so the on-screen
@@ -177,6 +217,8 @@ async function confirmCrop() {
     toast.add({ title: 'Could not upload photo', description: message, color: 'error' })
   } finally {
     uploading.value = false
+    // Frame the next queued photo (no-op for a single pick).
+    loadNext()
   }
 }
 
@@ -196,6 +238,8 @@ function encode(canvas: HTMLCanvasElement): Promise<Blob | null> {
 
 function cancelCrop() {
   cropOpen.value = false
+  // Skip this photo but keep framing the rest of the batch.
+  loadNext()
 }
 
 onBeforeUnmount(() => {
@@ -208,7 +252,14 @@ onBeforeUnmount(() => {
     <!-- No `capture` attribute: on mobile this lets the OS offer the photo
          library AND the camera. Forcing `capture` would open the camera only,
          blocking gallery selection. -->
-    <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFileChange" />
+    <input
+      ref="fileInput"
+      type="file"
+      accept="image/*"
+      :multiple="multiple"
+      class="hidden"
+      @change="onFileChange"
+    />
 
     <!-- Crop modal -->
     <UModal v-model:open="cropOpen" title="Frame your photo">

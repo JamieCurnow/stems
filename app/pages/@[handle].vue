@@ -5,10 +5,11 @@
 // bottom nav) so navigation is consistent with the rest of the app — the tab
 // bar already handles the logged-out case (Discover + Sign in). The availability
 // list is a borderless feed (Toast × Instagram language) — see DESIGN.md.
-import { useTimeAgo } from '@vueuse/core'
+import { useElementVisibility, useTimeAgo } from '@vueuse/core'
 import { normaliseHandle } from '~~/shared/utils/handle'
 import { avatarInitials, avatarTint } from '~~/shared/utils/avatar'
-import { availabilityStatusMeta, isSoldOut, stemsCountLabel, stemsLabel } from '~~/shared/utils/flowers'
+import { availabilityText, isSoldOut } from '~~/shared/utils/flowers'
+import { timeAgo } from '~~/shared/utils/time'
 import { bunchPrice, formatPence } from '~~/shared/utils/price'
 import { contactOptions } from '~~/shared/utils/contact'
 import type { PublicProfileDto } from '~~/shared/types/profile'
@@ -55,22 +56,6 @@ function priceLineFor(f: FlowerDto) {
   return parts.join(' · ')
 }
 
-// Stem-count line for a flower. With a status badge already showing, a null
-// count needs no line; without a status we fall back to "Available" so the row
-// always signals something. A 0 count reads "Sold out" unless the status
-// already says so (avoid a duplicate).
-function stemsTextFor(f: FlowerDto) {
-  if (f.stemsAvailable == null) return f.availabilityStatus ? null : 'Available'
-  if (f.stemsAvailable === 0 && f.availabilityStatus === 'sold_out') return null
-  return stemsCountLabel(f.stemsAvailable)
-}
-// The status badge carries the colour pop, so the stem line stays muted when one
-// is shown; otherwise it greens up (in stock) or dims (sold out).
-function stemsClassFor(f: FlowerDto) {
-  if (isSoldOut(f)) return 'text-dimmed'
-  return f.availabilityStatus ? 'text-muted' : 'font-medium text-success'
-}
-
 const websiteUrl = computed(() => {
   const w = profile.value.website
   if (!w) return null
@@ -92,6 +77,15 @@ function openContact() {
   detailOpen.value = false
   contactOpen.value = true
 }
+
+// Floating "Contact to buy": once the inline hero CTA scrolls out of view, a
+// large fixed button hovers just above the bottom nav so buyers can always reach
+// the grower. Hidden while the flower drawer is open (it has its own buy CTA).
+const contactInlineRef = ref<HTMLElement | null>(null)
+const contactInlineVisible = useElementVisibility(contactInlineRef)
+const showFloatingContact = computed(
+  () => hasContact.value && !contactInlineVisible.value && !detailOpen.value
+)
 
 // "Updated X ago" — from the most recently edited visible flower. Omitted when
 // there are no flowers (nothing to signal freshness about).
@@ -239,17 +233,19 @@ useHead(() => ({
       <div class="flex flex-col items-center text-center">
         <p v-if="profile.bio" class="mt-5 max-w-prose whitespace-pre-line text-default">{{ profile.bio }}</p>
 
-        <!-- Contact CTA — the primary action: reach the grower to buy. -->
-        <UButton
-          v-if="hasContact"
-          color="primary"
-          size="md"
-          icon="i-lucide-message-circle"
-          class="mt-5 rounded-full px-5 font-medium"
-          @click="openContact"
-        >
-          Contact to buy
-        </UButton>
+        <!-- Contact CTA — the primary action: reach the grower to buy. Wrapped so
+             we can track when it scrolls off and surface the floating button. -->
+        <div v-if="hasContact" ref="contactInlineRef" class="mt-5">
+          <UButton
+            color="primary"
+            size="md"
+            icon="i-lucide-message-circle"
+            class="rounded-full px-5 font-medium"
+            @click="openContact"
+          >
+            Contact to buy
+          </UButton>
+        </div>
 
         <!-- Links + share -->
         <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
@@ -364,19 +360,13 @@ useHead(() => ({
                   {{ subtitleFor(flower) }}
                 </p>
 
-                <!-- Availability + price stack vertically (they don't fit on one
-                     row): status badge, then stem count, then price. -->
-                <UBadge
-                  v-if="availabilityStatusMeta(flower.availabilityStatus)"
-                  :color="availabilityStatusMeta(flower.availabilityStatus)!.color"
-                  variant="subtle"
-                  size="sm"
-                  class="mt-1.5"
-                  :label="availabilityStatusMeta(flower.availabilityStatus)!.label"
-                />
-
-                <p v-if="stemsTextFor(flower)" class="mt-1 text-sm" :class="stemsClassFor(flower)">
-                  {{ stemsTextFor(flower) }}
+                <!-- Availability (plain text, not a badge) then price stack
+                     vertically — they don't fit on one row. -->
+                <p class="mt-1.5 text-sm text-muted">
+                  Availability:
+                  <span class="font-medium" :class="isSoldOut(flower) ? 'text-dimmed' : 'text-default'">
+                    {{ availabilityText(flower) }}
+                  </span>
                 </p>
 
                 <p v-if="priceLineFor(flower)" class="mt-0.5 truncate text-sm text-muted">
@@ -397,6 +387,8 @@ useHead(() => ({
                   <UIcon name="i-lucide-sticky-note" class="size-3.5 shrink-0 not-italic" />
                   {{ flower.notes }}
                 </p>
+
+                <p class="mt-1 text-xs text-dimmed">Updated {{ timeAgo(flower.updatedAt) }}</p>
               </div>
 
               <UIcon
@@ -418,24 +410,18 @@ useHead(() => ({
           <FlowerGallery :key="selected.id" :photos="selected.photoUrls" :alt="selected.name" />
 
           <div>
-            <div class="flex items-start justify-between gap-3">
-              <div class="min-w-0">
-                <h3 class="font-display text-2xl font-medium text-default">{{ selected.name }}</h3>
-                <p v-if="detailSubtitle" class="text-sm text-muted">{{ detailSubtitle }}</p>
-              </div>
-              <div class="flex shrink-0 flex-col items-end gap-1">
-                <UBadge
-                  v-if="availabilityStatusMeta(selected.availabilityStatus)"
-                  :color="availabilityStatusMeta(selected.availabilityStatus)!.color"
-                  variant="subtle"
-                  size="sm"
-                  :label="availabilityStatusMeta(selected.availabilityStatus)!.label"
-                />
-                <span class="text-sm font-medium" :class="isSoldOut(selected) ? 'text-dimmed' : 'text-success'">
-                  {{ stemsLabel(selected.stemsAvailable) }}
-                </span>
-              </div>
+            <div>
+              <h3 class="font-display text-2xl font-medium text-default">{{ selected.name }}</h3>
+              <p v-if="detailSubtitle" class="text-sm text-muted">{{ detailSubtitle }}</p>
             </div>
+
+            <!-- Availability reads exactly as it does in the listing. -->
+            <p class="mt-2 text-sm text-muted">
+              Availability:
+              <span class="font-medium" :class="isSoldOut(selected) ? 'text-dimmed' : 'text-default'">
+                {{ availabilityText(selected) }}
+              </span>
+            </p>
 
             <p v-if="detailPriceLine" class="mt-3 text-lg font-medium text-default">{{ detailPriceLine }}</p>
             <span
@@ -446,6 +432,7 @@ useHead(() => ({
               Open to offers
             </span>
             <p v-if="detailMeta" class="mt-1 text-sm text-muted">{{ detailMeta }}</p>
+            <p class="mt-1 text-xs text-dimmed">Updated {{ timeAgo(selected.updatedAt) }}</p>
 
             <div v-if="selected.notes" class="mt-4">
               <h4 class="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Notes</h4>
@@ -469,6 +456,33 @@ useHead(() => ({
         </UButton>
       </template>
     </UDrawer>
+
+    <!-- Floating "Contact to buy": hovers above the bottom nav once the inline
+         hero CTA scrolls out of view. Centered, primary, pill-shaped, with a gap
+         above the nav so the two don't touch. -->
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="translate-y-4 opacity-0"
+      enter-to-class="translate-y-0 opacity-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="translate-y-0 opacity-100"
+      leave-to-class="translate-y-4 opacity-0"
+    >
+      <div
+        v-if="showFloatingContact"
+        class="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+4.25rem)] z-30 flex justify-center px-4"
+      >
+        <UButton
+          color="primary"
+          size="lg"
+          icon="i-lucide-message-circle"
+          class="rounded-full px-7 font-medium shadow-lg shadow-primary/25"
+          @click="openContact"
+        >
+          Contact to buy
+        </UButton>
+      </div>
+    </Transition>
 
     <!-- Single shared contact sheet, opened from the header or a flower drawer. -->
     <ContactSheet v-if="hasContact" v-model:open="contactOpen" :profile="profile" />

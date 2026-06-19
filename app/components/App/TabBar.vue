@@ -14,9 +14,10 @@ import { authClient } from '~/utils/auth-client'
 const { profile } = useProfile()
 const isGrower = computed(() => !!profile.value?.isGrower)
 
-// Auth-aware: logged-out visitors get a "Sign in" tab instead of "Profile"
-// (which would just bounce them to /login), so the entry point is obvious.
-// useSession() (no useFetch) returns a reactive ref directly — same as default.vue.
+// Auth-aware: logged-out visitors get a prominent "Start selling" CTA instead of
+// a Profile tab — the bottom bar is the catchiest spot to convert a passing
+// flower seller (e.g. arriving from another grower's Instagram link) into a
+// signup. useSession() (no useFetch) returns a reactive ref — same as default.vue.
 const session = authClient.useSession()
 const isAuthed = computed(() => !!session.value.data?.user)
 
@@ -33,9 +34,8 @@ const tabs = computed<Tab[]>(() =>
   [
     { label: 'Discover', icon: 'i-lucide-search', to: '/discover' },
     { label: 'My Flowers', icon: 'i-lucide-flower-2', to: '/flowers', growerOnly: true },
-    isAuthed.value
-      ? { label: 'Profile', icon: 'i-lucide-user', to: '/account' }
-      : { label: 'Sign in', icon: 'i-lucide-log-in', to: '/login' }
+    // Profile only when signed in; logged-out visitors get the CTA below instead.
+    ...(isAuthed.value ? [{ label: 'Profile', icon: 'i-lucide-user', to: '/account' }] : [])
   ].filter((t) => !t.growerOnly || isGrower.value)
 )
 
@@ -62,6 +62,20 @@ function onAdd() {
           <UIcon :name="t.icon" class="size-6" />
           <span class="text-[11px] font-medium">{{ t.label }}</span>
         </NuxtLink>
+      </li>
+
+      <!-- Logged-out CTA: convert passing flower sellers into signups. Takes the
+           prominent slot a signed-in user's Profile/Add would occupy. -->
+      <li v-if="!isAuthed" class="flex flex-[2] items-center px-2 sm:flex-initial">
+        <UButton
+          to="/login"
+          color="primary"
+          size="lg"
+          icon="i-lucide-sparkles"
+          class="w-full justify-center rounded-full font-medium sm:px-6"
+        >
+          Start selling
+        </UButton>
       </li>
 
       <!-- Center raised Add action: growers only. Opens the add-flower page. -->

@@ -8,7 +8,7 @@ Components are auto-imported with a **directory prefix** (e.g. `app/components/F
 
 ## `<AppTabBar>`
 
-Fixed bottom tab bar for the signed-in app shell (rendered by the `app` layout). Thumb-reachable, safe-area padded. Tabs adapt to auth + grower state: Discover is always shown; **My Flowers** + the centre **Add** button are grower-only (gated on `useState('profile').isGrower`); the third tab is **Profile** when signed in, **Sign in** otherwise.
+Fixed bottom tab bar for the signed-in app shell (rendered by the `app` layout). Thumb-reachable, safe-area padded. Tabs adapt to auth + grower state: Discover is always shown; **My Flowers** + the centre **Add** button are grower-only (gated on `useState('profile').isGrower`); **Profile** shows when signed in. Logged-out visitors instead get a prominent primary **Start selling** CTA (→ `/login`) in the bar — the catchiest spot to convert a passing flower seller into a signup.
 
 ### Props
 
@@ -201,7 +201,7 @@ Single-photo crop-and-upload control (avatars, banners). Owns the preview/dropzo
 
 ## `<ImageCropModal>`
 
-Headless crop-and-upload engine shared by `<ImageUploader>` and `<ImageGalleryUploader>`. Owns the file input, the framing modal (drag to reposition, slider to zoom), the canvas crop, WebP/JPEG encode, and the `POST /api/uploads`. Renders no preview chrome of its own — the parent calls `pick()` (exposed via `defineExpose`).
+Headless crop-and-upload engine shared by `<ImageUploader>` and `<ImageGalleryUploader>`. Owns the file input, the framing modal (drag to reposition, slider to zoom), the canvas crop, WebP/JPEG encode, and the `POST /api/uploads`. Renders no preview chrome of its own — the parent calls `pick()` (exposed via `defineExpose`). The drag pan is clamped so the framed image always covers the frame (no exposed edge), re-clamping on zoom-out. Pass `multiple` to let one pick enqueue several photos — they're framed + uploaded one after another (cancel skips just that one).
 
 ### Props
 
@@ -224,7 +224,7 @@ Headless crop-and-upload engine shared by `<ImageUploader>` and `<ImageGalleryUp
 
 ## `<ImageGalleryUploader>`
 
-Multi-photo crop-and-upload control. Manages an ordered list of R2 keys via the default v-model (cover = first). Each added photo runs through `<ImageCropModal>`; growers can promote any photo to cover or remove individual photos.
+Multi-photo crop-and-upload control. Manages an ordered list of R2 keys via the default v-model (cover = first). Drives `<ImageCropModal>` with `multiple`, so growers can pick several photos at once (each framed in turn); overflow past `max` is dropped cleanly. Growers can promote any photo to cover or remove individual photos.
 
 ### Props
 

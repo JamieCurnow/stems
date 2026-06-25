@@ -124,6 +124,22 @@ async function handleSignOut() {
       />
     </div>
 
+    <!-- Invoices row: grower tool, same hairline-row treatment -->
+    <div v-if="profile.isGrower" class="flex items-center justify-between gap-4 border-b border-default py-5">
+      <div>
+        <p class="font-display text-lg font-medium text-default">Invoices</p>
+        <p class="text-sm text-muted">Create and track invoices for your orders.</p>
+      </div>
+      <UButton
+        to="/invoices"
+        label="Open"
+        trailing-icon="i-lucide-arrow-right"
+        color="primary"
+        variant="soft"
+        class="shrink-0"
+      />
+    </div>
+
     <!-- Actions: quiet hairline pills (clearly tappable on white, still calm) -->
     <div class="mt-6 flex flex-col gap-3">
       <UButton

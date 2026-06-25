@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
     })
     if (!subRow) return { received: true, skipped: 'no local sub row' }
 
-    const grant = await grantReferrerReward({
+    await grantReferrerReward({
       refereeUserId: subRow.referenceId,
       refereeStripeSubscriptionId: subId,
       db,

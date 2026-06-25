@@ -10,8 +10,13 @@ This file documents the pages in the app — route, purpose, layout, and any spe
 | `login.vue`         | `/login`        | `default` | public                             |
 | `onboarding.vue`    | `/onboarding`   | `default` | `auth`, `onboarding`               |
 | `flowers.vue`       | `/flowers`      | `app`     | `auth`, `onboarding` (grower-only) |
+| `invoices/index.vue` | `/invoices`     | `app`     | `auth`, `onboarding` (grower-only) |
+| `invoices/new.vue`  | `/invoices/new` | `app`     | `auth`, `onboarding` (grower-only) |
+| `invoices/[id]/index.vue` | `/invoices/:id` | `app` | `auth`, `onboarding` (grower-only) |
+| `invoices/[id]/edit.vue` | `/invoices/:id/edit` | `app` | `auth`, `onboarding` (grower-only) |
 | `account/index.vue` | `/account`      | `app`     | `auth`, `onboarding`               |
 | `account/edit.vue`  | `/account/edit` | `app`     | `auth`, `onboarding`               |
+| `account/invoice-settings.vue` | `/account/invoice-settings` | `app` | `auth`, `onboarding` (grower-only) |
 | `about.vue`         | `/about`        | `default` | public (coming-soon)               |
 | `blog.vue`          | `/blog`         | `default` | public (coming-soon)               |
 | `policies.vue`      | `/policies`     | `default` | public                             |
@@ -87,6 +92,20 @@ The grower's working surface — "My Flowers" (`layout: app`, middleware `['auth
 ## `/flowers/new` (flowers/new.vue) & `/flowers/[id]/edit` (flowers/[id]/edit.vue)
 
 Full-page add/edit forms (`layout: app`, middleware `['auth', 'onboarding']`, `robots: noindex`), grower-gated like `/flowers`. Both render `<FlowerForm>` inline. The edit page fetches the flower via `useRequestFetch()` against `GET /api/flowers/[id]` (cookie-forwarding; 404/403 handled by the endpoint). On `@saved` they patch the shared `'my-flowers'` cache (`useNuxtData`) and `navigateTo('/flowers')`; `@cancel` / the back chevron navigate back.
+
+---
+
+## `/invoices` (invoices/index.vue) & detail / new / edit
+
+Grower invoicing (`layout: app`, middleware `['auth', 'onboarding']`, `robots: noindex`), grower-gated like `/flowers` (non-growers bounce to `/account`).
+
+- **`/invoices`** — the list/table. Rows read like a table (customer + number/date on the left; total + `<InvoiceStatusBadge>` on the right) and link to the detail page. Shows total outstanding (unpaid). Loads `useFetch('/api/invoices', { key: 'my-invoices' })`; the new/edit pages patch that cache in place. Empty state links to create + invoice settings.
+- **`/invoices/new`** & **`/invoices/[id]/edit`** — render `<InvoiceForm>` inline. They `Promise.all` the data the form needs via `useRequestFetch()` (settings, saved `customers`, `flowers` for the quick-add picker; the invoice too on edit). On `@saved` they update the `'my-invoices'` cache and navigate to the detail page.
+- **`/invoices/[id]`** — a clean, **printable** invoice document plus owner actions (Print → `window.print()`, Edit, a Status dropdown that PATCHes `{ status }` optimistically, Delete with a confirm modal). App chrome + the action bar are hidden on print via `print:hidden` (the tab bar carries it too). The document renders the grower's `invoice-settings` as the "from" header + payment details, falling back to `profile.farmName` for the business name.
+
+## `/account/invoice-settings` (account/invoice-settings.vue)
+
+The grower's invoice "from" header, bank/payment details and numbering defaults (`layout: app`, grower-gated). Logo via `<ImageUploader>` (reverses `logoUrl` → R2 key on load); VAT entered as a percent and converted to basis points. Upserts via `PUT /api/invoice-settings`, then navigates to `/invoices`.
 
 ---
 

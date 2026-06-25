@@ -78,6 +78,47 @@ Add / edit flower form. Renders **inline** on a dedicated page (`/flowers/new`, 
 
 ---
 
+## `<InvoiceForm>`
+
+Create / edit invoice form. Renders **inline** on `/invoices/new` and `/invoices/[id]/edit` (sticky Cancel / Save action row, like `<FlowerForm>`). Money is entered in pounds and converted to pence (`parsePounds`) at the input boundary; **totals derive live** from the line items (`invoiceTotals`). Customer: a `USelectMenu` of saved contacts that fills the editable contact fields, or type a new one (saved to the reusable list on save unless opted out). Lines: blank rows plus a "Add from flowers" `USelectMenu` that prefills description + unit price from the grower's flower list (keeps `flowerId` as a soft link). VAT is a percent input next to the totals (→ basis points on save). Number is optional on create (placeholder shows the auto-generated preview).
+
+### Props
+
+- `invoice`: `InvoiceDto | null` (optional) — the invoice to edit; null/undefined to create. Seeded reactively (can arrive async).
+- `settings`: `InvoiceSettingsDto` (required) — defaults (tax rate, payment terms, number preview).
+- `customers`: `CustomerDto[]` (required) — saved contacts for the picker.
+- `flowers`: `FlowerDto[]` (required) — the grower's flowers for the quick-add picker.
+
+### Emits
+
+- `saved`: `[invoice: InvoiceDto]` — fresh DTO after a successful POST/PATCH.
+- `cancel`: `[]` — Cancel pressed.
+
+### Example
+
+```vue
+<InvoiceForm :invoice="editing" :settings="settings" :customers="customers" :flowers="flowers" @saved="onSaved" @cancel="back" />
+```
+
+---
+
+## `<InvoiceStatusBadge>`
+
+Small status pill for invoices. Colour-codes `draft` (neutral) / `sent` (info) / `paid` (success), and shows an **"Overdue"** error tint when an unpaid invoice is past its `dueDate`.
+
+### Props
+
+- `status`: `InvoiceStatus` (required).
+- `dueDate`: `number | null` (optional) — epoch ms; drives the overdue state.
+
+### Example
+
+```vue
+<InvoiceStatusBadge :status="inv.status" :due-date="inv.dueDate" />
+```
+
+---
+
 ## `<FlowerGallery>`
 
 Horizontally swipeable image gallery for the read-only flower drawer (a flower can carry several square photos, cover first). Native CSS scroll-snap rail — no carousel library — so it coexists cleanly with the `UDrawer` it lives in: `touch-action: pan-x` hands horizontal gestures to the browser (snap between photos) and lets vertical gestures fall through to vaul's drag-to-close. Position dots are tappable (desktop) and indicative (touch); hidden for a single photo. Frame is `aspect-square` capped at `max-h-[46vh]` so the whole sheet fits without an inner scroll. Key it by flower id so the rail resets to the cover per flower.

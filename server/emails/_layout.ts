@@ -10,12 +10,18 @@ export interface LayoutArgs {
   unsubscribeUrl: string
   recipientEmail: string
   baseUrl: string
+  /** External recipient (e.g. an invoice customer) — they aren't a Stems
+      audience member, so omit the unsubscribe / email-preferences footer that
+      links to a Stems account they can't use and would suppress an address
+      that isn't theirs to manage. */
+  external?: boolean
 }
 
 export interface LayoutTextArgs {
   bodyText: string
   unsubscribeUrl: string
   recipientEmail: string
+  external?: boolean
 }
 
 export const escapeHtml = (s: string): string =>
@@ -31,11 +37,17 @@ export function renderLayoutHtml({
   bodyHtml,
   unsubscribeUrl,
   recipientEmail,
-  baseUrl
+  baseUrl,
+  external
 }: LayoutArgs): string {
   const preheaderHtml = preheader
     ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#FFFFFF;line-height:1px;">${escapeHtml(preheader)}</div>`
     : ''
+  const footerHtml = external
+    ? `<p style="margin:0;">Sent with <a href="${escapeHtml(baseUrl)}" style="color:#8A817B;text-decoration:underline;">Stems</a>.</p>`
+    : `<p style="margin:0 0 12px;font-family:'EB Garamond',Georgia,serif;font-size:14px;color:#6B625C;">The marketplace for local-grown flowers.</p>
+            <p style="margin:0 0 4px;">You're getting this at <a href="mailto:${escapeHtml(recipientEmail)}" style="color:#8A817B;">${escapeHtml(recipientEmail)}</a>.</p>
+            <p style="margin:0;"><a href="${escapeHtml(unsubscribeUrl)}" style="color:#B6483B;text-decoration:underline;">Unsubscribe</a> &middot; <a href="${escapeHtml(baseUrl)}/settings" style="color:#B6483B;text-decoration:underline;">Email preferences</a></p>`
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -63,9 +75,7 @@ ${preheaderHtml}
         </tr>
         <tr>
           <td style="padding:24px 32px;border-top:1px solid #F0E6E1;font-size:12px;line-height:1.6;color:#8A817B;">
-            <p style="margin:0 0 12px;font-family:'EB Garamond',Georgia,serif;font-size:14px;color:#6B625C;">The marketplace for local-grown flowers.</p>
-            <p style="margin:0 0 4px;">You're getting this at <a href="mailto:${escapeHtml(recipientEmail)}" style="color:#8A817B;">${escapeHtml(recipientEmail)}</a>.</p>
-            <p style="margin:0;"><a href="${escapeHtml(unsubscribeUrl)}" style="color:#B6483B;text-decoration:underline;">Unsubscribe</a> &middot; <a href="${escapeHtml(baseUrl)}/settings" style="color:#B6483B;text-decoration:underline;">Email preferences</a></p>
+            ${footerHtml}
           </td>
         </tr>
       </table>
@@ -76,7 +86,18 @@ ${preheaderHtml}
 </html>`
 }
 
-export function renderLayoutText({ bodyText, unsubscribeUrl, recipientEmail }: LayoutTextArgs): string {
+export function renderLayoutText({
+  bodyText,
+  unsubscribeUrl,
+  recipientEmail,
+  external
+}: LayoutTextArgs): string {
+  if (external) {
+    return `${bodyText.trim()}
+
+Sent with Stems.
+`
+  }
   return `${bodyText.trim()}
 
 Stems - the marketplace for local-grown flowers.

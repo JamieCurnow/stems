@@ -24,3 +24,21 @@ export function timeAgo(ms: number, now = Date.now()): string {
   if (mo < 12) return plural(mo, 'month')
   return plural(Math.round(day / 365), 'year')
 }
+
+/** Absolute date from epoch ms, e.g. "25 Jun 2026". Empty string for null. */
+export function formatDate(ms?: number | null): string {
+  if (ms == null) return ''
+  return new Date(ms).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+/** Epoch ms → "YYYY-MM-DD" for binding to <input type="date">. Uses local
+ *  calendar parts (not UTC) so the date shown matches the user's clock — e.g.
+ *  just after midnight UK time doesn't prefill yesterday. */
+export function toDateInputValue(ms?: number | null): string {
+  if (ms == null) return ''
+  const d = new Date(ms)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}

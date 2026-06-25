@@ -26,6 +26,19 @@ The client-facing shape of a flower (`shared/types/flower.ts`). Returned by the 
 
 ---
 
+## Invoicing DTOs
+
+The client-facing shapes for invoicing (`shared/types/invoice.ts`). **Money is integer pence; `taxRate` is basis points (2000 = 20%); dates are epoch ms.** Built from Drizzle rows via the mappers in `server/utils/invoice.ts`. Helpers live in `shared/utils/invoice.ts` (`invoiceTotals`, `lineAmount`, `taxRateLabel`, `percentToBasisPoints`, `formatInvoiceNumber`, `INVOICE_STATUSES`).
+
+- **`InvoiceStatus`** — `'draft' | 'sent' | 'paid'`.
+- **`InvoiceSettingsDto`** — the grower's "from" header, bank/payment details and numbering defaults. `taxRate` (basis points), `invoicePrefix`, `nextInvoiceNumber`, `numberPadding`, `paymentTermsDays`, plus `logoUrl` (resolved `/img`, never the raw R2 key). All other fields nullable strings.
+- **`CustomerDto`** — a reusable contact: `id`, `name`, `email`, `phone`, `address`.
+- **`InvoiceLineDto`** — `id`, `flowerId` (soft link, nullable), `description`, `quantity`, `unitPrice` (pence), `amount` (pence, server-computed).
+- **`InvoiceDto`** — full invoice with `lines: InvoiceLineDto[]`. Carries the **snapshot** contact fields (`customerName`/`customerEmail`/`customerPhone`/`customerAddress`) plus the soft `customerId`, stored totals (`subtotal`/`taxAmount`/`total`), `number`, `status`, `issueDate`, `dueDate`, `notes`, `taxRate`.
+- **`InvoiceListItemDto`** — the lighter table row (no lines): `id`, `number`, `status`, `customerName`, `issueDate`, `dueDate`, `total`.
+
+---
+
 ## `PublicProfileDto`
 
 The PUBLIC grower-page payload (`shared/types/profile.ts`). Returned by `GET /api/public/[handle]` alongside `FlowerDto[]`. Deliberately omits private fields (postcode, lat/lng, login email); contact details are public so buyers can reach the grower. Avatar/banner are resolved `/img` URLs.
@@ -51,7 +64,7 @@ These aren't in `shared/types/` but are part of the shared contract and worth kn
 
 - **`ContactMethod`** (`shared/utils/contact.ts`) — `'whatsapp' | 'email' | 'instagram'`. Used by `PublicProfileDto.preferredContact` and `contactOptions()`.
 - **`GrowerCardDto`** (`server/api/search.get.ts`) — the discovery result row (`handle`, `farmName`, `locationName`, `avatarUrl`, `flowerCount`, `lastActiveAt`). Exported from the endpoint and imported by `/discover` + `<GrowerCard>`.
-- **Drizzle row + insert types** (`server/db/schema.ts`) — `ProfileRow`, `FlowerRow`, `FlowerPhotoRow`, `SubscriptionRow`, `ReferralRow`, `EmailPreferencesRow`, `LeadRow`, `ScheduledEmailRow`, etc. (`typeof table.$inferSelect`). The client imports `ProfileRow` directly in a few places (e.g. `useProfile`, account pages).
+- **Drizzle row + insert types** (`server/db/schema.ts`) — `ProfileRow`, `FlowerRow`, `FlowerPhotoRow`, `InvoiceSettingsRow`, `CustomerRow`, `InvoiceRow`, `InvoiceLineRow`, `SubscriptionRow`, `ReferralRow`, `EmailPreferencesRow`, `LeadRow`, `ScheduledEmailRow`, etc. (`typeof table.$inferSelect`). The client imports `ProfileRow` directly in a few places (e.g. `useProfile`, account pages).
 
 ---
 

@@ -5,7 +5,7 @@ import { useDb, type Db } from './db'
 import { useResend, mailFrom, publicBaseUrl } from './resend'
 import * as schema from '../db/schema'
 import { renderEmail, type EmailId } from '../emails'
-import { EMAIL_CATEGORY, type EmailCategory } from './emailCategory'
+import { EMAIL_CATEGORY, isExternalEmail, type EmailCategory } from './emailCategory'
 
 /* ------------------------------------------------------------------ */
 /* Preferences + suppression                                          */
@@ -108,6 +108,8 @@ interface SendArgs {
   idempotencyKey?: string
   /** Optional unsubscribe URL override; otherwise auto-derived. */
   unsubscribeUrl?: string
+  /** Optional Reply-To (e.g. invoice emails reply to the grower, not Stems). */
+  replyTo?: string
 }
 
 interface SendContext {
@@ -182,7 +184,7 @@ export async function sendEmail(
   event: H3Event,
   args: SendArgs & { userId?: string | null; leadId?: string | null }
 ) {
-  const { emailId, to, props, idempotencyKey, userId, leadId, unsubscribeUrl: override } = args
+  const { emailId, to, props, idempotencyKey, userId, leadId, unsubscribeUrl: override, replyTo } = args
   const category = EMAIL_CATEGORY[emailId]
   const ctx = await resolveSendContext({ event, to, category, userId, leadId, override })
 
@@ -195,17 +197,25 @@ export async function sendEmail(
   const resend = useResend(event)
   const from = mailFrom(event)
 
+  // External recipients (e.g. an invoice customer) aren't a Stems audience
+  // member — no List-Unsubscribe header, which would otherwise let them
+  // suppress an address that isn't theirs to manage.
+  const unsubscribeHeaders: Record<string, string> = isExternalEmail(emailId)
+    ? {}
+    : {
+        'List-Unsubscribe': `<${ctx.unsubscribeUrl}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
+      }
+
   const result = await resend.emails.send(
     {
       from,
       to,
+      ...(replyTo ? { replyTo } : {}),
       subject: rendered.subject,
       html: rendered.html,
       text: rendered.text,
-      headers: {
-        'List-Unsubscribe': `<${ctx.unsubscribeUrl}>`,
-        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
-      }
+      headers: unsubscribeHeaders
     },
     idempotencyKey ? { idempotencyKey } : undefined
   )

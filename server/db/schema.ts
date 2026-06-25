@@ -254,9 +254,119 @@ export const flowerPhoto = sqliteTable(
   (t) => [index('flower_photo_flowerId_idx').on(t.flowerId)]
 )
 
+/* ── Invoicing ────────────────────────────────────────────────────────────
+   Grower invoicing: per-user settings, reusable customer contacts, invoices +
+   line items. App-owned (written via Drizzle): money is integer pence, dates
+   are epoch millis, taxRate is basis points (2000 = 20%). See 0012_invoices.sql. */
+
+/* Invoice settings (1:1 with user). The "from" header, bank/payment details and
+   the running invoice-number counter. Created on demand (get-or-create). */
+export const invoiceSettings = sqliteTable('invoice_settings', {
+  userId: text('userId')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  businessName: text('businessName'),
+  email: text('email'),
+  phone: text('phone'),
+  address: text('address'), // multiline freeform
+  vatNumber: text('vatNumber'),
+  bankName: text('bankName'),
+  accountName: text('accountName'),
+  accountNumber: text('accountNumber'),
+  sortCode: text('sortCode'),
+  paymentNotes: text('paymentNotes'),
+  taxRate: integer('taxRate').notNull().default(0), // default VAT rate, basis points
+  invoicePrefix: text('invoicePrefix').notNull().default('INV-'),
+  nextInvoiceNumber: integer('nextInvoiceNumber').notNull().default(1),
+  numberPadding: integer('numberPadding').notNull().default(4),
+  paymentTermsDays: integer('paymentTermsDays').notNull().default(14),
+  footerNotes: text('footerNotes'),
+  logoKey: text('logoKey'),
+  createdAt: integer('createdAt', { mode: 'timestamp_ms' }).notNull(),
+  updatedAt: integer('updatedAt', { mode: 'timestamp_ms' }).notNull()
+})
+
+/* Reusable customer contact (1:N from user). Created the first time a name is
+   used on an invoice; reused on later ones. */
+export const customer = sqliteTable(
+  'customer',
+  {
+    id: text('id').primaryKey(),
+    userId: text('userId')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    email: text('email'),
+    phone: text('phone'),
+    address: text('address'),
+    createdAt: integer('createdAt', { mode: 'timestamp_ms' }).notNull(),
+    updatedAt: integer('updatedAt', { mode: 'timestamp_ms' }).notNull()
+  },
+  (t) => [index('customer_userId_idx').on(t.userId)]
+)
+
+/* Invoice (1:N from user). `customerId` is a soft link; the customer* columns
+   snapshot the contact at issue time so editing a contact later never rewrites
+   past invoices. Totals are server-computed and stored. */
+export const invoice = sqliteTable(
+  'invoice',
+  {
+    id: text('id').primaryKey(),
+    userId: text('userId')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    customerId: text('customerId').references(() => customer.id, { onDelete: 'set null' }),
+    number: text('number').notNull(),
+    status: text('status').notNull().default('draft'), // draft | sent | paid
+    issueDate: integer('issueDate', { mode: 'timestamp_ms' }).notNull(),
+    dueDate: integer('dueDate', { mode: 'timestamp_ms' }),
+    customerName: text('customerName').notNull(), // snapshot
+    customerEmail: text('customerEmail'),
+    customerPhone: text('customerPhone'),
+    customerAddress: text('customerAddress'),
+    notes: text('notes'),
+    taxRate: integer('taxRate').notNull().default(0), // basis points, snapshot
+    subtotal: integer('subtotal').notNull().default(0), // pence
+    taxAmount: integer('taxAmount').notNull().default(0), // pence
+    total: integer('total').notNull().default(0), // pence
+    createdAt: integer('createdAt', { mode: 'timestamp_ms' }).notNull(),
+    updatedAt: integer('updatedAt', { mode: 'timestamp_ms' }).notNull()
+  },
+  (t) => [
+    index('invoice_userId_idx').on(t.userId),
+    index('invoice_user_status_idx').on(t.userId, t.status),
+    uniqueIndex('invoice_user_number_idx').on(t.userId, t.number)
+  ]
+)
+
+/* Invoice line item (1:N from invoice). `flowerId` is an optional soft link to
+   the grower's flower list; arbitrary lines leave it null. `amount` =
+   round(quantity * unitPrice), computed server-side. */
+export const invoiceLine = sqliteTable(
+  'invoice_line',
+  {
+    id: text('id').primaryKey(),
+    invoiceId: text('invoiceId')
+      .notNull()
+      .references(() => invoice.id, { onDelete: 'cascade' }),
+    flowerId: text('flowerId').references(() => flower.id, { onDelete: 'set null' }),
+    description: text('description').notNull(),
+    quantity: real('quantity').notNull().default(1),
+    unitPrice: integer('unitPrice').notNull().default(0), // pence
+    amount: integer('amount').notNull().default(0), // pence
+    sortOrder: integer('sortOrder').notNull().default(0),
+    createdAt: integer('createdAt', { mode: 'timestamp_ms' }).notNull()
+  },
+  (t) => [index('invoice_line_invoiceId_idx').on(t.invoiceId)]
+)
+
 export type ProfileRow = typeof profile.$inferSelect
 export type FlowerRow = typeof flower.$inferSelect
 export type FlowerPhotoRow = typeof flowerPhoto.$inferSelect
+export type InvoiceSettingsRow = typeof invoiceSettings.$inferSelect
+export type CustomerRow = typeof customer.$inferSelect
+export type InvoiceRow = typeof invoice.$inferSelect
+export type InvoiceLineRow = typeof invoiceLine.$inferSelect
 
 export type SubscriptionRow = typeof subscription.$inferSelect
 export type ReferralRow = typeof referral.$inferSelect

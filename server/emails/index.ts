@@ -1,9 +1,11 @@
 import type { EmailTemplate, EmailTemplateContext, RenderedTemplate } from './_types'
 import { renderLayoutHtml, renderLayoutText } from './_layout'
+import { isExternalEmail } from '../utils/emailCategory'
 
 import magicLink from './magic-link'
 import systemTest from './system-test'
 import welcome from './welcome'
+import invoice from './invoice'
 
 /**
  * Registry of every email template the app can send. Add a new template by:
@@ -14,7 +16,8 @@ import welcome from './welcome'
 const templates = {
   'magic-link': magicLink,
   'system-test': systemTest,
-  welcome
+  welcome,
+  invoice
 } as const satisfies Record<string, EmailTemplate<never>>
 
 export type EmailId = keyof typeof templates
@@ -28,17 +31,20 @@ export function renderEmail<Id extends EmailId>(
 ): RenderedTemplate {
   const tpl = templates[id] as EmailTemplate<typeof props>
   const out = tpl(props, ctx)
+  const external = isExternalEmail(id)
   const html = renderLayoutHtml({
     preheader: out.preheader,
     bodyHtml: out.html,
     unsubscribeUrl: ctx.unsubscribeUrl,
     recipientEmail: ctx.recipientEmail,
-    baseUrl: ctx.baseUrl
+    baseUrl: ctx.baseUrl,
+    external
   })
   const text = renderLayoutText({
     bodyText: out.text,
     unsubscribeUrl: ctx.unsubscribeUrl,
-    recipientEmail: ctx.recipientEmail
+    recipientEmail: ctx.recipientEmail,
+    external
   })
   return { subject: out.subject, html, text }
 }

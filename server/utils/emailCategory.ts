@@ -17,6 +17,19 @@ export type EmailCategory = 'transactional' | 'product' | 'marketing'
 export const EMAIL_CATEGORY: Record<EmailId, EmailCategory> = {
   'magic-link': 'transactional',
   'system-test': 'transactional',
-  welcome: 'product'
+  welcome: 'product',
+  invoice: 'transactional'
   // Add new templates here as you register them in server/emails/index.ts.
 }
+
+/**
+ * "External" emails go to people who aren't a Stems audience member — e.g. an
+ * invoice sent to a grower's customer. They MUST NOT carry the Stems
+ * unsubscribe footer / List-Unsubscribe header: that footer links to Stems
+ * account preferences the recipient can't use, and an "unsubscribe" click would
+ * suppress an address that isn't theirs to manage. The send layer skips the
+ * unsubscribe chrome for these.
+ */
+export const EXTERNAL_EMAIL_IDS = new Set<EmailId>(['invoice'])
+
+export const isExternalEmail = (id: EmailId): boolean => EXTERNAL_EMAIL_IDS.has(id)

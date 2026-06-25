@@ -12,14 +12,24 @@ import { authClient } from '~/utils/auth-client'
 // fetched", and a competing `null` default would wedge it (ensure() only
 // fetches when undefined), hiding the grower tabs and bouncing to onboarding.
 const { profile } = useProfile()
-const isGrower = computed(() => !!profile.value?.isGrower)
+
+// Auth + grower state both resolve client-side, so the server can't know them.
+// Gate the auth-dependent tabs on mount: the server render and the first client
+// render both show the logged-out shell (so they match — no hydration mismatch),
+// then the correct tabs light up once mounted.
+const mounted = ref(false)
+onMounted(() => {
+  mounted.value = true
+})
+
+const isGrower = computed(() => mounted.value && !!profile.value?.isGrower)
 
 // Auth-aware: logged-out visitors get a prominent "Start selling" CTA instead of
 // a Profile tab — the bottom bar is the catchiest spot to convert a passing
 // flower seller (e.g. arriving from another grower's Instagram link) into a
 // signup. useSession() (no useFetch) returns a reactive ref — same as default.vue.
 const session = authClient.useSession()
-const isAuthed = computed(() => !!session.value.data?.user)
+const isAuthed = computed(() => mounted.value && !!session.value.data?.user)
 
 const emit = defineEmits<{ add: [] }>()
 
@@ -47,7 +57,7 @@ function onAdd() {
 </script>
 
 <template>
-  <nav class="fixed inset-x-0 bottom-0 z-40" aria-label="Primary">
+  <nav class="fixed inset-x-0 bottom-0 z-40 print:hidden" aria-label="Primary">
     <!-- Mobile: full-width bottom bar. Desktop (sm+): a contained, floating pill
          centered over the content column instead of a stretched full-width bar. -->
     <ul

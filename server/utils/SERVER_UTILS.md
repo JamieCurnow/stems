@@ -79,6 +79,21 @@ Shared Zod schemas for the profile endpoints: `profileCreateSchema` (onboarding 
 
 `flowerCreateSchema` / `flowerPatchSchema` (and `toFlowerDto`, `loadPhotoKeys`) are exported from the create handler and reused by the other flower routes.
 
+### Invoice schemas — `invoiceSchemas.ts`
+
+Zod schemas for the invoicing endpoints: `invoiceSettingsSchema` (upsert; every field optional/defaulted), `customerCreateSchema`, and `invoiceCreateSchema` / `invoicePatchSchema` (`.partial()`) whose `lines` are validated per item. Money is integer pence; `taxRate` is basis points; dates accept epoch-ms or parsable strings. Exports `InvoiceLineInput`.
+
+---
+
+## Invoicing — `invoice.ts`
+
+Helpers for the invoicing endpoints.
+
+- **`getOrCreateInvoiceSettings(db, userId)`** — reads the user's `invoice_settings`, creating a default row on first access (so the number counter always has a home).
+- **`toInvoiceSettingsDto` / `toInvoiceDto` / `toInvoiceLineDto` / `toInvoiceListItemDto`** — map Drizzle rows → wire DTOs (pence, epoch ms, `logoUrl` resolved via `imgUrl`, never raw R2 keys).
+
+Shared create/patch building blocks live on the create handler (`server/api/invoices/index.post.ts`) and are reused by `[id].patch.ts`: `resolveCustomerId` (verify/auto-save the contact), `insertInvoiceLines` (computes each `amount`), `nextFreeInvoiceNumber` (auto-number, skipping manual collisions). Totals are always recomputed via `invoiceTotals` from `shared/utils/invoice.ts` — never trusted from the client.
+
 ---
 
 ## Images & storage (R2)

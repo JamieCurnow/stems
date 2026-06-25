@@ -12,6 +12,15 @@ API endpoints (`server/api/*`) and public routes (`server/routes/*`). File-based
 | `PATCH /api/flowers/[id]`             | user           | `flowerPatchSchema`                      |
 | `DELETE /api/flowers/[id]`            | user           | —                                        |
 | `PATCH /api/flowers/reorder`          | user           | `{ ids: string[] }`                      |
+| `GET /api/invoices`                   | user           | —                                        |
+| `POST /api/invoices`                  | user           | `invoiceCreateSchema`                    |
+| `GET /api/invoices/[id]`              | user           | —                                        |
+| `PATCH /api/invoices/[id]`            | user           | `invoicePatchSchema`                     |
+| `DELETE /api/invoices/[id]`           | user           | —                                        |
+| `GET /api/customers`                  | user           | —                                        |
+| `POST /api/customers`                 | user           | `customerCreateSchema`                   |
+| `GET /api/invoice-settings`           | user           | —                                        |
+| `PUT /api/invoice-settings`           | user           | `invoiceSettingsSchema`                  |
 | `GET /api/profile/me`                 | user           | —                                        |
 | `POST /api/profile`                   | user           | `profileCreateSchema`                    |
 | `PATCH /api/profile`                  | user           | `profilePatchSchema`                     |
@@ -102,6 +111,56 @@ Partial update (`profilePatchSchema`, `.partial()`). Handle is **not** editable 
 Live availability check for onboarding. Auth-gated to limit enumeration. Format/reserved problems → `{ available: false, error }`; an already-taken handle → `{ available: false }` (no error).
 
 - **Auth:** user · **Query:** `handle` · **Response:** `{ available: boolean, error?: string }`
+
+---
+
+## Invoices — `/api/invoices`, `/api/customers`, `/api/invoice-settings`
+
+Grower invoicing. All endpoints are `requireUser` only (the grower-only gating
+is client-side via `profile.isGrower`, mirroring `/api/flowers`). Money is integer
+pence; `taxRate` is basis points (2000 = 20%). **Totals are never trusted from the
+client** — `subtotal`/`taxAmount`/`total` are recomputed server-side from the line
+quantities and unit prices via `invoiceTotals()`.
+
+### `GET /api/invoices`
+
+The user's invoices for the table view (no line items; stored totals). Sorted by
+issue date desc. Returns `InvoiceListItemDto[]`.
+
+### `POST /api/invoices` — `invoiceCreateSchema`
+
+Creates an invoice. Resolves the customer (verifies a provided `customerId`, else
+saves the typed contact when `saveCustomer` is set) and **snapshots** the contact
+onto the invoice so later contact edits never rewrite history. Auto-generates the
+number from settings (`prefix` + zero-padded `nextInvoiceNumber`, skipping any
+manual collisions) and bumps the counter, unless an explicit `number` is sent.
+Returns the full `InvoiceDto`. A manual-number clash → 409.
+
+### `GET /api/invoices/[id]`
+
+Full invoice with line items (`InvoiceDto`). 404 if missing, 403 if not yours.
+
+### `PATCH /api/invoices/[id]` — `invoicePatchSchema` (`.partial()`)
+
+Partial update. Sending just `{ status }` is the cheap mark-as-sent/paid action;
+sending the full object (incl. `lines`) re-saves everything. Totals are recomputed
+whenever `lines` or `taxRate` change. `updatedAt` always bumps.
+
+### `DELETE /api/invoices/[id]`
+
+Hard delete (line items cascade).
+
+### `GET /api/customers` · `POST /api/customers` — `customerCreateSchema`
+
+The user's saved contacts (for the invoice picker), sorted by name; and create a
+contact. Contacts are also auto-created by invoice POST when a new name is typed.
+
+### `GET /api/invoice-settings` · `PUT /api/invoice-settings` — `invoiceSettingsSchema`
+
+The user's invoice "from" header, bank/payment details and numbering defaults.
+A default row is created on first access (get-or-create) so the number counter
+always has a home. PUT upserts. The DTO exposes `logoUrl` (resolved `/img`), never
+the raw R2 key.
 
 ---
 

@@ -4,7 +4,7 @@ import { requireUser } from '~~/server/utils/requireUser'
 import { getSafeRouterParam, readZodBody } from '~~/server/utils/validation'
 import { invoicePatchSchema } from '~~/server/utils/invoiceSchemas'
 import { toInvoiceDto } from '~~/server/utils/invoice'
-import { resolveCustomerId, insertInvoiceLines } from './index.post'
+import { resolveCustomerId, buildInvoiceLineRows } from './index.post'
 import { invoice, invoiceLine, type InvoiceRow } from '~~/server/db/schema'
 import { invoiceTotals } from '~~/shared/utils/invoice'
 import type { InvoiceDto } from '~~/shared/types/invoice'
@@ -54,13 +54,13 @@ export default defineEventHandler(async (event): Promise<InvoiceDto> => {
 
   // Recompute totals when the lines or tax rate change.
   const effectiveTaxRate = body.taxRate ?? existing.taxRate
+  let newLineRows: ReturnType<typeof buildInvoiceLineRows> | null = null
   if (body.lines !== undefined) {
-    await db.delete(invoiceLine).where(eq(invoiceLine.invoiceId, id))
-    await insertInvoiceLines(db, id, body.lines)
     const totals = invoiceTotals(body.lines, effectiveTaxRate)
     patch.subtotal = totals.subtotal
     patch.taxAmount = totals.taxAmount
     patch.total = totals.total
+    newLineRows = buildInvoiceLineRows(id, body.lines)
   } else if (body.taxRate !== undefined) {
     const lines = await db.select().from(invoiceLine).where(eq(invoiceLine.invoiceId, id)).all()
     const totals = invoiceTotals(lines, effectiveTaxRate)
@@ -69,8 +69,19 @@ export default defineEventHandler(async (event): Promise<InvoiceDto> => {
     patch.total = totals.total
   }
 
+  // When lines change, the delete + insert + invoice update must be atomic —
+  // otherwise a failure between them could leave the invoice with no lines but
+  // stale totals. db.batch runs as a single D1 transaction (all-or-nothing).
+  const writeInvoice = db.update(invoice).set(patch).where(eq(invoice.id, id))
   try {
-    await db.update(invoice).set(patch).where(eq(invoice.id, id))
+    if (newLineRows !== null) {
+      const clearLines = db.delete(invoiceLine).where(eq(invoiceLine.invoiceId, id))
+      await (newLineRows.length
+        ? db.batch([clearLines, db.insert(invoiceLine).values(newLineRows), writeInvoice])
+        : db.batch([clearLines, writeInvoice]))
+    } else {
+      await writeInvoice
+    }
   } catch (e) {
     if (String(e).includes('UNIQUE')) {
       throw createError({

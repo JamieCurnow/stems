@@ -64,6 +64,23 @@ export const resolveCustomerId = async (
   return null
 }
 
+/** Build the line rows for an invoice, computing each amount server-side.
+ *  Pure — returns the rows to insert (used directly and inside db.batch). */
+export const buildInvoiceLineRows = (invoiceId: string, lines: InvoiceLineInput[]) => {
+  const now = new Date()
+  return lines.map((l, i) => ({
+    id: crypto.randomUUID(),
+    invoiceId,
+    flowerId: l.flowerId,
+    description: l.description,
+    quantity: l.quantity,
+    unitPrice: l.unitPrice,
+    amount: lineAmount(l),
+    sortOrder: i,
+    createdAt: now
+  }))
+}
+
 /** Insert the line rows for an invoice, computing each amount server-side. */
 export const insertInvoiceLines = async (
   db: Db,
@@ -71,20 +88,7 @@ export const insertInvoiceLines = async (
   lines: InvoiceLineInput[]
 ): Promise<void> => {
   if (!lines.length) return
-  const now = new Date()
-  await db.insert(invoiceLine).values(
-    lines.map((l, i) => ({
-      id: crypto.randomUUID(),
-      invoiceId,
-      flowerId: l.flowerId,
-      description: l.description,
-      quantity: l.quantity,
-      unitPrice: l.unitPrice,
-      amount: lineAmount(l),
-      sortOrder: i,
-      createdAt: now
-    }))
-  )
+  await db.insert(invoiceLine).values(buildInvoiceLineRows(invoiceId, lines))
 }
 
 /**

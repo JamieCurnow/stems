@@ -43,7 +43,7 @@ const showSignedOutCta = computed(() => !session.value.isPending && !isAuthed.va
 const inviteMailto = computed(() => {
   const subject = encodeURIComponent('Join me on Stems')
   const body = encodeURIComponent(
-    "I'm looking for local flower growers on Stems - you should set up a page: https://stems.app"
+    "I'm looking for local flower growers on Stems. You should set up a page: https://stems.market"
   )
   return `mailto:?subject=${subject}&body=${body}`
 })

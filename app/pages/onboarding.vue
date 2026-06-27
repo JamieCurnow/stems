@@ -111,7 +111,7 @@ async function submit() {
       <p class="mt-2 text-sm text-muted">
         This is your shareable link -
         <span class="font-medium text-primary"
-          >stems.app/@{{ normaliseHandle(state.handle) || 'yourname' }}</span
+          >stems.market/@{{ normaliseHandle(state.handle) || 'yourname' }}</span
         >
       </p>
     </header>

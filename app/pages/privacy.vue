@@ -6,7 +6,7 @@
 definePageMeta({ layout: 'default' })
 
 useSeoMeta({
-  title: 'Privacy Policy · Stems',
+  title: 'Privacy Policy',
   description: 'How Stems collects, uses, and protects your personal data. UK GDPR-compliant privacy policy.'
 })
 

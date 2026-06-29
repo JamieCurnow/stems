@@ -146,6 +146,7 @@ flowers, not a pitch deck.
 | share one link, put it in your bio, send it on | "drive traffic", "convert", "acquire users" |
 | set up your page, list what you've got | "onboard", "create your seller account" |
 | we don't take a cut / we stay out of it | "low fees", "competitive commission" |
+| a page for your flowers you share with one link | "Linktree / Bandcamp for growers" (internal shorthand only, never public, see `.agent/rules/copywriting.md`) |
 | the Dutch auction, imported, airfreighted | (don't sneer at it, just contrast plainly) |
 
 The split that matters: **the story can be romantic about flowers; the product

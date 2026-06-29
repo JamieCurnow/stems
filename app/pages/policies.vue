@@ -4,7 +4,7 @@
 definePageMeta({ layout: 'default' })
 
 useSeoMeta({
-  title: 'Policies · Stems',
+  title: 'Policies',
   description: 'The policies that govern your use of Stems: privacy and cookies.'
 })
 

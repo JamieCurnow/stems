@@ -5,7 +5,7 @@
 definePageMeta({ layout: 'default' })
 
 useSeoMeta({
-  title: 'Cookie Policy · Stems',
+  title: 'Cookie Policy',
   description: 'What cookies Stems uses, what they do, and how to change your choice.'
 })
 

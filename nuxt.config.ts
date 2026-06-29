@@ -1,6 +1,67 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@pinia/nuxt', '@vueuse/nuxt', '@vite-pwa/nuxt'],
+  // SEO sub-modules are pulled in by name (not the '@nuxtjs/seo' umbrella) so we
+  // can deliberately omit `nuxt-og-image` — it crashes the Cloudflare dev preset
+  // (TTY prompt for a renderer + heavy satori runtime). We ship a static
+  // `/og.png` instead (see app/app.vue). `@nuxt/content` is registered before
+  // the SEO modules, matching the proven LAND ordering.
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/ui',
+    '@nuxt/content',
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
+    '@vite-pwa/nuxt',
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
+    'nuxt-schema-org',
+    'nuxt-seo-utils',
+    'nuxt-site-config'
+  ],
+
+  // Site-wide config consumed by the SEO modules: absolute-URL generation
+  // (sitemap, canonical, og:image), schema.org defaults, and og:locale.
+  site: {
+    url: 'https://stems.market',
+    name: 'Stems',
+    description:
+      'The marketplace for local-grown flowers. Find local flower growers near you and contact them directly.',
+    defaultLocale: 'en-GB',
+    // nuxt-seo-utils auto-appends the brand to every page title via the template
+    // `%s <titleSeparator> Stems`. The separator defaults to '|'; '·' matches the
+    // Stems wordmark style. So useSeoMeta({ title: 'About' }) → "About · Stems",
+    // and per-page titles drop their manual " · Stems" suffix to avoid doubling.
+    titleSeparator: '·'
+  },
+
+  // @nuxtjs/sitemap: static public routes are auto-discovered; the dynamic
+  // `@handle` grower pages (and, from brief 03, blog posts) come from the
+  // server source. Auth-gated app routes are excluded.
+  sitemap: {
+    sources: ['/api/__sitemap__/urls'],
+    exclude: [
+      '/flowers',
+      '/flowers/**',
+      '/invoices',
+      '/invoices/**',
+      '/account',
+      '/account/**',
+      '/onboarding',
+      '/login',
+      '/r/**',
+      '/email/**',
+      // The literal `/@:handle` route param would otherwise emit a junk URL;
+      // the real grower URLs come from the sitemap source above.
+      '/@*'
+    ]
+  },
+
+  // @nuxtjs/robots: generates /robots.txt at runtime and appends the
+  // `Sitemap:` pointer automatically (because @nuxtjs/sitemap is present).
+  // Everything not disallowed is allowed — the public surface stays crawlable.
+  robots: {
+    disallow: ['/flowers', '/invoices', '/account', '/onboarding', '/login', '/r/', '/email/', '/api/']
+  },
 
   devtools: { enabled: false },
 
@@ -59,8 +120,11 @@ export default defineNuxtConfig({
     }
   },
 
-  // Keep catalog markdown alongside source files without Nuxt auto-scanning them.
-  ignore: ['**/*.md'],
+  // Keep catalog markdown (COMPONENTS.md, PAGES.md, etc.) alongside source files
+  // without Nuxt auto-scanning them. The `!content/**/*.md` negation re-includes
+  // the @nuxt/content blog corpus (gitignore semantics: a later `!` un-ignores)
+  // so Content can read it while every other `.md` stays invisible to Nuxt.
+  ignore: ['**/*.md', '!content/**/*.md'],
 
   // Must be ≥ 2025-07-15. Below that, Nitro's cloudflareDev preset silently
   // falls back to a generic dev runtime that doesn't inject CF bindings.
@@ -68,7 +132,7 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare-module',
-    ignore: ['**/*.md'],
+    ignore: ['**/*.md', '!content/**/*.md'],
     imports: { dirs: ['!**/*.md'] },
     experimental: { wasm: false },
     cloudflare: {

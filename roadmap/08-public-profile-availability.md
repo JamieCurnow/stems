@@ -1,6 +1,6 @@
 # 08 — Public Profile & Availability Page (the wedge)
 
-**Goal:** the shareable, **logged-out** page at `stems.app/@handle` showing a
+**Goal:** the shareable, **logged-out** page at `stems.market/@handle` showing a
 grower's about info and live flower availability — beautiful, fast, and SEO/social
 friendly. This is the single most important screen in V1; a grower can use it
 before any florist features exist.
@@ -99,7 +99,7 @@ prominent but not shouty. If no flowers, omit.
 ---
 
 ## Definition of done
-- [ ] `stems.app/@handle` renders SSR, logged-out, with about + live flowers.
+- [ ] `stems.market/@handle` renders SSR, logged-out, with about + live flowers.
 - [ ] Unknown/reserved handles 404 cleanly.
 - [ ] `GET /api/public/[handle]` returns no private fields; prices/URLs resolved.
 - [ ] `FlowerCard` reused between this page and the grower's `/flowers` list.

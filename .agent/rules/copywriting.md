@@ -18,3 +18,19 @@ This applies to copy only. Em-dashes in code comments aren't great either, but t
 not the target, so don't rewrite working code just to remove them.
 
 Quick check before shipping copy: `grep -rn $'[—–]' <files>` should return nothing.
+
+## No direct comparisons to Linktree (or Bandcamp, etc.)
+
+**Never name or directly compare Stems to Linktree, Bandcamp, or any other product
+in user-facing copy.** The "Linktree / Bandcamp for a flower grower" line is an
+internal positioning shorthand only (it lives in `APP_INFO.md` and
+`marketing/00-foundations/positioning.md`). It must not appear, even by metaphor,
+on any page, email, or social post.
+
+Two reasons: it dates and cheapens the brand by tethering it to someone else's
+product, and the forced metaphor ("your flowers are the songs, your handle is the
+link in the bio") is exactly the "performing" tone the voice guide rejects.
+
+Instead, say what Stems is in its own plain words: a single, good-looking page for
+your flowers that you share with one link. Lead with the grower's real situation
+(the same list typed into a dozen chats), not an analogy to another app.

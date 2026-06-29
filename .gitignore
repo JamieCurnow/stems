@@ -16,6 +16,9 @@ logs
 .nitro
 .cache
 
+# @nuxt/content local dev database (built from content/**)
+.data
+
 # Wrangler local state (D1, KV, DOs) and deploy artifacts
 .wrangler
 

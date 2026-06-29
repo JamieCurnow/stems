@@ -25,7 +25,7 @@ shareable-link wedge — and parks everything else in [`99-backlog-v2.md`](./99-
   **photos**.
 - **Live availability**: listings are continuously editable; the public page
   shows current state + "Updated 2 days ago". No weekly publish cycle.
-- **Public profile + availability page** at `stems.app/@handle` — viewable
+- **Public profile + availability page** at `stems.market/@handle` — viewable
   logged-out. This is the wedge.
 - **User search / discovery** by handle, farm name, and location text.
 - **Share link** (copy + Web Share API). PDF/Instagram export is optional polish.
@@ -47,7 +47,7 @@ growers, reviews/verification, weekly snapshot/publish, Capacitor mobile wrap.
 | Availability model | **Continuous live list + "updated" timestamp** | Lowest friction, always-on, app-like. Simpler data model than weekly snapshots. |
 | Photos | **Client-side square crop → upload to public R2 → serve via `/img`** | Solves photo standardisation with zero external image cost. |
 | Auth | **Magic-link email only** (existing) | Zero passwords; good for non-technical growers. Social/Apple deferred to the Capacitor build. |
-| Profile URL | **`stems.app/@handle`** | Social convention; maximally shareable. |
+| Profile URL | **`stems.market/@handle`** | Social convention; maximally shareable. |
 | Money | **Stored as integer pence** | Avoids float drift. Formatting util in `shared/`. |
 
 ---
@@ -112,6 +112,6 @@ growers, reviews/verification, weekly snapshot/publish, Capacitor mobile wrap.
 
 A grower can, on their phone: sign in via magic link → claim `@juliette` →
 fill in their about page with an avatar → add 10 flowers with square photos,
-prices and availability → and send `stems.app/@juliette` to a florist who opens
+prices and availability → and send `stems.market/@juliette` to a florist who opens
 it (no login) and sees the live, nicely-formatted availability list. A visitor
 can search "Cornwall" and find Juliette. The whole thing feels like a native app.

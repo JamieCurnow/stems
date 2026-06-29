@@ -72,7 +72,7 @@ Single, friendly, mobile-first screen (use `UForm` + `UFormField`). Layout:
   Show green tick / red message inline. Final claim is still validated server-side
   (race-safe via the unique index).
 - Copy: warm and human. Header in `font-display`: "Claim your Stems page".
-  Subtext: "This is your shareable link — `stems.app/@yourname`."
+  Subtext: "This is your shareable link — `stems.market/@yourname`."
 - Submit → `POST /api/profile` creates the row → redirect to `/account` (so they
   immediately see their page) or straight to `/flowers` with an "add your first
   flower" empty state.

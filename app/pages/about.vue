@@ -6,7 +6,7 @@
 definePageMeta({ layout: 'default' })
 
 useSeoMeta({
-  title: 'About · Stems',
+  title: 'About',
   description:
     'Stems is the shareable shopfront for small flower growers. Local-grown flowers, straight from the grower. One link for what you have in season, that you update in minutes.'
 })

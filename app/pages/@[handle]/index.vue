@@ -98,7 +98,10 @@ const pageDescription = computed(() => {
   if (bio) return bio.length > 160 ? `${bio.slice(0, 157)}…` : bio
   return `${profile.value.farmName} on Stems - the marketplace for local-grown flowers.`
 })
-const pageTitle = computed(() => `${profile.value.farmName} (@${profile.value.handle}) · Stems`)
+// The global title template (nuxt-seo-utils) appends ' · Stems' to the document
+// <title>; ogTitle reuses this brandless value and pairs with the global
+// ogSiteName: 'Stems', so the brand isn't doubled on either surface.
+const pageTitle = computed(() => `${profile.value.farmName} (@${profile.value.handle})`)
 
 useSeoMeta({
   title: pageTitle,

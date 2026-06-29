@@ -27,6 +27,7 @@ API endpoints (`server/api/*`) and public routes (`server/routes/*`). File-based
 | `GET /api/profile/handle-available`   | user           | `?handle`                                |
 | `GET /api/public/[handle]`            | public         | —                                        |
 | `GET /api/search`                     | public         | `?q&limit&cursor` (clamped)              |
+| `GET /api/__sitemap__/urls`           | public         | sitemap source (growers + blog posts)    |
 | `POST /api/uploads`                   | user           | multipart/raw image                      |
 | `GET /api/files/[...path]`            | user           | Range header                             |
 | `GET /api/billing/me`                 | user           | —                                        |
@@ -177,6 +178,12 @@ PUBLIC grower-page payload — must work logged-out so link previews + first pai
 PUBLIC grower discovery (powers `/discover`). Empty `q` → recently-active browse list; with a term → case-insensitive substring match over handle/farmName/location, ranked (exact handle > prefix > farmName > location), then most-recently-active. One `LEFT JOIN` + `GROUP BY` for counts/last-active (no N+1). `limit`/`cursor` are parsed and **clamped** (never 400). _Scale note: `LIKE '%term%'` is a full scan — fine at launch; move to FTS5 when growth demands._
 
 - **Auth:** public · **Query:** `q?`, `limit?` (≤50, default 20), `cursor?` (offset) · **Response:** `GrowerCardDto[]`
+
+### `GET /api/__sitemap__/urls`
+
+PUBLIC sitemap source consumed by `@nuxtjs/sitemap` (wired via `sitemap.sources` in `nuxt.config.ts`). Emits the dynamic URLs the route table can't infer: every published grower (`profile.isGrower = true`) as `/@handle`, plus every non-draft `@nuxt/content` blog post as `/blog/<slug>`, each with a `lastmod`. Uses `defineSitemapEventHandler` (auto-imported) and imports `queryCollection` explicitly from `@nuxt/content/nitro` (the bare auto-import mis-resolves to the client type in a server file). Static public pages are auto-discovered by the module, so they're not repeated here.
+
+- **Auth:** public · **Response:** `{ loc, lastmod }[]`
 
 ---
 

@@ -4,7 +4,7 @@ This file documents the pages in the app — route, purpose, layout, and any spe
 
 | File                | Route           | Layout    | Auth                               |
 | ------------------- | --------------- | --------- | ---------------------------------- |
-| `index.vue`         | `/`             | none      | public (redirects)                 |
+| `index.vue`         | `/`             | `default` | public (marketing landing)         |
 | `discover.vue`      | `/discover`     | `app`     | public                             |
 | `@[handle].vue`     | `/@:handle`     | `app`     | public                             |
 | `login.vue`         | `/login`        | `default` | public                             |
@@ -17,8 +17,9 @@ This file documents the pages in the app — route, purpose, layout, and any spe
 | `account/index.vue` | `/account`      | `app`     | `auth`, `onboarding`               |
 | `account/edit.vue`  | `/account/edit` | `app`     | `auth`, `onboarding`               |
 | `account/invoice-settings.vue` | `/account/invoice-settings` | `app` | `auth`, `onboarding` (grower-only) |
-| `about.vue`         | `/about`        | `default` | public (coming-soon)               |
-| `blog.vue`          | `/blog`         | `default` | public (coming-soon)               |
+| `about.vue`         | `/about`        | `default` | public                             |
+| `blog/index.vue`    | `/blog`         | `default` | public                             |
+| `blog/[slug].vue`   | `/blog/:slug`   | `default` | public                             |
 | `policies.vue`      | `/policies`     | `default` | public                             |
 | `privacy.vue`       | `/privacy`      | `default` | public                             |
 | `cookies.vue`       | `/cookies`      | `default` | public                             |
@@ -27,7 +28,9 @@ This file documents the pages in the app — route, purpose, layout, and any spe
 
 ## `/` (index.vue)
 
-No standalone marketing home yet — `layout: false`, immediately `navigateTo('/discover', { redirectCode: 302 })`. The PWA `start_url` is `/discover`. _(A dedicated marketing landing is future work — flagged with a TODO in the file.)_
+PUBLIC growers-first marketing landing (SSR, indexable — no redirect). Uses `layout: false` so the **hero is the header**, exactly like `/discover` (which sits on the chrome-less `app` layout): no top bar, a full-bleed floral hero (blurred `/hero-flowers.svg` wash, eyebrow, big EB Garamond "Stems" wordmark, "List your flowers" → `/login` + "or sign in", and the `How it works · About · Blog · Policies` utility nav **below the CTA**, same styling as the `discover.vue` hero). Sections below: a warm manifesto (peach band), how-it-works as three floral-icon feature blocks (not big numerals), the shareable-link wedge (`stems.market/@you` chip), a subordinate buyer door, and a closing CTA over a second floral wash. The hero CTA adapts to auth state (`authClient.useSession()` gated on `!isPending`, like `discover.vue`): signed-in users see "Open Stems" → `/discover`. Inherits canonical + `Organization`/`WebSite` schema + `/og.png` from `app.vue`. The PWA `start_url` remains `/discover`; this is the first-touch web front door.
+
+The `default` layout header (used by the other public content pages, **not** the index) carries the same shared utility nav (`How it works · About · Blog · Policies`, current page highlighted via `active-class`), so how-it-works, about, blog, policies, privacy, cookies (and login/onboarding) can reach the others. `/discover` and `/` keep the nav in their own heroes instead.
 
 ---
 
@@ -109,11 +112,15 @@ The grower's invoice "from" header, bank/payment details and numbering defaults 
 
 ---
 
-## `/about`, `/blog`, `/policies`, `/privacy`, `/cookies` — public legal/marketing pages
+## `/blog` (blog/index.vue) & `/blog/:slug` (blog/[slug].vue)
+
+PUBLIC marketing blog on the slim `default` chrome, powered by `@nuxt/content` v3 (markdown in `content/blog/*.md`, schema in `content.config.ts`). `blog/index.vue` lists posts (newest first) as borderless rows on hairline dividers, Stems-branded (EB Garamond headings, peach accents). `blog/[slug].vue` renders a post via `<ContentRenderer>` in a `max-w-3xl` prose column with `Article` + (when the post has `faq` frontmatter) `FAQPage` JSON-LD. **Drafts** (`draft: true`) are shown in dev (with a "Draft" pill) but hidden from the index, 404 in production, and excluded from the sitemap. Per-post `ogImage` falls back to the global `/og.png`.
+
+## `/about`, `/policies`, `/privacy`, `/cookies` — public legal/marketing pages
 
 Standalone, shareable web pages on the slim `default` chrome (Stems wordmark + sign-in), reachable from the discover-hero `About · Blog · Policies` nav. Entity for all legal copy is **Guardline Ltd** (England & Wales, company no. 13323382); contact `hello@stems.market`.
 
-- `/about` & `/blog` — branded "coming soon" pages (centred icon + `font-display` heading + a "Discover growers" button). Placeholders until real content / a blog exist.
+- `/about` — the longer story (the 6am DM pile, how it works, why local/seasonal, what Stems is not), grower-first, with a "List your flowers" / "Find a grower" CTA pair.
 - `/policies` — small hub linking to the privacy + cookie policies; the home for legal pages as more get added (e.g. terms).
 - `/privacy` — UK GDPR privacy policy, **Stems-specific**: magic-link auth (no passwords stored), public-by-design grower pages, and the deliberate no-in-app-messaging contact handoff (we don't see/send/store buyer↔grower conversations). Subprocessors: Stripe, Cloudflare (D1/R2), Resend. (No analytics currently — GA was removed.)
 - `/cookies` — cookie table reflecting the **real**, functional-only cookies (`better-auth.session_token`, `stems_consent`, `stems_ref`). Copy states no analytics/marketing cookies are currently used. The "Change your preferences" button reuses the live consent system — `useConsent()` + `<LayoutConsentManageDialog>` (same dialog the banner opens), kept dormant and ready for a future provider (e.g. PostHog).
@@ -139,3 +146,4 @@ Owner-facing profile edit form (`layout: app`, middleware `['auth', 'onboarding'
 - **Optimistic UI is the norm on `/flowers`** (stock changes, archive). Always capture the previous value and revert + toast on failure.
 - **`robots: noindex,nofollow`** on every authed/owner page (`login`, `onboarding`, `flowers`, `account/*`). Public pages (`discover`, `@handle`) get full SEO meta.
 - **Pages referenced but not yet built:** `/billing` + `/billing/success|cancel` (targeted by `useSubscription` and the `subscription` middleware) and `/settings` (linked from emails). The `subscription` and `admin` middleware exist but no page currently opts into them.
+- **Global SEO baseline (`@nuxtjs/seo` sub-modules + `app.vue`).** `nuxt.config.ts` registers `@nuxtjs/sitemap`, `@nuxtjs/robots`, `nuxt-schema-org`, `nuxt-seo-utils`, `nuxt-site-config` by name (the `@nuxtjs/seo` umbrella is **deliberately not** used, so `nuxt-og-image` stays out — it crashes the Cloudflare dev preset; we ship a static `public/og.png` instead). `app.vue` sets the global OG fallback + `Organization`/`WebSite` JSON-LD; every public page inherits a `<title> · Stems` template, a canonical, and the OG image. Per-page `useSeoMeta` overrides win (last write), so `/@handle` keeps its dynamic OG + `LocalBusiness` schema. **Gotcha:** the title separator is `site.titleSeparator` (we set `'·'`); the `seo.titleTemplate` option does **not** apply here and the default separator is `'|'`. Per-page titles must therefore be brandless (`title: 'About'`, not `'About · Stems'`) to avoid doubling.

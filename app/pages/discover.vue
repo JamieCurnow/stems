@@ -91,6 +91,8 @@ const inviteMailto = computed(() => {
           class="mt-6 flex items-center justify-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted"
           aria-label="More"
         >
+          <NuxtLink to="/how-it-works" class="transition-colors hover:text-primary">How it works</NuxtLink>
+          <span class="text-dimmed" aria-hidden="true">·</span>
           <NuxtLink to="/about" class="transition-colors hover:text-primary">About</NuxtLink>
           <span class="text-dimmed" aria-hidden="true">·</span>
           <NuxtLink to="/blog" class="transition-colors hover:text-primary">Blog</NuxtLink>

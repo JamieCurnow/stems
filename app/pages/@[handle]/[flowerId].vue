@@ -90,7 +90,9 @@ const ogImage = computed(() => {
   const rel = flower.value?.photoUrls[0] || profile.value.avatarUrl
   return rel ? new URL(rel, origin.value).href : undefined
 })
-const pageTitle = computed(() => `${flower.value?.name} · ${profile.value.farmName} · Stems`)
+// Document <title> gets ' · Stems' from the global template (nuxt-seo-utils);
+// ogTitle reuses this brandless value alongside the global ogSiteName.
+const pageTitle = computed(() => `${flower.value?.name} · ${profile.value.farmName}`)
 const pageDescription = computed(() => {
   const bits = [subtitle.value, priceLine.value].filter(Boolean).join(' · ')
   return bits

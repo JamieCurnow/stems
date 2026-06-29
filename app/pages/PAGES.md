@@ -69,7 +69,7 @@ PUBLIC, read-only flower detail — a real page (previously a bottom drawer, whi
 
 ## `/login` (login.vue)
 
-Magic-link sign-in (`layout: default`, `robots: noindex`). Email → `authClient.signIn.magicLink({ callbackURL, newUserCallbackURL: '/onboarding', errorCallbackURL })`. Returning users land on a safe `?redirect` path or `/account`; brand-new accounts always go to `/onboarding`. Shows a "check your inbox" confirmation, a referral-applied alert (`?ref=`), and a link-error alert (`?error=`).
+Email-OTP sign-in (`layout: default`, `robots: noindex`). Two steps: email → `authClient.emailOtp.sendVerificationOtp({ email, type: 'sign-in' })`, then a 6-digit code → `authClient.signIn.emailOtp({ email, otp })`. On verify, navigates to a safe `?redirect` path or `/account`; brand-new (profile-less) accounts are bounced to `/onboarding` by the `onboarding` middleware on the destination page. A code (not a magic link) is used deliberately: on iOS, a home-screen PWA has a cookie jar isolated from Safari, and a link always opens in Safari, so its session cookie lands in the wrong container; a code typed into the PWA sets the cookie in the PWA's own context. Shows an "enter your code" step, a referral-applied alert (`?ref=`), and a stale-magic-link alert (`?error=`). Magic link stays wired server-side (`server/utils/auth.ts`) for browser sign-in.
 
 ---
 

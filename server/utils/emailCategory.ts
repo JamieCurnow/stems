@@ -16,6 +16,7 @@ export type EmailCategory = 'transactional' | 'product' | 'marketing'
  */
 export const EMAIL_CATEGORY: Record<EmailId, EmailCategory> = {
   'magic-link': 'transactional',
+  'email-otp': 'transactional',
   'system-test': 'transactional',
   welcome: 'product',
   invoice: 'transactional'

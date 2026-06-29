@@ -3,6 +3,7 @@ import { renderLayoutHtml, renderLayoutText } from './_layout'
 import { isExternalEmail } from '../utils/emailCategory'
 
 import magicLink from './magic-link'
+import emailOtp from './email-otp'
 import systemTest from './system-test'
 import welcome from './welcome'
 import invoice from './invoice'
@@ -15,6 +16,7 @@ import invoice from './invoice'
  */
 const templates = {
   'magic-link': magicLink,
+  'email-otp': emailOtp,
   'system-test': systemTest,
   welcome,
   invoice

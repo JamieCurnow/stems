@@ -1,5 +1,5 @@
 import { createAuthClient } from 'better-auth/vue'
-import { magicLinkClient } from 'better-auth/client/plugins'
+import { magicLinkClient, emailOTPClient } from 'better-auth/client/plugins'
 import { stripeClient } from '@better-auth/stripe/client'
 
 /**
@@ -10,9 +10,9 @@ import { stripeClient } from '@better-auth/stripe/client'
  * Drop the `stripeClient` plugin if you don't need billing.
  */
 export const authClient = createAuthClient({
-  plugins: [magicLinkClient(), stripeClient({ subscription: true })]
+  plugins: [magicLinkClient(), emailOTPClient(), stripeClient({ subscription: true })]
 })
 
 // `signUp` is intentionally not re-exported — password auth is disabled and
-// account creation now happens implicitly on magic-link verify.
+// account creation now happens implicitly on first OTP / magic-link verify.
 export const { signIn, signOut, useSession } = authClient

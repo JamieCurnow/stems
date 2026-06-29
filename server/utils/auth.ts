@@ -1,5 +1,5 @@
 import { betterAuth, type BetterAuthOptions, type BetterAuthPlugin } from 'better-auth'
-import { magicLink } from 'better-auth/plugins'
+import { magicLink, emailOTP } from 'better-auth/plugins'
 import { stripe as stripePlugin } from '@better-auth/stripe'
 import Stripe from 'stripe'
 import type { H3Event } from 'h3'
@@ -181,6 +181,43 @@ export function serverAuth(event: H3Event) {
             emailId: 'magic-link',
             to: email,
             props: { url }
+          })
+        }
+      }),
+
+      // Email OTP — the primary in-app sign-in path. iOS standalone PWAs run in
+      // a cookie jar isolated from Safari, so a magic *link* (which opens in
+      // Safari) sets its session cookie in the wrong container and the installed
+      // app stays logged out. A code typed back into the PWA sets the cookie in
+      // the PWA's own context, so the session sticks. Magic link stays wired for
+      // browser sign-in; both auto-create the user on first verify (disableSignUp
+      // is left false), so the referral-cookie capture in databaseHooks fires the
+      // same way for either path.
+      emailOTP({
+        otpLength: 6,
+        expiresIn: 60 * 10, // 10-minute code
+        // Don't persist the live code in plaintext — verification still compares
+        // against the code emailed to the user.
+        storeOTP: 'hashed',
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          // Only the sign-in flow is used (email/password is disabled, and we
+          // don't use the change-email OTP flow). Guard anyway so a future flow
+          // doesn't silently send a "sign-in code" email.
+          if (type !== 'sign-in') return
+
+          // Dev fallback: with no RESEND_API_KEY (local dev), sending throws, so
+          // log the code to the terminal instead. Never logs in deployed envs.
+          const env = event.context.cloudflare?.env
+          if (!env?.RESEND_API_KEY) {
+            console.log(`\n🌷 [Stems] Sign-in code for ${email}: ${otp}\n`)
+            return
+          }
+          // Transactional — a login code must never be suppressed by a
+          // marketing/product preference toggle.
+          await sendEmail(event, {
+            emailId: 'email-otp',
+            to: email,
+            props: { code: otp }
           })
         }
       }),

@@ -285,7 +285,7 @@ Listens for `email.bounced` / `email.complained` and writes the recipient into `
 
 ### `/api/auth/**` — `[...all].ts`
 
-Catch-all forwarding every `/api/auth/*` request to Better Auth: magic-link sign-in/verify, `get-session`, and (with the Stripe plugin) `stripe/webhook`, `subscription/upgrade`, etc.
+Catch-all forwarding every `/api/auth/*` request to Better Auth: email-OTP sign-in (`email-otp/send-verification-otp`, `sign-in/email-otp`), magic-link sign-in/verify, `get-session`, and (with the Stripe plugin) `stripe/webhook`, `subscription/upgrade`, etc. Email OTP is the primary in-app path (works inside an iOS home-screen PWA, where a magic link would open in Safari and miss the PWA's cookie jar); both auto-create the user on first verify.
 
 ---
 

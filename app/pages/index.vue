@@ -22,7 +22,7 @@ useSeoMeta({
   // The global title template (brief 02) appends ' · Stems'.
   title: 'Local-grown flowers, straight from the grower',
   description:
-    'Stems is the shopfront for small flower growers. List your flowers, share one clean link, and let buyers find you. No commission, no middleman. Free to start.'
+    'Stems is the shopfront for small flower growers. List your flowers, share one clean link, and let buyers find you. No commission, no middleman, free to use.'
 })
 
 // CTA adapts to auth state. The session resolves client-side, so SSR and first
@@ -67,10 +67,17 @@ const steps = [
         <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary">
           Local · Seasonal · Grown
         </p>
+        <!-- The visible wordmark is the brand mark; the sr-only continuation
+             gives crawlers and screen readers a keyword-rich, descriptive H1
+             without changing the design. No em-dashes (copywriting rule). -->
         <h1
           class="mt-2 font-display text-6xl font-medium leading-none tracking-tight text-default sm:text-7xl"
         >
-          Stems
+          <span aria-hidden="true">Stems</span>
+          <span class="sr-only">
+            Stems, the shareable shopfront for small UK flower growers. Local-grown, seasonal flowers,
+            straight from the grower.
+          </span>
         </h1>
         <p class="mx-auto mt-3 max-w-xs text-balance text-muted">
           Local-grown flowers, straight from the grower

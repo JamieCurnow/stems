@@ -6,11 +6,11 @@ Three completely isolated environments — dev, staging, production. Three worke
 
 ## Environments at a glance
 
-| Env        | Where it runs                 | DB                          | Secrets path                                       | URL                          |
-| ---------- | ----------------------------- | --------------------------- | -------------------------------------------------- | ---------------------------- |
-| **Dev**    | `nuxt dev` (Miniflare)        | Local SQLite in `.wrangler/`| `.env`                                             | `http://localhost:3000`      |
-| **Staging**| Worker `stems-staging` | D1 `stems-staging`   | `wrangler secret put X --env staging`              | `staging.stems.market` or `*.workers.dev` |
-| **Prod**   | Worker `stems`         | D1 `stems`           | `wrangler secret put X --env production`           | `stems.market`             |
+| Env         | Where it runs          | DB                           | Secrets path                             | URL                                       |
+| ----------- | ---------------------- | ---------------------------- | ---------------------------------------- | ----------------------------------------- |
+| **Dev**     | `nuxt dev` (Miniflare) | Local SQLite in `.wrangler/` | `.env`                                   | `http://localhost:3000`                   |
+| **Staging** | Worker `stems-staging` | D1 `stems-staging`           | `wrangler secret put X --env staging`    | `staging.stems.market` or `*.workers.dev` |
+| **Prod**    | Worker `stems`         | D1 `stems`                   | `wrangler secret put X --env production` | `stems.market`                            |
 
 `wrangler.jsonc` carries everything declarative (bindings, vars, routes); wrangler secrets carry secrets.
 
@@ -53,12 +53,12 @@ wrangler deploy --env staging
 
 If you want this scripted, the original codebase shipped an internal CLI (`scripts/cli.ts`) built on [`citty`](https://github.com/unjs/citty) + `@clack/prompts`. The subcommand surface:
 
-| Command  | What it does                                                                                                  |
-| -------- | ------------------------------------------------------------------------------------------------------------- |
-| `init`   | Provision a new env: create D1, write env block in `wrangler.jsonc`, apply migrations, set BETTER_AUTH secrets. Idempotent. |
-| `destroy`| Tear down an env: delete the Worker, delete the D1 (irreversible!), remove the env block. Type-to-confirm.    |
-| `rotate` | Replace `BETTER_AUTH_SECRET` on a deployed env. Forces every active session to re-authenticate.                |
-| `list`   | List every env defined in `wrangler.jsonc` with worker name, D1, and route. `--remote` cross-checks Cloudflare. |
+| Command   | What it does                                                                                                                |
+| --------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `init`    | Provision a new env: create D1, write env block in `wrangler.jsonc`, apply migrations, set BETTER_AUTH secrets. Idempotent. |
+| `destroy` | Tear down an env: delete the Worker, delete the D1 (irreversible!), remove the env block. Type-to-confirm.                  |
+| `rotate`  | Replace `BETTER_AUTH_SECRET` on a deployed env. Forces every active session to re-authenticate.                             |
+| `list`    | List every env defined in `wrangler.jsonc` with worker name, D1, and route. `--remote` cross-checks Cloudflare.             |
 
 It's nice-to-have. The manual wrangler commands above do the same job; the CLI just packages them up.
 
@@ -119,7 +119,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm run build
@@ -180,7 +180,7 @@ jobs:
           fi
           git push origin releases/production
       - uses: actions/setup-node@v6
-        with: { node-version: 22, cache: npm }
+        with: { node-version: 24, cache: npm }
       - run: npm ci
       - run: npm run build
         env: { NODE_OPTIONS: --max-old-space-size=6144 }

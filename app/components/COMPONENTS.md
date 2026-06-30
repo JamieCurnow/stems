@@ -8,7 +8,7 @@ Components are auto-imported with a **directory prefix** (e.g. `app/components/F
 
 ## `<AppTabBar>`
 
-Fixed bottom tab bar for the signed-in app shell (rendered by the `app` layout). Thumb-reachable, safe-area padded. Tabs adapt to auth + grower state: Discover is always shown; **My Flowers** + the centre **Add** button are grower-only (gated on `useState('profile').isGrower`); **Profile** shows when signed in. Logged-out visitors instead get a prominent primary **Start selling** CTA (→ `/login`) in the bar — the catchiest spot to convert a passing flower seller into a signup.
+Fixed bottom tab bar for the signed-in app shell (rendered by the `app` layout). A centred, **floating rounded pill** at every width (white/blur with a hairline border + soft shadow), lifted off the bottom edge (`mb-5` + safe-area). Items are horizontal segments: inactive tabs collapse to an icon-only circle on the narrowest screens and reveal their label from `sm`; the **active** tab always shows a soft-peach (`bg-peach-100 text-primary`) icon+label segment. Thumb-reachable, 44px+ hit targets. Tabs adapt to auth + grower state: Discover is always shown; **My Flowers** + the centre **Add** button are grower-only (gated on `useState('profile').isGrower`); **Profile** shows when signed in. Logged-out visitors instead get a prominent primary **Start selling** CTA (→ `/login`) in the bar — the catchiest spot to convert a passing flower seller into a signup.
 
 ### Props
 

@@ -31,6 +31,12 @@ const isGrower = computed(() => mounted.value && !!profile.value?.isGrower)
 const session = authClient.useSession()
 const isAuthed = computed(() => mounted.value && !!session.value.data?.user)
 
+// Active-tab styling needs the current path so the active segment can render its
+// label + soft-peach fill (NuxtLink's active-class only swaps a class, not the
+// icon-only → icon+label layout the floating pill uses).
+const route = useRoute()
+const isActive = (to: string) => route.path === to || route.path.startsWith(`${to}/`)
+
 const emit = defineEmits<{ add: [] }>()
 
 interface Tab {
@@ -57,39 +63,52 @@ function onAdd() {
 </script>
 
 <template>
-  <nav class="fixed inset-x-0 bottom-0 z-40 print:hidden" aria-label="Primary">
-    <!-- Mobile: full-width bottom bar. Desktop (sm+): a contained, floating pill
-         centered over the content column instead of a stretched full-width bar. -->
+  <nav
+    class="fixed inset-x-0 bottom-0 z-40 pb-[env(safe-area-inset-bottom)] print:hidden"
+    aria-label="Primary"
+  >
+    <!-- A centred, floating, rounded pill at every width (previously sm-only).
+         Items are horizontal segments: inactive tabs collapse to an icon-only
+         circle on the narrowest screens and reveal their label from sm; the
+         active tab always shows a soft-peach icon+label segment. -->
     <ul
-      class="mx-auto flex max-w-screen-sm items-stretch justify-around border-t border-default bg-elevated/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:mb-5 sm:w-fit sm:max-w-none sm:gap-1 sm:rounded-full sm:border sm:px-2 sm:pb-0 sm:shadow-sm"
+      class="mx-auto mb-5 flex w-fit items-center gap-1 rounded-full border border-default bg-elevated/95 p-2 shadow-sm backdrop-blur"
     >
-      <li v-for="t in tabs" :key="t.to" class="flex-1 sm:flex-initial">
+      <li v-for="t in tabs" :key="t.to">
         <NuxtLink
           :to="t.to"
-          class="flex min-h-[44px] flex-col items-center justify-center gap-0.5 py-2 text-muted transition-colors hover:text-default sm:px-7"
-          active-class="text-primary"
+          class="flex h-11 items-center justify-center gap-2 rounded-full px-3 transition-colors sm:px-4"
+          :class="
+            isActive(t.to)
+              ? 'bg-peach-100 text-primary'
+              : 'text-muted hover:bg-[rgba(33,30,26,0.04)] hover:text-default'
+          "
         >
-          <UIcon :name="t.icon" class="size-6" />
-          <span class="text-[11px] font-medium">{{ t.label }}</span>
+          <UIcon :name="t.icon" class="size-[22px] shrink-0" />
+          <span
+            class="text-sm font-medium"
+            :class="isActive(t.to) ? 'inline' : 'hidden sm:inline'"
+            >{{ t.label }}</span
+          >
         </NuxtLink>
       </li>
 
       <!-- Logged-out CTA: convert passing flower sellers into signups. Takes the
            prominent slot a signed-in user's Profile/Add would occupy. -->
-      <li v-if="!isAuthed" class="flex flex-[2] items-center px-2 sm:flex-initial">
+      <li v-if="!isAuthed">
         <UButton
           to="/login"
           color="primary"
           size="lg"
           icon="i-lucide-sparkles"
-          class="w-full justify-center rounded-full font-medium sm:px-6"
+          class="h-11 justify-center rounded-full font-medium"
         >
           Start selling
         </UButton>
       </li>
 
       <!-- Center raised Add action: growers only. Opens the add-flower page. -->
-      <li v-if="isGrower" class="flex flex-1 items-center justify-center sm:flex-initial sm:px-2">
+      <li v-if="isGrower" class="ml-0.5">
         <UButton
           icon="i-lucide-plus"
           color="primary"

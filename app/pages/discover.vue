@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { refDebounced } from '@vueuse/core'
-import { authClient } from '~/utils/auth-client'
 import type { GrowerCardDto } from '~~/server/api/search.get'
 
 // PUBLIC discovery page — the app's main entry. Reachable logged-out and, when
 // signed in, sits under the app tab bar. layout: 'app' shows the tab bar for
 // signed-in users; layouts don't gate auth, so this still renders fine
-// logged-out. No auth middleware — it's public on purpose.
+// logged-out. No auth middleware — it's public on purpose. The logged-out
+// "Start selling" CTA lives in the tab bar (App/TabBar.vue), not this header.
 definePageMeta({ layout: 'app' })
 
 useSeoMeta({
@@ -30,16 +30,6 @@ const hasResults = computed(() => (data.value?.length ?? 0) > 0)
 const isSearching = computed(() => trimmedQ.value.length > 0)
 const resultCount = computed(() => data.value?.length ?? 0)
 
-// The branded header shows for everyone; only the "List your flowers" CTA is
-// logged-out-only. The session resolves client-side, so SSR (no cookie context)
-// and the first paint look "logged out" — gating the CTA on isPending (which
-// starts true and flips once the session is known) stops it flashing in for
-// already-signed-in users on refresh. No hydration mismatch: server and first
-// client render agree (isPending true → no CTA).
-const session = authClient.useSession()
-const isAuthed = computed(() => !!session.value.data?.user)
-const showSignedOutCta = computed(() => !session.value.isPending && !isAuthed.value)
-
 const inviteMailto = computed(() => {
   const subject = encodeURIComponent('Join me on Stems')
   const body = encodeURIComponent(
@@ -61,34 +51,25 @@ const inviteMailto = computed(() => {
       />
       <div class="absolute inset-0 bg-gradient-to-b from-white/45 via-white/40 to-white" aria-hidden="true" />
 
-      <div class="relative mx-auto max-w-screen-sm px-4 pb-8 pt-12 text-center sm:pb-12 sm:pt-16">
-        <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary">
+      <div class="relative mx-auto max-w-screen-sm px-6 pb-6 pt-12 text-center sm:pb-8 sm:pt-16">
+        <p
+          class="text-[10px] font-semibold uppercase tracking-[0.3em] text-primary sm:text-[11px] sm:tracking-[0.32em]"
+        >
           Local · Seasonal · Grown
         </p>
-        <h1 class="mt-2 font-display text-6xl font-medium leading-none tracking-tight text-default">Stems</h1>
-        <p class="mx-auto mt-3 max-w-xs text-balance text-muted">
-          Local-grown flowers, straight from the grower
+        <h1
+          class="mt-2 font-display text-[46px] font-medium leading-[0.95] tracking-tight text-default sm:mt-3 sm:text-6xl"
+        >
+          Stems
+        </h1>
+        <p class="mx-auto mt-2.5 max-w-[230px] text-balance text-sm text-muted sm:mt-3 sm:max-w-[340px] sm:text-base">
+          Find a local grower by name, handle or area
         </p>
-
-        <div v-if="showSignedOutCta" class="mt-6 flex flex-col items-center gap-3">
-          <UButton to="/login" color="primary" size="lg" class="rounded-full px-7 font-medium">
-            List your flowers
-          </UButton>
-          <UButton
-            to="/login"
-            variant="link"
-            color="neutral"
-            trailing-icon="i-lucide-arrow-right"
-            class="text-muted hover:text-default"
-          >
-            or sign in
-          </UButton>
-        </div>
 
         <!-- Quiet utility nav, styled like the eyebrow above. Points at the
              standalone public pages (default layout). Always shown. -->
         <nav
-          class="mt-6 flex items-center justify-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted"
+          class="mt-4 flex flex-wrap items-center justify-center gap-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted sm:mt-5 sm:text-[11px] sm:tracking-[0.18em]"
           aria-label="More"
         >
           <NuxtLink to="/how-it-works" class="transition-colors hover:text-primary">How it works</NuxtLink>
@@ -96,8 +77,6 @@ const inviteMailto = computed(() => {
           <NuxtLink to="/about" class="transition-colors hover:text-primary">About</NuxtLink>
           <span class="text-dimmed" aria-hidden="true">·</span>
           <NuxtLink to="/blog" class="transition-colors hover:text-primary">Blog</NuxtLink>
-          <span class="text-dimmed" aria-hidden="true">·</span>
-          <NuxtLink to="/policies" class="transition-colors hover:text-primary">Policies</NuxtLink>
         </nav>
       </div>
     </header>
@@ -108,13 +87,13 @@ const inviteMailto = computed(() => {
         v-model="q"
         icon="i-lucide-search"
         size="lg"
-        placeholder="Search growers or areas"
+        placeholder="Search name, @username or area"
         :loading="isLoading"
         autocomplete="off"
         class="w-full"
         :ui="{
           root: 'w-full',
-          base: 'rounded-full bg-elevated shadow-sm ring-1 ring-default focus-visible:ring-2 focus-visible:ring-primary'
+          base: 'rounded-full bg-default shadow-sm ring-1 ring-default focus-visible:ring-2 focus-visible:ring-primary'
         }"
       >
         <template v-if="q" #trailing>

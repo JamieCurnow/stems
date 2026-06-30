@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#ECE8E2; }
+    *, *::before, *::after { box-sizing:border-box; }
+    a { -webkit-tap-highlight-color:transparent; }
+  </style>
+</helmet>
+
+<!-- ============================ MOBILE ============================ -->
+<div style="position:absolute; left:80px; top:80px; width:430px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Mobile</div>
+
+  <div data-screen-label="How it works (mobile)" style="width:430px; background:#fff; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,.09); overflow:hidden; font-family:Inter,sans-serif; color:#211E1A;">
+
+    <!-- HEADER -->
+    <header style="display:flex; align-items:center; justify-content:space-between; padding:18px 24px; border-bottom:1px solid #EFEBE4;">
+      <div style="font:500 21px/1 'EB Garamond',serif; color:#211E1A;">Stems</div>
+      <a href="#" style="display:inline-block; background:#E87767; color:#fff; font:500 12px/1 Inter,sans-serif; padding:10px 16px; border-radius:999px; text-decoration:none; box-shadow:0 2px 6px rgba(184,72,59,.26);">List your flowers</a>
+    </header>
+
+    <!-- HERO -->
+    <section style="position:relative; overflow:hidden; padding:52px 28px 38px; text-align:center;">
+      <div aria-hidden="true" style="position:absolute; inset:0; background:url('assets/hero-flowers.svg') center top/cover; transform:scale(1.18); filter:blur(24px);"></div>
+      <div aria-hidden="true" style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(255,255,255,.42), rgba(255,255,255,.52) 52%, #fff);"></div>
+      <div style="position:relative;">
+        <p style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.32em; text-transform:uppercase; color:#E87767;">How it works</p>
+        <h1 style="margin:13px 0 0; font:500 42px/1.02 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Your flowers,<br>on one link</h1>
+        <p style="margin:15px auto 0; max-width:280px; font:400 15px/1.55 Inter,sans-serif; color:#847B6E;">Stems is one good-looking page for what you have in season. You update it in minutes and share it with one link. Here is the whole thing.</p>
+      </div>
+    </section>
+
+    <!-- STEPS -->
+    <section style="padding:8px 28px 44px; background:#fff;">
+      <div style="display:flex; gap:16px; padding:20px 0; border-top:1px solid #EFEBE4;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex-shrink:0;">
+          <div style="width:44px; height:44px; border-radius:50%; background:#FCE8E3; color:#B6483B; display:flex; align-items:center; justify-content:center;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>
+          </div>
+          <span style="font:500 13px/1 'EB Garamond',serif; color:#C9A99E;">01</span>
+        </div>
+        <div>
+          <h3 style="margin:6px 0 0; font:500 20px/1.1 'EB Garamond',serif; color:#211E1A;">Claim your page</h3>
+          <p style="margin:6px 0 0; font:400 14px/1.5 Inter,sans-serif; color:#847B6E;">Pick a handle, add your farm name, your area, and a line about who you are. This is your shopfront, and it is yours.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:16px; padding:20px 0; border-top:1px solid #EFEBE4;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex-shrink:0;">
+          <div style="width:44px; height:44px; border-radius:50%; background:#FCE8E3; color:#B6483B; display:flex; align-items:center; justify-content:center;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <span style="font:500 13px/1 'EB Garamond',serif; color:#C9A99E;">02</span>
+        </div>
+        <div>
+          <h3 style="margin:6px 0 0; font:500 20px/1.1 'EB Garamond',serif; color:#211E1A;">List what's in season</h3>
+          <p style="margin:6px 0 0; font:400 14px/1.5 Inter,sans-serif; color:#847B6E;">Add each flower with its variety, colour, price per stem, and whether it is ready now or coming soon. Drop in a photo and you are done.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:16px; padding:20px 0; border-top:1px solid #EFEBE4;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex-shrink:0;">
+          <div style="width:44px; height:44px; border-radius:50%; background:#FCE8E3; color:#B6483B; display:flex; align-items:center; justify-content:center;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <span style="font:500 13px/1 'EB Garamond',serif; color:#C9A99E;">03</span>
+        </div>
+        <div>
+          <h3 style="margin:6px 0 0; font:500 20px/1.1 'EB Garamond',serif; color:#211E1A;">Share one link</h3>
+          <p style="margin:6px 0 0; font:400 14px/1.5 Inter,sans-serif; color:#847B6E;">Put your page at the top of your Instagram, in your bio, or on a market sign. Send the link instead of typing the list out again.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:16px; padding:20px 0; border-top:1px solid #EFEBE4;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex-shrink:0;">
+          <div style="width:44px; height:44px; border-radius:50%; background:#FCE8E3; color:#B6483B; display:flex; align-items:center; justify-content:center;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+          </div>
+          <span style="font:500 13px/1 'EB Garamond',serif; color:#C9A99E;">04</span>
+        </div>
+        <div>
+          <h3 style="margin:6px 0 0; font:500 20px/1.1 'EB Garamond',serif; color:#211E1A;">Get contacted directly</h3>
+          <p style="margin:6px 0 0; font:400 14px/1.5 Inter,sans-serif; color:#847B6E;">Buyers reach you however you like: WhatsApp, email, Instagram. The sale and the relationship stay yours. We never sit in the middle.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE WHOLE THING (phone preview) -->
+    <section style="background:#FEF5F3; padding:46px 28px 40px; text-align:center;">
+      <p style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.3em; text-transform:uppercase; color:#E87767;">Here is the whole thing</p>
+      <h2 style="margin:11px auto 0; max-width:290px; font:500 27px/1.12 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">One page. Everything in season.</h2>
+
+      <div style="display:flex; justify-content:center; padding:28px 0 6px;">
+        <div style="width:262px; padding:7px; background:#1c1a17; border-radius:42px; box-shadow:0 26px 52px -22px rgba(33,30,26,.5), 0 8px 18px rgba(33,30,26,.18);">
+          <div style="position:relative; border-radius:34px; overflow:hidden; background:#fff; height:478px;">
+            <div style="position:absolute; top:9px; left:50%; transform:translateX(-50%); width:76px; height:6px; border-radius:99px; background:rgba(255,255,255,.7); z-index:4;"></div>
+            <div style="height:94px; background:repeating-linear-gradient(45deg, rgba(255,255,255,.1) 0 8px, rgba(255,255,255,0) 8px 16px), linear-gradient(150deg,#EAEFE4,#D2DCC6 68%,#EAE2D2);"></div>
+            <div style="text-align:center; padding:0 14px;">
+              <div style="width:56px; height:56px; margin:-28px auto 0; border-radius:50%; border:3px solid #fff; background:linear-gradient(135deg,#FCE8E3,#F2A491); box-shadow:0 2px 6px rgba(33,30,26,.14); display:flex; align-items:center; justify-content:center; font:500 18px/1 'EB Garamond',serif; color:#fff;">JF</div>
+              <h3 style="margin:8px 0 0; font:500 16px/1.1 'EB Garamond',serif; color:#211E1A;">Juliette Florence Flowers</h3>
+              <p style="margin:4px 0 0; font:400 10px/1.3 Inter,sans-serif; color:#847B6E;">@julietteflorence &middot; Bissoe &amp; Mithian</p>
+              <div style="margin:10px auto 0; display:inline-flex; align-items:center; gap:5px; background:#E87767; color:#fff; font:500 10px/1 Inter,sans-serif; padding:8px 15px; border-radius:99px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>Contact
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px 6px;">
+              <span style="font:600 8px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#A89F92;">Availability</span>
+              <span style="display:inline-flex; align-items:center; gap:4px; font:500 9px/1 Inter,sans-serif; color:#E87767;"><span style="width:5px; height:5px; border-radius:50%; background:#E87767;"></span>21 in season</span>
+            </div>
+            <sc-for list="{{ flowersPhone }}" as="f" hint-placeholder-count="4">
+              <div style="display:flex; gap:9px; padding:8px 16px; border-top:1px solid #F0ECE5; align-items:center;">
+                <div style="width:36px; height:44px; border-radius:6px; flex-shrink:0; background:repeating-linear-gradient(45deg, rgba(255,255,255,.16) 0 6px, rgba(255,255,255,0) 6px 12px), {{ f.tile }}; display:flex; align-items:center; justify-content:center;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+                <div style="min-width:0; flex:1; text-align:left;">
+                  <div style="font:500 12px/1.15 'EB Garamond',serif; color:#211E1A;">{{ f.name }}</div>
+                  <div style="font:400 9px/1.25 Inter,sans-serif; color:#847B6E; margin-top:1px;">{{ f.meta }}</div>
+                  <div style="font:400 9px/1.25 Inter,sans-serif; color:#847B6E; margin-top:2px;">{{ f.avail }} &middot; <span style="color:#211E1A; font-weight:500;">{{ f.price }}</span></div>
+                </div>
+              </div>
+            </sc-for>
+            <div style="position:absolute; bottom:0; left:0; right:0; height:70px; background:linear-gradient(to bottom, rgba(255,255,255,0), #fff);"></div>
+          </div>
+        </div>
+      </div>
+      <p style="margin:6px auto 0; max-width:300px; font:400 13px/1.5 Inter,sans-serif; color:#847B6E;">A real grower's page. Twenty-one stems in season, updated an hour ago, all on one link.</p>
+    </section>
+
+    <!-- INVOICES -->
+    <section style="background:#fff; padding:48px 28px 44px; text-align:center; border-top:1px solid #E9E5DE;">
+      <p style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.3em; text-transform:uppercase; color:#E87767;">Orders &amp; invoices</p>
+      <h2 style="margin:11px auto 0; max-width:300px; font:500 27px/1.12 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Got an order? Send an invoice in seconds.</h2>
+      <p style="margin:14px auto 0; max-width:300px; font:400 14px/1.55 Inter,sans-serif; color:#847B6E;">Save your buyers as contacts, then bill them straight from your flower list. Pick the stems, set the amounts, and send a tidy invoice. Mark it paid when the money is in.</p>
+
+      <div style="margin:28px auto 0; max-width:330px; background:#fff; border:1px solid #EFE7E2; border-radius:14px; box-shadow:0 10px 28px -16px rgba(33,30,26,.22); padding:20px 20px 18px; text-align:left;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+          <div>
+            <div style="font:500 15px/1 'EB Garamond',serif; letter-spacing:.14em; text-transform:uppercase; color:#211E1A;">Invoice</div>
+            <div style="margin-top:5px; font:500 11px/1 Inter,sans-serif; color:#847B6E;">INV-0007</div>
+          </div>
+          <span style="background:rgba(92,127,90,.12); color:#5C7F5A; font:500 10px/1 Inter,sans-serif; padding:6px 11px; border-radius:99px;">Paid</span>
+        </div>
+        <div style="margin-top:15px; font:400 10px/1 Inter,sans-serif; letter-spacing:.04em; text-transform:uppercase; color:#A89F92;">Billed to</div>
+        <div style="margin-top:4px; font:500 13px/1 Inter,sans-serif; color:#211E1A;">Mevagissey Flowers</div>
+
+        <div style="margin-top:16px; border-top:1px solid #EFEBE4;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #F4F1EB;">
+            <span style="font:400 12px/1.3 Inter,sans-serif; color:#211E1A;">Cosmos <span style="color:#A89F92;">&middot; 40 stems</span></span>
+            <span style="font:500 12px/1 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">&pound;32.00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #F4F1EB;">
+            <span style="font:400 12px/1.3 Inter,sans-serif; color:#211E1A;">Sweet peas <span style="color:#A89F92;">&middot; 30 stems</span></span>
+            <span style="font:500 12px/1 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">&pound;15.00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
+            <span style="font:400 12px/1.3 Inter,sans-serif; color:#211E1A;">Cornflower <span style="color:#A89F92;">&middot; 60 stems</span></span>
+            <span style="font:500 12px/1 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">&pound;18.00</span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding-top:13px; border-top:1px solid #EFEBE4; margin-top:2px;">
+          <span style="font:500 14px/1 'EB Garamond',serif; color:#211E1A;">Total</span>
+          <span style="font:500 16px/1 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">&pound;65.00</span>
+        </div>
+        <div style="margin-top:14px; display:flex; align-items:center; gap:6px; font:500 10px/1.3 Inter,sans-serif; color:#A89F92;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E0B9AE" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"/><circle cx="12" cy="12" r="3"/></svg>
+          Pulled straight from your flower list
+        </div>
+      </div>
+    </section>
+
+    <!-- FACTS -->
+    <section style="background:#fff; padding:8px 28px 44px;">
+      <div style="display:flex; gap:14px; padding:18px 0; border-top:1px solid #EFEBE4;">
+        <span style="font:600 11px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#E87767; flex-shrink:0; width:120px; padding-top:2px;">No commission</span>
+        <p style="margin:0; font:400 14px/1.5 Inter,sans-serif; color:#211E1A;">We take no cut of any sale. Ever.</p>
+      </div>
+      <div style="display:flex; gap:14px; padding:18px 0; border-top:1px solid #EFEBE4;">
+        <span style="font:600 11px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#E87767; flex-shrink:0; width:120px; padding-top:2px;">No middleman</span>
+        <p style="margin:0; font:400 14px/1.5 Inter,sans-serif; color:#211E1A;">Your buyers are yours, not ours.</p>
+      </div>
+      <div style="display:flex; gap:14px; padding:18px 0; border-top:1px solid #EFEBE4;">
+        <span style="font:600 11px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#E87767; flex-shrink:0; width:120px; padding-top:2px;">An evening</span>
+        <p style="margin:0; font:400 14px/1.5 Inter,sans-serif; color:#211E1A;">To set up, and most of that is choosing photos.</p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="padding:8px 24px 40px; background:#fff;">
+      <div style="background:#FEF5F3; border-radius:18px; padding:34px 28px; text-align:center;">
+        <h2 style="margin:0 auto; max-width:280px; font:500 26px/1.12 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Ready to set up your page?</h2>
+        <p style="margin:12px auto 0; max-width:290px; font:400 14px/1.55 Inter,sans-serif; color:#847B6E;">Claim your handle, list what you have got, and put the link in your bio. The flowers will do the rest.</p>
+        <div style="margin-top:24px; display:flex; flex-direction:column; gap:11px;">
+          <a href="#" style="display:block; background:#E87767; color:#fff; font:500 15px/1 Inter,sans-serif; padding:15px 0; border-radius:999px; text-decoration:none; box-shadow:0 2px 6px rgba(184,72,59,.28);">List your flowers</a>
+          <a href="#" style="display:block; background:#fff; border:1px solid #E9E5DE; color:#211E1A; font:500 15px/1 Inter,sans-serif; padding:14px 0; border-radius:999px; text-decoration:none;">See growers on Stems</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="border-top:1px solid #E9E5DE; padding:34px 28px; text-align:center; background:#fff;">
+      <div style="font:500 22px/1 'EB Garamond',serif; color:#211E1A;">Stems</div>
+      <p style="margin:7px 0 0; font:600 9px/1 Inter,sans-serif; letter-spacing:.28em; text-transform:uppercase; color:#A89F92;">Local &middot; Seasonal &middot; Grown</p>
+      <nav style="margin-top:18px; display:flex; flex-wrap:wrap; justify-content:center; gap:18px; font:500 13px/1 Inter,sans-serif;">
+        <a href="#" style="color:#E87767; text-decoration:none;">How it works</a>
+        <a href="#" style="color:#6F6659; text-decoration:none;">About</a>
+        <a href="#" style="color:#6F6659; text-decoration:none;">Blog</a>
+        <a href="#" style="color:#6F6659; text-decoration:none;">Policies</a>
+      </nav>
+    </footer>
+
+  </div>
+</div>
+
+<!-- ============================ DESKTOP ============================ -->
+<div style="position:absolute; left:600px; top:80px; width:1280px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Desktop</div>
+  <div data-screen-label="How it works (desktop)" style="width:1280px; margin:0 auto; background:#fff; font-family:Inter,sans-serif; color:#211E1A; box-shadow:0 1px 4px rgba(0,0,0,.1); overflow:hidden;">
+
+    <!-- HERO + NAV (floral wash, two-column) -->
+    <section style="position:relative; overflow:hidden;">
+      <div aria-hidden="true" style="position:absolute; inset:0; background:url('assets/hero-flowers.svg') center top/cover; transform:scale(1.12); filter:blur(26px);"></div>
+      <div aria-hidden="true" style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(255,255,255,.4), rgba(255,255,255,.55) 60%, #fff);"></div>
+
+      <div style="position:relative; max-width:1120px; margin:0 auto; padding:0 56px;">
+        <nav style="display:flex; align-items:center; justify-content:space-between; padding:28px 0;">
+          <div style="font:500 26px/1 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Stems</div>
+          <div style="display:flex; align-items:center; gap:30px;">
+            <div style="display:flex; align-items:center; gap:26px; font:500 13px/1 Inter,sans-serif; color:#6F6659;">
+              <a href="#" style="color:#E87767; text-decoration:none;">How it works</a>
+              <a href="#" style="color:#6F6659; text-decoration:none;">About</a>
+              <a href="#" style="color:#6F6659; text-decoration:none;">Blog</a>
+              <a href="#" style="color:#6F6659; text-decoration:none;">Policies</a>
+            </div>
+            <div style="width:1px; height:18px; background:#E0DAD0;"></div>
+            <a href="#" style="font:500 13px/1 Inter,sans-serif; color:#211E1A; text-decoration:none;">Sign in</a>
+            <a href="#" style="display:inline-block; background:#E87767; color:#fff; font:500 13px/1 Inter,sans-serif; padding:11px 20px; border-radius:999px; text-decoration:none; box-shadow:0 2px 6px rgba(184,72,59,.26);">List your flowers</a>
+          </div>
+        </nav>
+
+        <div style="display:flex; align-items:center; gap:80px; padding:56px 0 88px;">
+          <div style="flex:1; max-width:540px;">
+            <p style="margin:0; font:600 12px/1 Inter,sans-serif; letter-spacing:.32em; text-transform:uppercase; color:#E87767;">How it works</p>
+            <h1 style="margin:20px 0 0; font:500 58px/1.02 'EB Garamond',serif; letter-spacing:-.015em; color:#211E1A;">Your flowers, on one link.</h1>
+            <p style="margin:22px 0 0; max-width:440px; font:400 17px/1.6 Inter,sans-serif; color:#847B6E;">Stems is one good-looking page for what you have in season. You update it in minutes and share it with one link. No website to build, no commission to pay. Here is the whole thing.</p>
+            <div style="margin-top:34px; display:flex; align-items:center; gap:22px;">
+              <a href="#" style="display:inline-block; background:#E87767; color:#fff; font:500 16px/1 Inter,sans-serif; padding:17px 34px; border-radius:999px; text-decoration:none; box-shadow:0 3px 10px rgba(184,72,59,.3);">List your flowers</a>
+              <a href="#" style="display:inline-flex; align-items:center; gap:8px; color:#6F6659; font:500 15px/1 Inter,sans-serif; text-decoration:none;">See a live page
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div style="flex-shrink:0;">
+            <div style="width:300px; padding:8px; background:#1c1a17; border-radius:46px; box-shadow:0 34px 64px -26px rgba(33,30,26,.5), 0 10px 22px rgba(33,30,26,.18);">
+              <div style="position:relative; border-radius:38px; overflow:hidden; background:#fff; height:600px;">
+                <div style="position:absolute; top:11px; left:50%; transform:translateX(-50%); width:84px; height:6px; border-radius:99px; background:rgba(255,255,255,.7); z-index:4;"></div>
+                <div style="height:110px; background:repeating-linear-gradient(45deg, rgba(255,255,255,.1) 0 8px, rgba(255,255,255,0) 8px 16px), linear-gradient(150deg,#EAEFE4,#D2DCC6 68%,#EAE2D2);"></div>
+                <div style="text-align:center; padding:0 16px;">
+                  <div style="width:64px; height:64px; margin:-32px auto 0; border-radius:50%; border:3px solid #fff; background:linear-gradient(135deg,#FCE8E3,#F2A491); box-shadow:0 2px 6px rgba(33,30,26,.14); display:flex; align-items:center; justify-content:center; font:500 20px/1 'EB Garamond',serif; color:#fff;">JF</div>
+                  <h3 style="margin:9px 0 0; font:500 19px/1.1 'EB Garamond',serif; color:#211E1A;">Juliette Florence Flowers</h3>
+                  <p style="margin:5px 0 0; font:400 11px/1.3 Inter,sans-serif; color:#847B6E;">@julietteflorence &middot; Bissoe &amp; Mithian</p>
+                  <div style="margin:11px auto 0; display:inline-flex; align-items:center; gap:5px; background:#E87767; color:#fff; font:500 11px/1 Inter,sans-serif; padding:9px 17px; border-radius:99px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>Contact
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px 6px;">
+                  <span style="font:600 9px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#A89F92;">Availability</span>
+                  <span style="display:inline-flex; align-items:center; gap:4px; font:500 10px/1 Inter,sans-serif; color:#E87767;"><span style="width:5px; height:5px; border-radius:50%; background:#E87767;"></span>21 in season</span>
+                </div>
+                <sc-for list="{{ flowersPhone }}" as="f" hint-placeholder-count="5">
+                  <div style="display:flex; gap:10px; padding:9px 18px; border-top:1px solid #F0ECE5; align-items:center;">
+                    <div style="width:42px; height:50px; border-radius:7px; flex-shrink:0; background:repeating-linear-gradient(45deg, rgba(255,255,255,.16) 0 6px, rgba(255,255,255,0) 6px 12px), {{ f.tile }}; display:flex; align-items:center; justify-content:center;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"/><circle cx="12" cy="12" r="3"/></svg>
+                    </div>
+                    <div style="min-width:0; flex:1;">
+                      <div style="font:500 13px/1.15 'EB Garamond',serif; color:#211E1A;">{{ f.name }}</div>
+                      <div style="font:400 10px/1.25 Inter,sans-serif; color:#847B6E; margin-top:1px;">{{ f.meta }}</div>
+                      <div style="font:400 10px/1.25 Inter,sans-serif; color:#847B6E; margin-top:2px;">{{ f.avail }} &middot; <span style="color:#211E1A; font-weight:500;">{{ f.price }}</span></div>
+                    </div>
+                  </div>
+                </sc-for>
+                <div style="position:absolute; bottom:0; left:0; right:0; height:78px; background:linear-gradient(to bottom, rgba(255,255,255,0), #fff);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEPS (4-up numbered) -->
+    <section style="background:#fff; padding:90px 0;">
+      <div style="max-width:1120px; margin:0 auto; padding:0 56px;">
+        <div style="text-align:center;">
+          <p style="margin:0; font:600 12px/1 Inter,sans-serif; letter-spacing:.3em; text-transform:uppercase; color:#E87767;">Four steps</p>
+          <h2 style="margin:14px 0 0; font:500 40px/1.1 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">From the cutting patch to one link</h2>
+        </div>
+        <div style="margin-top:54px; display:grid; grid-template-columns:repeat(4,1fr); gap:34px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:54px; height:54px; border-radius:50%; flex-shrink:0; background:#FCE8E3; color:#B6483B; display:flex; align-items:center; justify-content:center;">
+                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>
+              </div>
+              <span style="font:500 17px/1 'EB Garamond',serif; color:#C9A99E;">01</span>
+            </div>
+            <h3 style="margin:18px 0 0; font:500 22px/1.12 'EB Garamond',serif; color:#211E1A;">Claim your page</h3>
+            <p style="margin:9px 0 0; font:400 15px/1.55 Inter,sans-serif; color:#847B6E;">Pick a handle, add your farm name, your area, and a line about who you are. This is your shopfront, and it is yours.</p>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:54px; height:54px; border-radius:50%; flex-shrink:0; background:#FCE8E3; color:#B6483B; display:flex; align-items:center; justify-content:center;">
+                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <span style="font:500 17px/1 'EB Garamond',serif; color:#C9A99E;">02</span>
+            </div>
+            <h3 style="margin:18px 0 0; font:500 22px/1.12 'EB Garamond',serif; color:#211E1A;">List what's in season</h3>
+            <p style="margin:9px 0 0; font:400 15px/1.55 Inter,sans-serif; color:#847B6E;">Add each flower with its variety, colour, price per stem, and whether it is ready now or coming soon. Drop in a photo and you are done.</p>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:54px; height:54px; border-radius:50%; flex-shrink:0; background:#FCE8E3; color:#B6483B; display:flex; align-items:center; justify-content:center;">
+                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              </div>
+              <span style="font:500 17px/1 'EB Garamond',serif; color:#C9A99E;">03</span>
+            </div>
+            <h3 style="margin:18px 0 0; font:500 22px/1.12 'EB Garamond',serif; color:#211E1A;">Share one link</h3>
+            <p style="margin:9px 0 0; font:400 15px/1.55 Inter,sans-serif; color:#847B6E;">Put your page at the top of your Instagram, in your bio, or on a market sign. Send the link instead of typing the list out again.</p>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:54px; height:54px; border-radius:50%; flex-shrink:0; background:#FCE8E3; color:#B6483B; display:flex; align-items:center; justify-content:center;">
+                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+              </div>
+              <span style="font:500 17px/1 'EB Garamond',serif; color:#C9A99E;">04</span>
+            </div>
+            <h3 style="margin:18px 0 0; font:500 22px/1.12 'EB Garamond',serif; color:#211E1A;">Get contacted directly</h3>
+            <p style="margin:9px 0 0; font:400 15px/1.55 Inter,sans-serif; color:#847B6E;">Buyers reach you however you like: WhatsApp, email, Instagram. The sale and the relationship stay yours. We never sit in the middle.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ONE CLEAN LINK BAND -->
+    <section style="background:#FEF5F3; padding:84px 0;">
+      <div style="max-width:1120px; margin:0 auto; padding:0 56px; text-align:center;">
+        <p style="margin:0; font:600 12px/1 Inter,sans-serif; letter-spacing:.3em; text-transform:uppercase; color:#E87767;">One clean link</p>
+        <h2 style="margin:14px auto 0; max-width:620px; font:500 40px/1.1 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">A page that works the moment you share it</h2>
+        <div style="margin:30px auto 0; display:inline-block; background:#fff; border:1px solid #FBD7CC; border-radius:99px; padding:16px 32px; font:500 24px/1 'EB Garamond',serif; color:#211E1A; box-shadow:0 2px 6px rgba(184,72,59,.1);">stems.market/<span style="color:#E87767;">@you</span></div>
+        <p style="margin:26px auto 0; max-width:560px; font:400 16px/1.6 Inter,sans-serif; color:#847B6E;">No app to download, no sign-in to look. They click, see what is in this week, and reach you the way they always have. You keep your customers. We never take a cut.</p>
+      </div>
+    </section>
+
+    <!-- ORDERS & INVOICES (two-column) -->
+    <section style="background:#fff; padding:90px 0;">
+      <div style="max-width:1120px; margin:0 auto; padding:0 56px; display:flex; align-items:center; gap:80px;">
+        <div style="flex:1; max-width:480px;">
+          <p style="margin:0; font:600 12px/1 Inter,sans-serif; letter-spacing:.3em; text-transform:uppercase; color:#E87767;">Orders &amp; invoices</p>
+          <h2 style="margin:16px 0 0; font:500 40px/1.08 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Got an order? Send an invoice in seconds.</h2>
+          <p style="margin:20px 0 0; max-width:420px; font:400 16px/1.6 Inter,sans-serif; color:#847B6E;">Save your buyers as contacts, then bill them straight from your flower list. Pick the stems, set the amounts, and send a tidy invoice. Mark it paid when the money is in — no spreadsheets, no chasing.</p>
+          <div style="margin-top:26px; display:flex; flex-direction:column; gap:14px;">
+            <div style="display:flex; align-items:center; gap:11px; font:400 15px/1.4 Inter,sans-serif; color:#211E1A;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5C7F5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Built from the flowers you already list
+            </div>
+            <div style="display:flex; align-items:center; gap:11px; font:400 15px/1.4 Inter,sans-serif; color:#211E1A;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5C7F5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Saved buyers, one tap to bill again
+            </div>
+            <div style="display:flex; align-items:center; gap:11px; font:400 15px/1.4 Inter,sans-serif; color:#211E1A;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5C7F5A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Mark paid and keep a tidy record
+            </div>
+          </div>
+        </div>
+
+        <div style="flex-shrink:0; width:420px; background:#fff; border:1px solid #EFE7E2; border-radius:16px; box-shadow:0 18px 44px -22px rgba(33,30,26,.28); padding:28px 28px 24px;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+            <div>
+              <div style="font:500 19px/1 'EB Garamond',serif; letter-spacing:.14em; text-transform:uppercase; color:#211E1A;">Invoice</div>
+              <div style="margin-top:6px; font:500 13px/1 Inter,sans-serif; color:#847B6E;">INV-0007</div>
+            </div>
+            <span style="background:rgba(92,127,90,.12); color:#5C7F5A; font:500 12px/1 Inter,sans-serif; padding:8px 14px; border-radius:99px;">Paid</span>
+          </div>
+          <div style="margin-top:20px; font:400 11px/1 Inter,sans-serif; letter-spacing:.04em; text-transform:uppercase; color:#A89F92;">Billed to</div>
+          <div style="margin-top:5px; font:500 15px/1 Inter,sans-serif; color:#211E1A;">Mevagissey Flowers</div>
+
+          <div style="margin-top:20px; border-top:1px solid #EFEBE4;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:13px 0; border-bottom:1px solid #F4F1EB;">
+              <span style="font:400 14px/1.3 Inter,sans-serif; color:#211E1A;">Cosmos <span style="color:#A89F92;">&middot; 40 stems</span></span>
+              <span style="font:500 14px/1 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">&pound;32.00</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:13px 0; border-bottom:1px solid #F4F1EB;">
+              <span style="font:400 14px/1.3 Inter,sans-serif; color:#211E1A;">Sweet peas <span style="color:#A89F92;">&middot; 30 stems</span></span>
+              <span style="font:500 14px/1 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">&pound;15.00</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:13px 0;">
+              <span style="font:400 14px/1.3 Inter,sans-serif; color:#211E1A;">Cornflower <span style="color:#A89F92;">&middot; 60 stems</span></span>
+              <span style="font:500 14px/1 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">&pound;18.00</span>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding-top:16px; border-top:1px solid #EFEBE4; margin-top:2px;">
+            <span style="font:500 17px/1 'EB Garamond',serif; color:#211E1A;">Total</span>
+            <span style="font:500 20px/1 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">&pound;65.00</span>
+          </div>
+          <div style="margin-top:18px; display:flex; align-items:center; gap:7px; font:500 12px/1.3 Inter,sans-serif; color:#A89F92;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E0B9AE" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"/><circle cx="12" cy="12" r="3"/></svg>
+            Pulled straight from your flower list
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FACTS BAND (3-up) -->
+    <section style="background:#fff; border-top:1px solid #E9E5DE; padding:60px 0;">
+      <div style="max-width:1120px; margin:0 auto; padding:0 56px; display:grid; grid-template-columns:repeat(3,1fr); gap:48px;">
+        <div>
+          <p style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.2em; text-transform:uppercase; color:#E87767;">No commission</p>
+          <p style="margin:10px 0 0; font:400 16px/1.5 Inter,sans-serif; color:#211E1A;">We take no cut of any sale. Ever.</p>
+        </div>
+        <div>
+          <p style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.2em; text-transform:uppercase; color:#E87767;">No middleman</p>
+          <p style="margin:10px 0 0; font:400 16px/1.5 Inter,sans-serif; color:#211E1A;">Your buyers are yours, not ours.</p>
+        </div>
+        <div>
+          <p style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.2em; text-transform:uppercase; color:#E87767;">Set up in an evening</p>
+          <p style="margin:10px 0 0; font:400 16px/1.5 Inter,sans-serif; color:#211E1A;">And most of that is choosing the photos.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLOSING CTA (floral wash) -->
+    <section style="position:relative; overflow:hidden; padding:92px 0 84px;">
+      <div aria-hidden="true" style="position:absolute; inset:0; background:url('assets/hero-flowers.svg') center bottom/cover; transform:scale(1.12); filter:blur(26px);"></div>
+      <div aria-hidden="true" style="position:absolute; inset:0; background:linear-gradient(to bottom, #fff, rgba(255,255,255,.55) 55%, rgba(255,255,255,.82));"></div>
+      <div style="position:relative; max-width:1120px; margin:0 auto; padding:0 56px; text-align:center;">
+        <h2 style="margin:0 auto; max-width:560px; font:500 44px/1.08 'EB Garamond',serif; letter-spacing:-.015em; color:#211E1A;">Ready to set up your page?</h2>
+        <p style="margin:18px auto 0; max-width:460px; font:400 16px/1.55 Inter,sans-serif; color:#6F6659;">Claim your handle, list what you have got, and put the link in your bio. It takes an evening, and the flowers do the rest.</p>
+        <div style="margin-top:32px; display:flex; align-items:center; justify-content:center; gap:18px;">
+          <a href="#" style="display:inline-block; background:#E87767; color:#fff; font:500 16px/1 Inter,sans-serif; padding:17px 38px; border-radius:999px; text-decoration:none; box-shadow:0 3px 10px rgba(184,72,59,.3);">List your flowers</a>
+          <a href="#" style="display:inline-block; background:#fff; border:1px solid #E9E5DE; color:#211E1A; font:500 16px/1 Inter,sans-serif; padding:16px 30px; border-radius:999px; text-decoration:none;">See growers on Stems</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="background:#fff; border-top:1px solid #E9E5DE;">
+      <div style="max-width:1120px; margin:0 auto; padding:36px 56px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px;">
+        <div>
+          <div style="font:500 22px/1 'EB Garamond',serif; color:#211E1A;">Stems</div>
+          <p style="margin:7px 0 0; font:600 10px/1 Inter,sans-serif; letter-spacing:.28em; text-transform:uppercase; color:#A89F92;">Local &middot; Seasonal &middot; Grown</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:26px; font:500 13px/1 Inter,sans-serif; color:#6F6659;">
+          <a href="#" style="color:#E87767; text-decoration:none;">How it works</a>
+          <a href="#" style="color:#6F6659; text-decoration:none;">About</a>
+          <a href="#" style="color:#6F6659; text-decoration:none;">Blog</a>
+          <a href="#" style="color:#6F6659; text-decoration:none;">Policies</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const flowers = [
+      { name: 'Icelandic poppies', meta: 'Peach, white \u00b7 40cm',        avail: 'Good',      price: '\u00a31.00 / stem', tile: 'linear-gradient(140deg,#FCE6D2,#F4B488)' },
+      { name: 'Sweet peas',        meta: 'Scented mix \u00b7 30cm',         avail: 'Limited',   price: '\u00a30.50 / stem', tile: 'linear-gradient(140deg,#F7DCE6,#E6A8C4)' },
+      { name: 'Cosmos',            meta: 'Double cranberry \u00b7 60cm',    avail: 'Limited',   price: '\u00a30.80 / stem', tile: 'linear-gradient(140deg,#F8DAD6,#E4A0AB)' },
+      { name: 'Cornflower',        meta: 'Blue \u00b7 50cm',                avail: 'Available', price: '\u00a30.30 / stem', tile: 'linear-gradient(140deg,#E3E7EF,#A9B6D6)' },
+      { name: 'Phlox',             meta: 'Cr\u00e8me caramel \u00b7 60cm',  avail: 'Good',      price: '\u00a30.85 / stem', tile: 'linear-gradient(140deg,#F8EADB,#E8C99B)' }
+    ];
+    return { flowersPhone: flowers };
+  }
+}
+</script>
+</body>
+</html>

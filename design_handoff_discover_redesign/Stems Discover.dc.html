@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#ECE8E2; }
+    *, *::before, *::after { box-sizing:border-box; }
+    a { -webkit-tap-highlight-color:transparent; }
+  </style>
+</helmet>
+
+<!-- ============================ MOBILE ============================ -->
+<div style="position:absolute; left:80px; top:80px; width:412px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Mobile</div>
+
+  <div style="width:412px; padding:11px; background:#1c1a17; border-radius:52px; box-shadow:0 30px 60px -26px rgba(33,30,26,.5), 0 10px 22px rgba(33,30,26,.16);">
+    <div data-screen-label="Discover · Mobile" style="position:relative; width:390px; height:844px; border-radius:42px; overflow:hidden; background:#fff; font-family:Inter,sans-serif; color:#211E1A;">
+
+      <!-- scroll body -->
+      <div style="position:absolute; inset:0; overflow:hidden;">
+
+        <!-- branded floral header -->
+        <header style="position:relative; overflow:hidden; padding:46px 26px 22px; text-align:center;">
+          <div aria-hidden="true" style="position:absolute; inset:0; background:url('discover_assets/hero-flowers.svg') center top/cover; transform:scale(1.18); filter:blur(22px);"></div>
+          <div aria-hidden="true" style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(255,255,255,.42), rgba(255,255,255,.46) 55%, #fff);"></div>
+          <div style="position:relative;">
+            <p style="margin:0; font:600 10px/1 Inter,sans-serif; letter-spacing:.3em; text-transform:uppercase; color:#E87767;">Local &middot; Seasonal &middot; Grown</p>
+            <h1 style="margin:9px 0 0; font:500 46px/.95 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Stems</h1>
+            <p style="margin:10px auto 0; max-width:230px; font:400 14px/1.45 Inter,sans-serif; color:#847B6E;">Find a local grower by name, handle or area</p>
+            <nav style="margin-top:16px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:8px; font:600 10px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#A89F92;">
+              <span>How it works</span><span style="color:#D8D2C8;">&middot;</span><span>About</span><span style="color:#D8D2C8;">&middot;</span><span>Blog</span><span style="color:#D8D2C8;">&middot;</span><span>Policies</span>
+            </nav>
+          </div>
+        </header>
+
+        <!-- search -->
+        <div style="position:relative; z-index:5; padding:6px 20px 10px; background:#fff;">
+          <label style="display:flex; align-items:center; gap:11px; background:#fff; border:1px solid #E9E5DE; border-radius:999px; padding:14px 20px; box-shadow:0 1px 3px rgba(33,30,26,.06);">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#A89F92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span style="font:400 16px/1 Inter,sans-serif; color:#A89F92;">Search name, @username or area</span>
+          </label>
+        </div>
+
+        <!-- section label + count -->
+        <div style="display:flex; align-items:baseline; justify-content:space-between; padding:14px 22px 2px;">
+          <h2 style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">Growers near you</h2>
+          <span style="font:400 13px/1 Inter,sans-serif; color:#A89F92; font-variant-numeric:tabular-nums;">{{ count }}</span>
+        </div>
+
+        <!-- feed -->
+        <div style="padding:0 22px;">
+          <sc-for list="{{ growers }}" as="g" hint-placeholder-count="6">
+            <a href="#" style="display:flex; align-items:center; gap:14px; padding:15px 0; text-decoration:none; border-bottom:1px solid #E9E5DE;" style-hover="background:rgba(33,30,26,.015)">
+              <div style="width:54px; height:54px; flex-shrink:0; border-radius:50%; background:{{ g.tintBg }}; color:{{ g.tintInk }}; display:flex; align-items:center; justify-content:center; font:500 18px/1 'EB Garamond',serif;">{{ g.initials }}</div>
+              <div style="min-width:0; flex:1;">
+                <h3 style="margin:0; font:500 18px/1.15 'EB Garamond',serif; color:#211E1A; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ g.name }}</h3>
+                <p style="margin:2px 0 0; font:400 13px/1.3 Inter,sans-serif; color:#847B6E; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ g.subtitle }}</p>
+                <div style="margin-top:6px; display:flex; align-items:center; gap:7px; font:400 12px/1 Inter,sans-serif;">
+                  <sc-if value="{{ g.hasStock }}" hint-placeholder-val="{{ true }}">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#5C7F5A; flex-shrink:0;"></span>
+                    <span style="color:#5C7F5A; font-weight:500;">{{ g.seasonLabel }}</span>
+                    <span style="color:#CFC8BC;">&middot;</span>
+                  </sc-if>
+                  <span style="color:#A89F92;">{{ g.updatedLabel }}</span>
+                </div>
+              </div>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#CFC8BC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a>
+          </sc-for>
+        </div>
+
+      </div>
+
+      <!-- bottom tab bar -->
+      <div style="position:absolute; left:0; right:0; bottom:0; background:rgba(255,255,255,.94); backdrop-filter:blur(10px); border-top:1px solid #E9E5DE; display:flex; align-items:center; gap:14px; padding:9px 18px 26px;">
+        <a href="#" style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:#E87767; padding:4px 10px;">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span style="font:500 11px/1 Inter,sans-serif;">Discover</span>
+        </a>
+        <a href="#" style="flex:1; display:flex; align-items:center; justify-content:center; gap:9px; background:#E87767; color:#fff; font:500 15px/1 Inter,sans-serif; padding:15px 0; border-radius:999px; text-decoration:none; box-shadow:0 2px 6px rgba(184,72,59,.26);">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>
+          Start selling
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================ DESKTOP ============================ -->
+<div style="position:absolute; left:560px; top:80px; width:1120px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Desktop</div>
+
+  <div data-screen-label="Discover · Desktop" style="position:relative; width:1120px; height:1180px; background:#fff; border-radius:6px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.1); font-family:Inter,sans-serif; color:#211E1A;">
+
+    <!-- full-bleed floral header -->
+    <header style="position:relative; overflow:hidden; padding:62px 0 30px; text-align:center;">
+      <div aria-hidden="true" style="position:absolute; inset:0; background:url('discover_assets/hero-flowers.svg') center top/cover; transform:scale(1.12); filter:blur(26px);"></div>
+      <div aria-hidden="true" style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(255,255,255,.4), rgba(255,255,255,.46) 58%, #fff);"></div>
+      <div style="position:relative; max-width:640px; margin:0 auto; padding:0 24px;">
+        <p style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.32em; text-transform:uppercase; color:#E87767;">Local &middot; Seasonal &middot; Grown</p>
+        <h1 style="margin:13px 0 0; font:500 60px/.95 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Stems</h1>
+        <p style="margin:13px auto 0; max-width:340px; font:400 16px/1.5 Inter,sans-serif; color:#847B6E;">Find a local grower by name, handle or area</p>
+        <nav style="margin-top:20px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:11px; font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#A89F92;">
+          <span>How it works</span><span style="color:#D8D2C8;">&middot;</span><span>About</span><span style="color:#D8D2C8;">&middot;</span><span>Blog</span><span style="color:#D8D2C8;">&middot;</span><span>Policies</span>
+        </nav>
+      </div>
+    </header>
+
+    <!-- centered app column -->
+    <div style="max-width:640px; margin:0 auto; padding:0 24px;">
+
+      <!-- search -->
+      <div style="padding:4px 0 12px; background:#fff;">
+        <label style="display:flex; align-items:center; gap:13px; background:#fff; border:1px solid #E9E5DE; border-radius:999px; padding:16px 24px; box-shadow:0 1px 3px rgba(33,30,26,.06);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A89F92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span style="font:400 16px/1 Inter,sans-serif; color:#A89F92;">Search by name, @username or area</span>
+        </label>
+      </div>
+
+      <!-- section label + count -->
+      <div style="display:flex; align-items:baseline; justify-content:space-between; padding:16px 2px 2px;">
+        <h2 style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">Growers near you</h2>
+        <span style="font:400 13px/1 Inter,sans-serif; color:#A89F92; font-variant-numeric:tabular-nums;">{{ count }}</span>
+      </div>
+
+      <!-- feed -->
+      <div>
+        <sc-for list="{{ growers }}" as="g" hint-placeholder-count="7">
+          <a href="#" style="display:flex; align-items:center; gap:16px; padding:17px 8px; margin:0 -8px; border-radius:12px; text-decoration:none; border-bottom:1px solid #E9E5DE;" style-hover="background:rgba(33,30,26,.018)">
+            <div style="width:56px; height:56px; flex-shrink:0; border-radius:50%; background:{{ g.tintBg }}; color:{{ g.tintInk }}; display:flex; align-items:center; justify-content:center; font:500 19px/1 'EB Garamond',serif;">{{ g.initials }}</div>
+            <div style="min-width:0; flex:1;">
+              <h3 style="margin:0; font:500 20px/1.15 'EB Garamond',serif; color:#211E1A; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ g.name }}</h3>
+              <p style="margin:3px 0 0; font:400 14px/1.3 Inter,sans-serif; color:#847B6E; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ g.subtitle }}</p>
+              <div style="margin-top:7px; display:flex; align-items:center; gap:8px; font:400 13px/1 Inter,sans-serif;">
+                <sc-if value="{{ g.hasStock }}" hint-placeholder-val="{{ true }}">
+                  <span style="width:6px; height:6px; border-radius:50%; background:#5C7F5A; flex-shrink:0;"></span>
+                  <span style="color:#5C7F5A; font-weight:500;">{{ g.seasonLabel }}</span>
+                  <span style="color:#CFC8BC;">&middot;</span>
+                </sc-if>
+                <span style="color:#A89F92;">{{ g.updatedLabel }}</span>
+              </div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CFC8BC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </a>
+        </sc-for>
+      </div>
+
+    </div>
+
+    <!-- floating pill nav -->
+    <div style="position:absolute; left:50%; bottom:30px; transform:translateX(-50%); display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.96); backdrop-filter:blur(10px); border:1px solid #E9E5DE; border-radius:999px; box-shadow:0 8px 26px -10px rgba(33,30,26,.22); padding:7px 8px;">
+      <a href="#" style="display:flex; align-items:center; gap:8px; color:#E87767; font:500 13px/1 Inter,sans-serif; text-decoration:none; padding:10px 22px; border-radius:999px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Discover
+      </a>
+      <a href="#" style="display:flex; align-items:center; gap:8px; background:#E87767; color:#fff; font:500 13px/1 Inter,sans-serif; text-decoration:none; padding:11px 22px; border-radius:999px; box-shadow:0 2px 6px rgba(184,72,59,.26);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>
+        Start selling
+      </a>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const tints = {
+      peach: { bg: '#FCE8E3', ink: '#B6483B' },
+      honey: { bg: '#F6EBD6', ink: '#A9823A' },
+      clay:  { bg: '#ECE8E2', ink: '#847B6E' }
+    };
+    const raw = [
+      { name: 'Jamie Bloom',               handle: 'jamie1',           loc: 'Cornwall',           season: 1,  updated: 'updated 2 weeks ago', tint: 'peach' },
+      { name: 'Jamie and bloom',           handle: 'jamiecurnow',      loc: 'Bissoe, Cornwall',   season: 2,  updated: 'updated 5 days ago',  tint: 'clay'  },
+      { name: 'Rosebank Flower Farm',      handle: 'rosebank',         loc: 'Bissoe, Cornwall',   season: 4,  updated: 'updated 2 weeks ago', tint: 'honey' },
+      { name: 'Hilltop Blooms',            handle: 'hilltopblooms',    loc: 'Totnes, Devon',      season: 3,  updated: 'updated 2 weeks ago', tint: 'peach' },
+      { name: 'Wild Meadow Co.',           handle: 'wildmeadow',       loc: 'Frome, Somerset',    season: 5,  updated: 'updated 3 days ago',  tint: 'clay'  },
+      { name: 'Juliette Florence Flowers', handle: 'julietteflorence', loc: 'Bissoe & Mithian',   season: 21, updated: 'updated an hour ago', tint: 'honey' },
+      { name: 'Tregothnan Cutting Patch',  handle: 'tregothnan',       loc: 'Truro, Cornwall',    season: 6,  updated: 'updated 1 week ago',  tint: 'peach' },
+      { name: 'Penpol Field Flowers',      handle: 'penpol',           loc: 'Devoran, Cornwall',  season: 0,  updated: 'Just joined',         tint: 'clay'  }
+    ];
+    const initials = (n) => n.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+    const growers = raw.map(g => ({
+      name: g.name,
+      subtitle: '@' + g.handle + '  \u00b7  ' + g.loc,
+      initials: initials(g.name),
+      tintBg: tints[g.tint].bg,
+      tintInk: tints[g.tint].ink,
+      hasStock: g.season > 0,
+      seasonLabel: g.season + ' in season',
+      updatedLabel: g.updated
+    }));
+    return { growers, count: growers.length };
+  }
+}
+</script>
+</body>
+</html>

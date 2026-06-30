@@ -22,6 +22,12 @@ export default defineContentConfig({
         draft: z.boolean().default(false),
         // Optional per-post share image; falls back to the site /og.png.
         ogImage: z.string().optional(),
+        // Optional in-body / index feature image. Path under /public or an
+        // image-pipeline reference. Absent on many posts — every surface must
+        // render cleanly without it (separate from `ogImage`, the share-only crop).
+        image: z.string().optional(),
+        // Alt text for the feature image (required whenever `image` is set).
+        imageAlt: z.string().optional(),
         // Optional FAQ pairs → FAQPage JSON-LD (defineQuestion) in [slug].vue.
         faq: z.array(z.object({ question: z.string(), answer: z.string() })).optional()
       })

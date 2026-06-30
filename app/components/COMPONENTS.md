@@ -317,6 +317,28 @@ Presentational phone mockup for the marketing landing (`/`). A static illustrati
 
 ---
 
+## `<LandingInvoiceCard>`
+
+Presentational invoice summary card for the marketing pages (`/` and `/how-it-works`). A static illustration of the printable invoice that mirrors the real invoice domain (`app/pages/invoices/[id]/`) — header with invoice number + status pill, "Billed to", hairline-divided line items (flower · stems → price, `tabular-nums`), a `border-top` total, and a flower-icon footer hint ("Pulled straight from your flower list"). **Never wired to live data.** Responsive: 330px / `rounded-[14px]` on mobile, 420px / `rounded-[16px]` from `lg`. All fields default to the standard mock content; override per prop if a page wants different example figures. Width/margins are positioning concerns left to the parent (pass via `class`).
+
+### Props
+
+All optional, defaulted to the mock content:
+
+- `number`: `string` (default `'INV-0007'`)
+- `status`: `string` (default `'Paid'`) — sage `success` pill.
+- `billedTo`: `string` (default `'Mevagissey Flowers'`)
+- `lines`: `{ name: string; qty: string; amount: string }[]` (default Cosmos / Sweet peas / Cornflower)
+- `total`: `string` (default `'£65.00'`)
+
+### Example
+
+```vue
+<LandingInvoiceCard class="mx-auto mt-7 lg:mx-0 lg:mt-0 lg:shrink-0" />
+```
+
+---
+
 ## Learnings
 
 - **Directory prefix is the component name.** `Flower/Card.vue` is `<FlowerCard>`, `Image/CropModal.vue` is `<ImageCropModal>`, `Layout/CookieConsent.vue` is `<LayoutCookieConsent>`. Name new files with that in mind.

@@ -17,9 +17,11 @@ definePageMeta({ layout: false })
 const navLinks = [
   { to: '/how-it-works', label: 'How it works' },
   { to: '/about', label: 'About' },
-  { to: '/blog', label: 'Blog' },
-  { to: '/policies', label: 'Policies' }
+  { to: '/blog', label: 'Blog' }
 ]
+
+// Policies lives only in the footer, not the top bar / hero nav.
+const footerLinks = [...navLinks, { to: '/policies', label: 'Policies' }]
 
 useSeoMeta({
   // The global title template (brief 02) appends ' · Stems'.
@@ -51,13 +53,6 @@ const steps = [
     title: 'Share one link',
     body: 'Top of your Instagram, in your bio, on a market sign. One link instead of typing the list out again.'
   }
-]
-
-// Invoice mock lines (unit price x stems from the flower data).
-const invoiceLines = [
-  { name: 'Cosmos', qty: '40 stems', amount: '£32.00' },
-  { name: 'Sweet peas', qty: '30 stems', amount: '£15.00' },
-  { name: 'Cornflower', qty: '60 stems', amount: '£18.00' }
 ]
 </script>
 
@@ -314,57 +309,7 @@ const invoiceLines = [
         </div>
 
         <!-- Invoice mock card (presentational illustration of the printable invoice). -->
-        <div
-          class="mx-auto mt-7 max-w-[330px] rounded-[14px] border border-[#EFE7E2] bg-white p-5 text-left shadow-[0_10px_28px_-16px_rgba(33,30,26,0.22)] lg:mx-0 lg:mt-0 lg:w-[420px] lg:max-w-none lg:shrink-0 lg:rounded-[16px] lg:p-7 lg:shadow-[0_18px_44px_-22px_rgba(33,30,26,0.28)]"
-        >
-          <div class="flex items-start justify-between">
-            <div>
-              <div
-                class="font-display text-[15px] font-medium uppercase tracking-[0.14em] text-default lg:text-[19px]"
-              >
-                Invoice
-              </div>
-              <div class="mt-1 text-[11px] font-medium text-muted lg:mt-1.5 lg:text-[13px]">INV-0007</div>
-            </div>
-            <span
-              class="rounded-full bg-success/10 px-3 py-1.5 text-[10px] font-medium text-success lg:px-3.5 lg:py-2 lg:text-[12px]"
-            >
-              Paid
-            </span>
-          </div>
-
-          <div class="mt-4 text-[10px] uppercase tracking-[0.04em] text-dimmed lg:mt-5 lg:text-[11px]">
-            Billed to
-          </div>
-          <div class="mt-1 text-[13px] font-medium text-default lg:text-[15px]">Mevagissey Flowers</div>
-
-          <div class="mt-4 divide-y divide-[#F4F1EB] border-t border-[#EFEBE4] lg:mt-5">
-            <div
-              v-for="line in invoiceLines"
-              :key="line.name"
-              class="flex items-center justify-between py-2.5 lg:py-[13px]"
-            >
-              <span class="text-[12px] text-default lg:text-[14px]">
-                {{ line.name }} <span class="text-dimmed">· {{ line.qty }}</span>
-              </span>
-              <span class="text-[12px] font-medium tabular-nums text-default lg:text-[14px]">
-                {{ line.amount }}
-              </span>
-            </div>
-          </div>
-
-          <div class="mt-0.5 flex items-center justify-between border-t border-[#EFEBE4] pt-3.5 lg:pt-4">
-            <span class="font-display text-sm font-medium text-default lg:text-[17px]">Total</span>
-            <span class="text-base font-medium tabular-nums text-default lg:text-xl">£65.00</span>
-          </div>
-
-          <div
-            class="mt-3.5 flex items-center gap-1.5 text-[10px] font-medium text-dimmed lg:mt-[18px] lg:text-[12px]"
-          >
-            <UIcon name="i-lucide-flower-2" class="size-3 text-primary/40 lg:size-3.5" />
-            Pulled straight from your flower list
-          </div>
-        </div>
+        <LandingInvoiceCard class="mx-auto mt-7 lg:mx-0 lg:mt-0 lg:shrink-0" />
       </div>
     </section>
 
@@ -444,7 +389,7 @@ const invoiceLines = [
         </div>
         <div class="flex items-center gap-[26px] text-[13px] font-medium text-muted">
           <NuxtLink
-            v-for="link in navLinks"
+            v-for="link in footerLinks"
             :key="link.to"
             :to="link.to"
             class="transition-colors hover:text-primary"

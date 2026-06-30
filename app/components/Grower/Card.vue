@@ -31,19 +31,19 @@ const tint = computed(() => avatarTint(props.grower.handle))
 <template>
   <NuxtLink
     :to="to"
-    class="group flex items-center gap-4 py-4 transition-colors duration-200 hover:bg-clay-900/[0.015]"
+    class="group flex items-center gap-4 py-4 transition-colors duration-200 hover:bg-clay-900/[0.015] sm:-mx-2 sm:px-2 sm:rounded-xl"
   >
     <!-- Avatar: real photo, else warm tinted initials -->
     <img
       v-if="grower.avatarUrl"
       :src="grower.avatarUrl"
       :alt="grower.farmName"
-      class="size-14 shrink-0 rounded-full object-cover"
+      class="size-[54px] shrink-0 rounded-full object-cover sm:size-14"
     />
     <div
       v-else
       :class="tint"
-      class="flex size-14 shrink-0 items-center justify-center rounded-full font-display text-lg font-medium"
+      class="flex size-[54px] shrink-0 items-center justify-center rounded-full font-display text-lg font-medium sm:size-14 sm:text-xl"
       aria-hidden="true"
     >
       {{ initials }}
@@ -51,13 +51,13 @@ const tint = computed(() => avatarTint(props.grower.handle))
 
     <div class="min-w-0 flex-1">
       <h3
-        class="truncate font-display text-lg font-medium leading-snug text-default transition-colors group-hover:text-primary"
+        class="truncate font-display text-lg font-medium leading-snug text-default transition-colors group-hover:text-primary sm:text-xl"
       >
         {{ grower.farmName }}
       </h3>
-      <p class="truncate text-sm text-muted">{{ subtitle }}</p>
+      <p class="truncate text-[13px] text-muted sm:text-sm">{{ subtitle }}</p>
 
-      <p class="mt-1.5 flex items-center gap-1.5 text-xs">
+      <p class="mt-1.5 flex items-center gap-1.5 text-xs sm:text-[13px]">
         <template v-if="hasStock">
           <span class="size-1.5 shrink-0 rounded-full bg-success" />
           <span class="font-medium text-success">{{ grower.flowerCount }} in season</span>

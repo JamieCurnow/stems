@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="26"></feGaussianBlur>
+    </filter>
+    <radialGradient id="sky" cx="50%" cy="22%" r="95%">
+      <stop offset="0%" stop-color="#FFFFFF"></stop>
+      <stop offset="55%" stop-color="#FFF4EE"></stop>
+      <stop offset="100%" stop-color="#F6EFE8"></stop>
+    </radialGradient>
+    <radialGradient id="petalPeach" cx="40%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#FBD7CC"></stop>
+      <stop offset="100%" stop-color="#F2A491"></stop>
+    </radialGradient>
+    <radialGradient id="petalBlush" cx="40%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#FDE6E6"></stop>
+      <stop offset="100%" stop-color="#F4B9C0"></stop>
+    </radialGradient>
+    <radialGradient id="petalCream" cx="40%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF"></stop>
+      <stop offset="100%" stop-color="#FDEAD6"></stop>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="520" fill="url(#sky)"></rect>
+
+  <g filter="url(#soft)">
+    
+    <ellipse cx="120" cy="470" rx="190" ry="120" fill="#C7D3BE" opacity="0.55"></ellipse>
+    <ellipse cx="1080" cy="430" rx="210" ry="140" fill="#CFD9C7" opacity="0.5"></ellipse>
+    <ellipse cx="640" cy="510" rx="260" ry="120" fill="#BFCFB6" opacity="0.45"></ellipse>
+
+    
+    <circle cx="245" cy="180" r="120" fill="url(#petalPeach)" opacity="0.9"></circle>
+    <circle cx="245" cy="180" r="42" fill="#F4C16A" opacity="0.85"></circle>
+
+    <circle cx="520" cy="120" r="95" fill="url(#petalBlush)" opacity="0.85"></circle>
+    <circle cx="520" cy="120" r="34" fill="#F6CE7A" opacity="0.8"></circle>
+
+    <circle cx="860" cy="200" r="140" fill="url(#petalCream)" opacity="0.9"></circle>
+    <circle cx="860" cy="200" r="46" fill="#F2B860" opacity="0.7"></circle>
+
+    <circle cx="1010" cy="90" r="80" fill="url(#petalPeach)" opacity="0.8"></circle>
+    <circle cx="70" cy="120" r="90" fill="url(#petalBlush)" opacity="0.75"></circle>
+
+    <circle cx="690" cy="340" r="110" fill="url(#petalPeach)" opacity="0.7"></circle>
+    <circle cx="380" cy="360" r="90" fill="url(#petalCream)" opacity="0.7"></circle>
+
+    
+    <circle cx="450" cy="300" r="26" fill="#FFFFFF" opacity="0.6"></circle>
+    <circle cx="930" cy="380" r="34" fill="#FFF1E6" opacity="0.6"></circle>
+    <circle cx="150" cy="330" r="22" fill="#FFFFFF" opacity="0.5"></circle>
+  </g>
+</svg>

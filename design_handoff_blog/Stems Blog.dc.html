@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <style>
+    body { margin:0; background:#ECE8E2; }
+    *, *::before, *::after { box-sizing:border-box; }
+    a { -webkit-tap-highlight-color:transparent; }
+    .prose p { margin:18px 0 0; font:400 17px/1.72 Inter,sans-serif; color:#4A453E; }
+    .prose h2 { margin:42px 0 0; font:500 28px/1.16 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A; }
+    .prose ul, .prose ol { margin:16px 0 0; padding-left:24px; }
+    .prose li { margin-top:9px; font:400 17px/1.66 Inter,sans-serif; color:#4A453E; }
+    .prose li::marker { color:#C9A99E; }
+    .prose strong { font-weight:600; color:#211E1A; }
+    .prose a { color:#E87767; text-decoration:none; border-bottom:1px solid rgba(232,119,103,.34); }
+    .prose-m p { margin:15px 0 0; font:400 15px/1.66 Inter,sans-serif; color:#4A453E; }
+    .prose-m h2 { margin:32px 0 0; font:500 22px/1.18 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A; }
+    .prose-m ul, .prose-m ol { margin:13px 0 0; padding-left:21px; }
+    .prose-m li { margin-top:8px; font:400 15px/1.6 Inter,sans-serif; color:#4A453E; }
+    .prose-m li::marker { color:#C9A99E; }
+    .prose-m strong { font-weight:600; color:#211E1A; }
+    .prose-m a { color:#E87767; text-decoration:none; border-bottom:1px solid rgba(232,119,103,.34); }
+  </style>
+</helmet>
+
+<!-- ============================ BLOG INDEX · MOBILE ============================ -->
+<div style="position:absolute; left:80px; top:96px; width:430px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Blog index &middot; Mobile</div>
+
+  <div data-screen-label="Blog index (mobile)" style="width:430px; background:#fff; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,.09); overflow:hidden; font-family:Inter,sans-serif; color:#211E1A;">
+
+    <!-- HEADER -->
+    <header style="display:flex; align-items:center; justify-content:space-between; padding:18px 24px; border-bottom:1px solid #EFEBE4;">
+      <div style="font:500 21px/1 'EB Garamond',serif; color:#211E1A;">Stems</div>
+      <a href="#" style="display:inline-block; background:#E87767; color:#fff; font:500 12px/1 Inter,sans-serif; padding:10px 16px; border-radius:999px; text-decoration:none; box-shadow:0 2px 6px rgba(184,72,59,.26);">List your flowers</a>
+    </header>
+
+    <!-- PAGE HEADER (floral wash) -->
+    <section style="position:relative; overflow:hidden; padding:42px 28px 30px;">
+      <div aria-hidden="true" style="position:absolute; inset:0; background:url('assets/hero-flowers.svg') center top/cover; transform:scale(1.18); filter:blur(24px);"></div>
+      <div aria-hidden="true" style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(255,255,255,.42), rgba(255,255,255,.55) 55%, #fff);"></div>
+      <div style="position:relative;">
+        <p style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.32em; text-transform:uppercase; color:#E87767;">Blog</p>
+        <h1 style="margin:13px 0 0; font:500 40px/1.04 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Notes from the field</h1>
+        <p style="margin:14px 0 0; max-width:340px; font:400 15px/1.55 Inter,sans-serif; color:#847B6E;">Growing, seasonality, and the people behind the flowers. Practical things for growers, and a little on why local and in season is worth the bother.</p>
+      </div>
+    </section>
+
+    <!-- LEAD POST -->
+    <section style="padding:6px 24px 0; background:#fff;">
+      <a href="#" style="display:block; text-decoration:none;">
+        <sc-if value="{{ showImages }}" hint-placeholder-val="{{ true }}">
+          <image-slot id="idx-m-lead" style="width:100%; height:212px; display:block; margin-bottom:16px;" shape="rounded" radius="14" placeholder="Feature image (optional)"></image-slot>
+        </sc-if>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+          <span style="font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">26 June 2026</span>
+          <sc-if value="{{ showDraft }}" hint-placeholder-val="{{ true }}">
+            <span style="background:#FCE3DD; color:#C0503F; font:600 9px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; padding:5px 9px; border-radius:99px;">Draft</span>
+          </sc-if>
+        </div>
+        <h2 style="margin:10px 0 0; font:500 27px/1.14 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">How to sell your flowers locally without building a website</h2>
+        <p style="margin:9px 0 0; font:400 15px/1.55 Inter,sans-serif; color:#847B6E;">A practical guide for small flower growers who want to sell locally to florists, at markets, and direct, and look professional doing it, without spending weeks building a website.</p>
+      </a>
+    </section>
+
+    <!-- POST LIST -->
+    <section style="padding:14px 24px 36px; background:#fff;">
+      <!-- row: with image -->
+      <a href="#" style="display:block; text-decoration:none; padding:28px 0; border-top:1px solid #EFEBE4;">
+        <sc-if value="{{ showImages }}" hint-placeholder-val="{{ true }}">
+          <image-slot id="idx-m-2" style="width:100%; height:170px; display:block; margin-bottom:14px;" shape="rounded" radius="12" placeholder="Feature image"></image-slot>
+        </sc-if>
+        <span style="font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">12 June 2026</span>
+        <h3 style="margin:9px 0 0; font:500 22px/1.18 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">What to grow for a steady summer of cut flowers</h3>
+        <p style="margin:7px 0 0; font:400 14px/1.55 Inter,sans-serif; color:#847B6E;">Succession sowing, the reliable workhorses, and how to keep buckets full from June to the first frost.</p>
+      </a>
+      <!-- row: with image -->
+      <a href="#" style="display:block; text-decoration:none; padding:28px 0; border-top:1px solid #EFEBE4;">
+        <sc-if value="{{ showImages }}" hint-placeholder-val="{{ true }}">
+          <image-slot id="idx-m-3" style="width:100%; height:170px; display:block; margin-bottom:14px;" shape="rounded" radius="12" placeholder="Feature image"></image-slot>
+        </sc-if>
+        <span style="font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">28 May 2026</span>
+        <h3 style="margin:9px 0 0; font:500 22px/1.18 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Pricing your stems so florists keep coming back</h3>
+        <p style="margin:7px 0 0; font:400 14px/1.55 Inter,sans-serif; color:#847B6E;">Per stem, in bunches of ten, and why you should never undersell flowers that were in a field this morning.</p>
+      </a>
+      <!-- row: NO image (optional-image fallback) -->
+      <a href="#" style="display:block; text-decoration:none; padding:28px 0; border-top:1px solid #EFEBE4;">
+        <span style="font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">15 May 2026</span>
+        <h3 style="margin:9px 0 0; font:500 22px/1.18 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">A quiet note on conditioning dahlias</h3>
+        <p style="margin:7px 0 0; font:400 14px/1.55 Inter,sans-serif; color:#847B6E;">No feature image on this one. The layout falls back to a clean text row, exactly as it reads today.</p>
+      </a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="border-top:1px solid #E9E5DE; padding:34px 28px; text-align:center; background:#fff;">
+      <div style="font:500 22px/1 'EB Garamond',serif; color:#211E1A;">Stems</div>
+      <p style="margin:7px 0 0; font:600 9px/1 Inter,sans-serif; letter-spacing:.28em; text-transform:uppercase; color:#A89F92;">Local &middot; Seasonal &middot; Grown</p>
+      <nav style="margin-top:18px; display:flex; flex-wrap:wrap; justify-content:center; gap:18px; font:500 13px/1 Inter,sans-serif;">
+        <a href="#" style="color:#6F6659; text-decoration:none;">How it works</a>
+        <a href="#" style="color:#6F6659; text-decoration:none;">About</a>
+        <a href="#" style="color:#E87767; text-decoration:none;">Blog</a>
+        <a href="#" style="color:#6F6659; text-decoration:none;">Policies</a>
+      </nav>
+    </footer>
+
+  </div>
+</div>
+
+<!-- ============================ BLOG INDEX · DESKTOP ============================ -->
+<div style="position:absolute; left:600px; top:96px; width:1280px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Blog index &middot; Desktop</div>
+
+  <div data-screen-label="Blog index (desktop)" style="width:1280px; background:#fff; font-family:Inter,sans-serif; color:#211E1A; box-shadow:0 1px 4px rgba(0,0,0,.1); overflow:hidden;">
+
+    <!-- NAV + PAGE HEADER (floral wash) -->
+    <section style="position:relative; overflow:hidden;">
+      <div aria-hidden="true" style="position:absolute; inset:0; background:url('assets/hero-flowers.svg') center top/cover; transform:scale(1.12); filter:blur(26px);"></div>
+      <div aria-hidden="true" style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(255,255,255,.4), rgba(255,255,255,.6) 60%, #fff);"></div>
+
+      <div style="position:relative; max-width:1040px; margin:0 auto; padding:0 56px;">
+        <nav style="display:flex; align-items:center; justify-content:space-between; padding:28px 0;">
+          <div style="font:500 26px/1 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Stems</div>
+          <div style="display:flex; align-items:center; gap:30px;">
+            <div style="display:flex; align-items:center; gap:26px; font:500 13px/1 Inter,sans-serif; color:#6F6659;">
+              <a href="#" style="color:#6F6659; text-decoration:none;">How it works</a>
+              <a href="#" style="color:#6F6659; text-decoration:none;">About</a>
+              <a href="#" style="color:#E87767; text-decoration:none;">Blog</a>
+            </div>
+            <div style="width:1px; height:18px; background:#E0DAD0;"></div>
+            <a href="#" style="font:500 13px/1 Inter,sans-serif; color:#211E1A; text-decoration:none;">Sign in</a>
+            <a href="#" style="display:inline-block; background:#E87767; color:#fff; font:500 13px/1 Inter,sans-serif; padding:11px 20px; border-radius:999px; text-decoration:none; box-shadow:0 2px 6px rgba(184,72,59,.26);">List your flowers</a>
+          </div>
+        </nav>
+
+        <div style="padding:46px 0 52px; max-width:680px;">
+          <p style="margin:0; font:600 12px/1 Inter,sans-serif; letter-spacing:.32em; text-transform:uppercase; color:#E87767;">Blog</p>
+          <h1 style="margin:18px 0 0; font:500 56px/1.02 'EB Garamond',serif; letter-spacing:-.015em; color:#211E1A;">Notes from the field</h1>
+          <p style="margin:20px 0 0; max-width:560px; font:400 18px/1.6 Inter,sans-serif; color:#847B6E;">Growing, seasonality, and the people behind the flowers. Practical things for growers, and a little on why local and in season is worth the bother.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT -->
+    <div style="max-width:1040px; margin:0 auto; padding:8px 56px 96px; background:#fff;">
+
+      <!-- LEAD POST -->
+      <a href="#" style="display:block; text-decoration:none; margin:0 -24px; padding:36px 24px 40px; border-radius:14px; transition:background .15s;" style-hover="background:#FEF5F3;">
+        <sc-if value="{{ showImages }}" hint-placeholder-val="{{ true }}">
+          <image-slot id="idx-d-lead" style="width:100%; height:392px; display:block; margin-bottom:26px;" shape="rounded" radius="16" placeholder="Feature image (optional)"></image-slot>
+        </sc-if>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
+          <span style="font:600 12px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">26 June 2026</span>
+          <sc-if value="{{ showDraft }}" hint-placeholder-val="{{ true }}">
+            <span style="background:#FCE3DD; color:#C0503F; font:600 10px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; padding:6px 11px; border-radius:99px;">Draft</span>
+          </sc-if>
+        </div>
+        <h2 style="margin:14px 0 0; max-width:760px; font:500 40px/1.1 'EB Garamond',serif; letter-spacing:-.012em; color:#211E1A;">How to sell your flowers locally without building a website</h2>
+        <p style="margin:14px 0 0; max-width:680px; font:400 17px/1.62 Inter,sans-serif; color:#847B6E;">A practical guide for small flower growers who want to sell locally to florists, at markets, and direct, and look professional doing it, without spending weeks building a website.</p>
+      </a>
+
+      <!-- LIST: image sits on the right so text left-edges always align; rows with no image just drop the thumbnail -->
+      <a href="#" style="display:flex; gap:40px; align-items:flex-start; margin:0 -24px; padding:34px 24px; border-top:1px solid #EFEBE4; text-decoration:none; transition:background .15s;" style-hover="background:#FEF5F3;">
+        <div style="flex:1; min-width:0;">
+          <span style="font:600 12px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">12 June 2026</span>
+          <h3 style="margin:11px 0 0; font:500 26px/1.16 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">What to grow for a steady summer of cut flowers</h3>
+          <p style="margin:10px 0 0; max-width:560px; font:400 16px/1.6 Inter,sans-serif; color:#847B6E;">Succession sowing, the reliable workhorses, and how to keep buckets full from June right through to the first frost.</p>
+        </div>
+        <sc-if value="{{ showImages }}" hint-placeholder-val="{{ true }}">
+          <image-slot id="idx-d-2" style="width:300px; height:200px; display:block; flex-shrink:0;" shape="rounded" radius="12" placeholder="Feature image"></image-slot>
+        </sc-if>
+      </a>
+
+      <a href="#" style="display:flex; gap:40px; align-items:flex-start; margin:0 -24px; padding:34px 24px; border-top:1px solid #EFEBE4; text-decoration:none; transition:background .15s;" style-hover="background:#FEF5F3;">
+        <div style="flex:1; min-width:0;">
+          <span style="font:600 12px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">28 May 2026</span>
+          <h3 style="margin:11px 0 0; font:500 26px/1.16 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Pricing your stems so florists keep coming back</h3>
+          <p style="margin:10px 0 0; max-width:560px; font:400 16px/1.6 Inter,sans-serif; color:#847B6E;">Per stem, in bunches of ten, and why you should never undersell flowers that were in a field this morning.</p>
+        </div>
+        <sc-if value="{{ showImages }}" hint-placeholder-val="{{ true }}">
+          <image-slot id="idx-d-3" style="width:300px; height:200px; display:block; flex-shrink:0;" shape="rounded" radius="12" placeholder="Feature image"></image-slot>
+        </sc-if>
+      </a>
+
+      <!-- row: NO image (optional-image fallback) -->
+      <a href="#" style="display:flex; gap:40px; align-items:flex-start; margin:0 -24px; padding:34px 24px; border-top:1px solid #EFEBE4; text-decoration:none; transition:background .15s;" style-hover="background:#FEF5F3;">
+        <div style="flex:1; min-width:0;">
+          <span style="font:600 12px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">15 May 2026</span>
+          <h3 style="margin:11px 0 0; font:500 26px/1.16 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">A quiet note on conditioning dahlias</h3>
+          <p style="margin:10px 0 0; max-width:620px; font:400 16px/1.6 Inter,sans-serif; color:#847B6E;">No feature image on this one. With nothing to show on the right, the row falls back to a clean full-width text entry, exactly the way the blog reads today.</p>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer style="background:#fff; border-top:1px solid #E9E5DE;">
+      <div style="max-width:1040px; margin:0 auto; padding:36px 56px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px;">
+        <div>
+          <div style="font:500 22px/1 'EB Garamond',serif; color:#211E1A;">Stems</div>
+          <p style="margin:7px 0 0; font:600 10px/1 Inter,sans-serif; letter-spacing:.28em; text-transform:uppercase; color:#A89F92;">Local &middot; Seasonal &middot; Grown</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:26px; font:500 13px/1 Inter,sans-serif; color:#6F6659;">
+          <a href="#" style="color:#6F6659; text-decoration:none;">How it works</a>
+          <a href="#" style="color:#6F6659; text-decoration:none;">About</a>
+          <a href="#" style="color:#E87767; text-decoration:none;">Blog</a>
+          <a href="#" style="color:#6F6659; text-decoration:none;">Policies</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<!-- ============================ SINGLE POST · MOBILE ============================ -->
+<div style="position:absolute; left:80px; top:2980px; width:430px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Single post &middot; Mobile</div>
+
+  <div data-screen-label="Single post (mobile)" style="width:430px; background:#fff; border-radius:3px; box-shadow:0 1px 3px rgba(0,0,0,.09); overflow:hidden; font-family:Inter,sans-serif; color:#211E1A;">
+
+    <!-- HEADER -->
+    <header style="display:flex; align-items:center; justify-content:space-between; padding:18px 24px; border-bottom:1px solid #EFEBE4;">
+      <div style="font:500 21px/1 'EB Garamond',serif; color:#211E1A;">Stems</div>
+      <a href="#" style="display:inline-block; background:#E87767; color:#fff; font:500 12px/1 Inter,sans-serif; padding:10px 16px; border-radius:999px; text-decoration:none; box-shadow:0 2px 6px rgba(184,72,59,.26);">List your flowers</a>
+    </header>
+
+    <!-- ARTICLE HEADER -->
+    <article style="padding:30px 28px 40px; background:#fff;">
+      <a href="#" style="display:inline-flex; align-items:center; gap:7px; font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E; text-decoration:none;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Blog
+      </a>
+
+      <div style="margin-top:22px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+        <span style="font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">26 June 2026</span>
+        <sc-if value="{{ showDraft }}" hint-placeholder-val="{{ true }}">
+          <span style="background:#FCE3DD; color:#C0503F; font:600 9px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; padding:5px 9px; border-radius:99px;">Draft</span>
+        </sc-if>
+      </div>
+      <h1 style="margin:12px 0 0; font:500 31px/1.12 'EB Garamond',serif; letter-spacing:-.012em; color:#211E1A;">How to sell your flowers locally without building a website</h1>
+      <p style="margin:14px 0 0; font:400 16px/1.55 Inter,sans-serif; color:#847B6E;">A practical guide for small flower growers who want to sell locally to florists, at markets, and direct, and look professional doing it, without spending weeks building a website.</p>
+
+      <!-- OPTIONAL FEATURE IMAGE -->
+      <sc-if value="{{ showImages }}" hint-placeholder-val="{{ true }}">
+        <image-slot id="post-m-hero" style="width:100%; height:230px; display:block; margin-top:26px;" shape="rounded" radius="14" placeholder="Feature image (optional)"></image-slot>
+      </sc-if>
+
+      <div style="margin-top:26px; padding-top:4px; border-top:1px solid #EFEBE4;"></div>
+
+      <!-- BODY -->
+      <div class="prose-m">
+        <p>By the middle of summer most growers have the opposite of a sales problem. The dahlias are coming three times a week, the sweet peas are everywhere, and you've got more cut than the regular shop can take. The hard part isn't growing it. It's letting the right people know what you've got, this week, before it's over.</p>
+        <p>If you sell flowers locally, to florists, at markets, for weddings, or straight from the gate, here's how to do it well without disappearing down a website project you don't have time for.</p>
+
+        <h2>You probably don't need a website</h2>
+        <p>A proper website is a lovely thing to not have time for. It's weeks of work, it costs money, and the bit that actually matters, what you have available right now, is the bit that goes stale fastest.</p>
+
+        <h2>Start with where people already find you</h2>
+        <p>Most small growers already have an audience. It's just scattered.</p>
+        <ul>
+          <li><strong>Instagram</strong> is where the photos and the goodwill live. Brilliant for the field, terrible for "ranunculus, 60p a stem, ready Friday".</li>
+          <li><strong>Your local florists</strong> are your best repeat buyers. They'd rather text one grower than trawl an auction.</li>
+          <li><strong>Markets and the farm gate</strong> bring the public who want a bucket of just-cut stems.</li>
+        </ul>
+
+        <h2>Make your availability easy to share</h2>
+        <p>Here's the pattern that works, however you do it technically.</p>
+        <ol>
+          <li><strong>Keep one list, in one place.</strong> One source of truth, not twelve answers in twelve chats.</li>
+          <li><strong>Update it as you cut.</strong> A list is only worth sharing if people trust it's current.</li>
+          <li><strong>Share the same link every time.</strong> Put it at the top of your Instagram, in your bio, on a sign at the market.</li>
+        </ol>
+
+        <h2>Where Stems fits</h2>
+        <p>This is the gap we built <a href="#">Stems</a> for. It's a single page for what you have in season, with photos, prices, and live availability, that you share with one link and update in minutes. We don't take a cut and we don't get between you and your buyer.</p>
+        <p>Setting one up takes an evening, and most of that is choosing photos. If you grow and sell locally, <a href="#">claim your page</a> and put the link in your bio. The flowers will do the rest.</p>
+
+        <h2>The short version</h2>
+        <p>You don't need a website. You need one current list of what you've got, a single link to share it, and to be findable by the people looking for local flowers.</p>
+      </div>
+
+      <div style="margin-top:38px; padding-top:22px; border-top:1px solid #EFEBE4;">
+        <a href="#" style="display:inline-flex; align-items:center; gap:7px; font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#E87767; text-decoration:none;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>All posts
+        </a>
+      </div>
+    </article>
+
+    <!-- FOOTER -->
+    <footer style="border-top:1px solid #E9E5DE; padding:34px 28px; text-align:center; background:#fff;">
+      <div style="font:500 22px/1 'EB Garamond',serif; color:#211E1A;">Stems</div>
+      <p style="margin:7px 0 0; font:600 9px/1 Inter,sans-serif; letter-spacing:.28em; text-transform:uppercase; color:#A89F92;">Local &middot; Seasonal &middot; Grown</p>
+      <nav style="margin-top:18px; display:flex; flex-wrap:wrap; justify-content:center; gap:18px; font:500 13px/1 Inter,sans-serif;">
+        <a href="#" style="color:#6F6659; text-decoration:none;">How it works</a>
+        <a href="#" style="color:#6F6659; text-decoration:none;">About</a>
+        <a href="#" style="color:#E87767; text-decoration:none;">Blog</a>
+        <a href="#" style="color:#6F6659; text-decoration:none;">Policies</a>
+      </nav>
+    </footer>
+
+  </div>
+</div>
+
+<!-- ============================ SINGLE POST · DESKTOP ============================ -->
+<div style="position:absolute; left:600px; top:2980px; width:1280px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Single post &middot; Desktop</div>
+
+  <div data-screen-label="Single post (desktop)" style="width:1280px; background:#fff; font-family:Inter,sans-serif; color:#211E1A; box-shadow:0 1px 4px rgba(0,0,0,.1); overflow:hidden;">
+
+    <!-- NAV (floral wash band) -->
+    <section style="position:relative; overflow:hidden;">
+      <div aria-hidden="true" style="position:absolute; inset:0; background:url('assets/hero-flowers.svg') center top/cover; transform:scale(1.12); filter:blur(26px);"></div>
+      <div aria-hidden="true" style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(255,255,255,.46), #fff 86%);"></div>
+      <div style="position:relative; max-width:1040px; margin:0 auto; padding:0 56px;">
+        <nav style="display:flex; align-items:center; justify-content:space-between; padding:28px 0;">
+          <div style="font:500 26px/1 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Stems</div>
+          <div style="display:flex; align-items:center; gap:30px;">
+            <div style="display:flex; align-items:center; gap:26px; font:500 13px/1 Inter,sans-serif; color:#6F6659;">
+              <a href="#" style="color:#6F6659; text-decoration:none;">How it works</a>
+              <a href="#" style="color:#6F6659; text-decoration:none;">About</a>
+              <a href="#" style="color:#E87767; text-decoration:none;">Blog</a>
+            </div>
+            <div style="width:1px; height:18px; background:#E0DAD0;"></div>
+            <a href="#" style="font:500 13px/1 Inter,sans-serif; color:#211E1A; text-decoration:none;">Sign in</a>
+            <a href="#" style="display:inline-block; background:#E87767; color:#fff; font:500 13px/1 Inter,sans-serif; padding:11px 20px; border-radius:999px; text-decoration:none; box-shadow:0 2px 6px rgba(184,72,59,.26);">List your flowers</a>
+          </div>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ARTICLE -->
+    <article style="max-width:880px; margin:0 auto; padding:30px 56px 90px; background:#fff;">
+
+      <!-- Header column (narrower reading measure) -->
+      <div style="max-width:720px; margin:0 auto;">
+        <a href="#" style="display:inline-flex; align-items:center; gap:8px; font:600 12px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E; text-decoration:none;" style-hover="color:#E87767;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Blog
+        </a>
+        <div style="margin-top:28px; display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
+          <span style="font:600 12px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">26 June 2026</span>
+          <sc-if value="{{ showDraft }}" hint-placeholder-val="{{ true }}">
+            <span style="background:#FCE3DD; color:#C0503F; font:600 10px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; padding:6px 11px; border-radius:99px;">Draft</span>
+          </sc-if>
+        </div>
+        <h1 style="margin:14px 0 0; font:500 48px/1.08 'EB Garamond',serif; letter-spacing:-.015em; color:#211E1A;">How to sell your flowers locally without building a website</h1>
+        <p style="margin:18px 0 0; font:400 19px/1.6 Inter,sans-serif; color:#847B6E;">A practical guide for small flower growers who want to sell locally to florists, at markets, and direct, and look professional doing it, without spending weeks building a website.</p>
+      </div>
+
+      <!-- OPTIONAL FEATURE IMAGE (breaks out wider than the text column) -->
+      <sc-if value="{{ showImages }}" hint-placeholder-val="{{ true }}">
+        <image-slot id="post-d-hero" style="width:100%; height:440px; display:block; margin:36px 0 0; box-shadow:0 24px 56px -30px rgba(33,30,26,.4);" shape="rounded" radius="18" placeholder="Feature image (optional)"></image-slot>
+      </sc-if>
+
+      <!-- Body column -->
+      <div style="max-width:720px; margin:0 auto;">
+        <div style="margin-top:40px; padding-top:6px; border-top:1px solid #EFEBE4;"></div>
+        <div class="prose">
+          <p>By the middle of summer most growers have the opposite of a sales problem. The dahlias are coming three times a week, the sweet peas are everywhere, and you've got more cut than the regular shop can take. The hard part isn't growing it. It's letting the right people know what you've got, this week, before it's over.</p>
+          <p>If you sell flowers locally, to florists, at markets, for weddings, or straight from the gate, here's how to do it well without disappearing down a website project you don't have time for.</p>
+
+          <h2>You probably don't need a website</h2>
+          <p>A proper website is a lovely thing to not have time for. It's weeks of work, it costs money, and the bit that actually matters, what you have available right now, is the bit that goes stale fastest. A website that says you grow "seasonal British flowers" and was last touched in March isn't helping anyone in July.</p>
+          <p>What you need is much smaller and much more useful: one clear place that shows what you've got this week, with prices, that you can keep current in a few minutes and share with a single link.</p>
+
+          <h2>Start with where people already find you</h2>
+          <p>Most small growers already have an audience. It's just scattered.</p>
+          <ul>
+            <li><strong>Instagram</strong> is where the photos and the goodwill live. It's brilliant for showing the field and terrible for "ranunculus, 60p a stem, ready Friday".</li>
+            <li><strong>Your local florists</strong> are your best repeat buyers. They want local stock and a story to tell their own customers, and they'd rather text one grower than trawl an auction.</li>
+            <li><strong>Markets and the farm gate</strong> bring the public who want a bucket of just-cut stems over a bunch flown in from the other side of the world.</li>
+            <li><strong>Word of mouth</strong> in your area, especially through other growers, does more than any ad ever will.</li>
+          </ul>
+
+          <h2>Make your availability easy to share</h2>
+          <p>Here's the pattern that works, however you do it technically.</p>
+          <ol>
+            <li><strong>Keep one list, in one place.</strong> Variety, colour, price per stem, and whether it's ready now or coming soon. One source of truth, not twelve different answers in twelve different chats.</li>
+            <li><strong>Update it as you cut.</strong> A list is only worth sharing if people trust it's current. Touch it when the picture changes, even just to say what's finished.</li>
+            <li><strong>Share the same link every time.</strong> Put that link at the top of your Instagram, in your bio, in your email signature, and on a sign at the market.</li>
+          </ol>
+
+          <h2>Where Stems fits</h2>
+          <p>This is the gap we built <a href="#">Stems</a> for. It's a single page for what you have in season, with photos, prices, and live availability, that you share with one link and update in minutes. Buyers can find you by name or area without signing in, and when they want your flowers they contact you directly, the way they always have. We don't take a cut and we don't get between you and your buyer. You keep your customers. We just give your flowers a good shopfront.</p>
+          <p>Setting one up takes an evening, and most of that is choosing photos. If you grow and sell locally, <a href="#">claim your page</a> and put the link in your bio. The flowers will do the rest.</p>
+
+          <h2>The short version</h2>
+          <p>You don't need a website. You need one current list of what you've got, a single link to share it, and to be findable by the people looking for local flowers. Get those three right and selling locally gets a lot quieter, in the good way.</p>
+        </div>
+
+        <div style="margin-top:48px; padding-top:24px; border-top:1px solid #EFEBE4;">
+          <a href="#" style="display:inline-flex; align-items:center; gap:8px; font:600 12px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#E87767; text-decoration:none;" style-hover="opacity:.75;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>All posts
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- FOOTER -->
+    <footer style="background:#fff; border-top:1px solid #E9E5DE;">
+      <div style="max-width:1040px; margin:0 auto; padding:36px 56px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px;">
+        <div>
+          <div style="font:500 22px/1 'EB Garamond',serif; color:#211E1A;">Stems</div>
+          <p style="margin:7px 0 0; font:600 10px/1 Inter,sans-serif; letter-spacing:.28em; text-transform:uppercase; color:#A89F92;">Local &middot; Seasonal &middot; Grown</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:26px; font:500 13px/1 Inter,sans-serif; color:#6F6659;">
+          <a href="#" style="color:#6F6659; text-decoration:none;">How it works</a>
+          <a href="#" style="color:#6F6659; text-decoration:none;">About</a>
+          <a href="#" style="color:#E87767; text-decoration:none;">Blog</a>
+          <a href="#" style="color:#6F6659; text-decoration:none;">Policies</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;showFeatureImages&quot;: {&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;},
+  &quot;showDraftBadge&quot;: {&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props || {};
+    return {
+      showImages: p.showFeatureImages ?? true,
+      showDraft: p.showDraftBadge ?? true
+    };
+  }
+}
+</script>
+</body>
+</html>

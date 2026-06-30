@@ -1,16 +1,19 @@
 <script setup lang="ts">
 // Public growers-first marketing landing at `/`. No layout chrome (layout:
-// false) so the hero IS the header, exactly like /discover (which sits on the
-// chrome-less `app` layout): wordmark + eyebrow + CTA + the utility nav below.
-// Then warm marketing sections. The hero is the grower (positioning.md); a quiet
-// door points buyers at /discover, which stays the PWA start_url + discovery
-// feed. Canonical + Organization/WebSite schema + /og.png inherited from
-// app.vue. No em-dashes, UK spelling.
+// false) so the hero is the page header. Direction A redesign, image-led and
+// built around one centrepiece (a phone mockup of a real grower's page).
+//
+// Responsive: the mobile single column is the base; the desktop layout kicks in
+// at `lg` (>=1024px) per the desktop handoff. On desktop the oversized centred
+// "Stems" wordmark moves into a top bar, the hero becomes two columns (value
+// headline + phone), how-it-works becomes a 3-up grid, orders becomes two
+// columns, and a real footer bar appears. The phone mockup (<LandingPhoneMock>)
+// renders in the mobile centrepiece and the desktop hero; both are static
+// illustrations, never wired to live data. No em-dashes, UK spelling.
 import { authClient } from '~/utils/auth-client'
 
 definePageMeta({ layout: false })
 
-// Same links + styling as the /discover hero nav.
 const navLinks = [
   { to: '/how-it-works', label: 'How it works' },
   { to: '/about', label: 'About' },
@@ -36,26 +39,33 @@ const steps = [
   {
     icon: 'i-lucide-at-sign',
     title: 'Claim your handle',
-    body: 'Your farm name, your area, and a line about who you are. Your own corner of the internet, set up in the time it takes to have a coffee.'
+    body: 'Your farm name, your area, a line about who you are. Set up in the time it takes to have a coffee.'
   },
   {
     icon: 'i-lucide-flower-2',
     title: "List what's in season",
-    body: 'Each variety, its colour, the price per stem, and whether it is ready now or coming soon. Add a photo and it looks every bit as good as the flowers do.'
+    body: 'Each variety, its colour, the price per stem, a photo. It looks every bit as good as the flowers do.'
   },
   {
     icon: 'i-lucide-link-2',
     title: 'Share one link',
-    body: 'Put your page at the top of your Instagram and in your bio. When someone asks what you have got, you send the link instead of typing the list out again.'
+    body: 'Top of your Instagram, in your bio, on a market sign. One link instead of typing the list out again.'
   }
+]
+
+// Invoice mock lines (unit price x stems from the flower data).
+const invoiceLines = [
+  { name: 'Cosmos', qty: '40 stems', amount: '£32.00' },
+  { name: 'Sweet peas', qty: '30 stems', amount: '£15.00' },
+  { name: 'Cornflower', qty: '60 stems', amount: '£18.00' }
 ]
 </script>
 
 <template>
   <div class="min-h-[100dvh] bg-default">
-    <!-- The hero IS the header (no top bar), exactly like the /discover hero:
-         eyebrow + wordmark + CTA, with the utility nav below. Full-bleed floral
-         wash; the content stays in the centred column. -->
+    <!-- 1. HERO / HEADER — full-bleed floral wash. Mobile: stacked centred hero
+         (the wordmark is the headline). Desktop (lg+): a top bar + two-column
+         hero (value headline left, phone right). -->
     <header class="relative w-full overflow-hidden">
       <div
         class="absolute inset-0 scale-110 bg-[url('/hero-flowers.svg')] bg-cover bg-center blur-xl"
@@ -63,162 +73,386 @@ const steps = [
       />
       <div class="absolute inset-0 bg-gradient-to-b from-white/45 via-white/40 to-white" aria-hidden="true" />
 
-      <div class="relative mx-auto max-w-screen-sm px-4 pb-10 pt-14 text-center sm:pb-12 sm:pt-16">
-        <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary">
-          Local · Seasonal · Grown
-        </p>
-        <!-- The visible wordmark is the brand mark; the sr-only continuation
-             gives crawlers and screen readers a keyword-rich, descriptive H1
-             without changing the design. No em-dashes (copywriting rule). -->
-        <h1
-          class="mt-2 font-display text-6xl font-medium leading-none tracking-tight text-default sm:text-7xl"
-        >
-          <span aria-hidden="true">Stems</span>
-          <span class="sr-only">
-            Stems, the shareable shopfront for small UK flower growers. Local-grown, seasonal flowers,
-            straight from the grower.
-          </span>
-        </h1>
-        <p class="mx-auto mt-3 max-w-xs text-balance text-muted">
-          Local-grown flowers, straight from the grower
-        </p>
-
-        <div v-if="showSignedOutCta" class="mt-6 flex flex-col items-center gap-3">
-          <UButton to="/login" color="primary" size="lg" class="rounded-full px-7 font-medium">
-            List your flowers
-          </UButton>
-          <UButton
-            to="/login"
-            variant="link"
-            color="neutral"
-            trailing-icon="i-lucide-arrow-right"
-            class="text-muted hover:text-default"
-          >
-            or sign in
-          </UButton>
-        </div>
-        <div v-else class="mt-6 flex justify-center">
-          <UButton to="/discover" color="primary" size="lg" class="rounded-full px-7 font-medium">
-            Open Stems
-          </UButton>
-        </div>
-
-        <!-- Utility nav below the CTA, same styling as the /discover hero. -->
-        <nav
-          class="mt-6 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted"
-          aria-label="More"
-        >
-          <template v-for="(link, i) in navLinks" :key="link.to">
-            <span v-if="i > 0" class="text-dimmed" aria-hidden="true">·</span>
-            <NuxtLink :to="link.to" class="transition-colors hover:text-primary">{{ link.label }}</NuxtLink>
-          </template>
+      <div class="relative mx-auto max-w-[1120px] px-6 lg:px-14">
+        <!-- Desktop top bar -->
+        <nav class="hidden items-center justify-between py-7 lg:flex" aria-label="Primary">
+          <NuxtLink to="/" class="font-display text-[26px] font-medium tracking-tight text-default">
+            Stems
+          </NuxtLink>
+          <div class="flex items-center gap-[30px]">
+            <div class="flex items-center gap-[26px] text-[13px] font-medium text-muted">
+              <NuxtLink
+                v-for="link in navLinks"
+                :key="link.to"
+                :to="link.to"
+                class="transition-colors hover:text-primary"
+              >
+                {{ link.label }}
+              </NuxtLink>
+            </div>
+            <div class="h-[18px] w-px bg-[var(--ui-border)]" aria-hidden="true" />
+            <template v-if="showSignedOutCta">
+              <NuxtLink
+                to="/login"
+                class="text-[13px] font-medium text-default transition-colors hover:text-primary"
+              >
+                Sign in
+              </NuxtLink>
+              <UButton to="/login" color="primary" size="sm" class="rounded-full px-5 py-2.5 font-medium">
+                List your flowers
+              </UButton>
+            </template>
+            <UButton
+              v-else
+              to="/discover"
+              color="primary"
+              size="sm"
+              class="rounded-full px-5 py-2.5 font-medium"
+            >
+              Open Stems
+            </UButton>
+          </div>
         </nav>
+
+        <!-- Mobile hero (stacked, centred) -->
+        <div class="pb-12 pt-14 text-center sm:pb-14 sm:pt-16 lg:hidden">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary">
+            Local · Seasonal · Grown
+          </p>
+          <!-- The visible wordmark is the brand mark; the sr-only continuation
+               gives crawlers and screen readers a keyword-rich H1 without
+               changing the design. No em-dashes (copywriting rule). -->
+          <h1
+            class="mt-2.5 font-display text-6xl font-medium leading-none tracking-tight text-default sm:text-7xl"
+          >
+            <span aria-hidden="true">Stems</span>
+            <span class="sr-only">
+              Stems, the shareable shopfront for small UK flower growers. Local-grown, seasonal flowers,
+              straight from the grower.
+            </span>
+          </h1>
+          <p class="mx-auto mt-3 max-w-[228px] text-balance text-[15px] text-muted">
+            Local-grown flowers, straight from the grower
+          </p>
+
+          <div v-if="showSignedOutCta" class="mt-6 flex flex-col items-center gap-3">
+            <UButton to="/login" color="primary" size="lg" class="rounded-full px-8 font-medium">
+              List your flowers
+            </UButton>
+            <UButton
+              to="/login"
+              variant="link"
+              color="neutral"
+              trailing-icon="i-lucide-arrow-right"
+              class="text-muted hover:text-default"
+            >
+              or sign in
+            </UButton>
+          </div>
+          <div v-else class="mt-6 flex justify-center">
+            <UButton to="/discover" color="primary" size="lg" class="rounded-full px-8 font-medium">
+              Open Stems
+            </UButton>
+          </div>
+
+          <nav
+            class="mt-6 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted"
+            aria-label="More"
+          >
+            <template v-for="(link, i) in navLinks" :key="link.to">
+              <span v-if="i > 0" class="text-dimmed" aria-hidden="true">·</span>
+              <NuxtLink :to="link.to" class="transition-colors hover:text-primary">{{ link.label }}</NuxtLink>
+            </template>
+          </nav>
+        </div>
+
+        <!-- Desktop hero (two columns) -->
+        <div class="hidden items-center gap-20 pb-[92px] pt-[60px] lg:flex">
+          <div class="max-w-[540px] flex-1">
+            <p class="text-[12px] font-semibold uppercase tracking-[0.32em] text-primary">
+              Local · Seasonal · Grown
+            </p>
+            <h1
+              class="mt-5 font-display text-[56px] font-medium leading-[1.04] tracking-[-0.015em] text-default"
+            >
+              A public page for your flower stock, shared with one link.
+            </h1>
+            <p class="mt-[22px] max-w-[430px] text-[17px] leading-relaxed text-muted">
+              List what you have grown, share one link, and keep every customer. No website to build, no
+              commission to pay.
+            </p>
+            <div class="mt-[34px] flex items-center gap-[22px]">
+              <UButton
+                :to="showSignedOutCta ? '/login' : '/discover'"
+                color="primary"
+                size="lg"
+                class="rounded-full px-[34px] py-[17px] text-base font-medium"
+              >
+                {{ showSignedOutCta ? 'List your flowers' : 'Open Stems' }}
+              </UButton>
+              <UButton
+                v-if="showSignedOutCta"
+                to="/login"
+                variant="link"
+                color="neutral"
+                trailing-icon="i-lucide-arrow-right"
+                class="text-[15px] text-muted hover:text-default"
+              >
+                or sign in
+              </UButton>
+            </div>
+          </div>
+          <div class="shrink-0">
+            <LandingPhoneMock />
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- Warm manifesto: open on the grower's real situation (the 6am DM pile),
-         not a metaphor. The product is the calm answer. brand-voice.md holds
-         this "your flowers already sell themselves" line up as the bar. -->
-    <section class="bg-primary/5">
-      <div class="mx-auto max-w-screen-sm px-6 py-16 sm:py-20">
-        <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary">
-          The shopfront, without the website
-        </p>
-        <p
-          class="mt-4 max-w-md font-display text-3xl font-medium leading-snug tracking-tight text-default sm:text-4xl"
-        >
-          Your flowers already sell themselves.
-        </p>
-        <p class="mt-5 max-w-md leading-relaxed text-muted">
-          They just need somewhere to be seen that isn't buried in a dozen different chats. Stems is one
-          good-looking page for what you have in season, with photos, prices, and what is ready now. No
-          website to build, no commission to pay.
-        </p>
+    <!-- 2. CENTREPIECE (mobile only) — eyebrow + headline + phone + caption. On
+         desktop the phone lives in the hero and this headline becomes the hero
+         h1, so the section is dropped at lg. -->
+    <section class="bg-default px-6 pt-14 text-center sm:pt-16 lg:hidden">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary">What it is</p>
+      <h2
+        class="mx-auto mt-3 max-w-[320px] font-display text-3xl font-medium leading-tight tracking-tight text-default"
+      >
+        A public page for your flower stock, shared with one link.
+      </h2>
+
+      <div class="mt-9 flex justify-center">
+        <LandingPhoneMock />
       </div>
+
+      <p class="mx-auto mt-4 max-w-[340px] text-[13px] leading-relaxed text-muted">
+        A real grower's page. Twenty-one stems in season, updated an hour ago, all on one link.
+      </p>
     </section>
 
-    <div class="mx-auto max-w-screen-sm px-6">
-      <!-- How it works: warm feature blocks led by a floral icon, not big
-           numbers, on hairline dividers. -->
-      <section class="py-16 sm:py-20">
+    <!-- 3. HOW IT WORKS — stacked rows (mobile) becoming a 3-up grid (lg). -->
+    <section class="bg-default px-6 py-16 sm:py-20 lg:px-14 lg:py-[92px]">
+      <div class="mx-auto max-w-[1120px]">
         <div class="text-center">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary">How it works</p>
-          <h2 class="mt-2 font-display text-3xl font-medium tracking-tight text-default sm:text-4xl">
-            From the cutting patch to one shareable link
+          <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary lg:text-[12px]">
+            How it works
+          </p>
+          <h2
+            class="mx-auto mt-2.5 max-w-[300px] font-display text-[27px] font-medium tracking-tight text-default lg:mt-3.5 lg:max-w-none lg:text-[40px]"
+          >
+            From the cutting patch to one link
           </h2>
         </div>
 
-        <div class="mt-10 divide-y divide-default">
-          <div v-for="step in steps" :key="step.title" class="flex gap-5 py-7 first:pt-0 last:pb-0">
-            <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/10">
-              <UIcon :name="step.icon" class="size-6 text-primary" />
+        <div class="mt-8 divide-y divide-default lg:mt-[54px] lg:grid lg:grid-cols-3 lg:gap-12 lg:divide-y-0">
+          <div
+            v-for="step in steps"
+            :key="step.title"
+            class="flex gap-4 py-7 first:pt-0 last:pb-0 lg:flex-col lg:items-center lg:gap-5 lg:py-0 lg:text-center"
+          >
+            <div
+              class="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 lg:size-[60px]"
+            >
+              <UIcon :name="step.icon" class="size-5 text-peach-700 lg:size-[26px]" />
             </div>
             <div>
-              <h3 class="font-display text-xl font-medium text-default sm:text-2xl">{{ step.title }}</h3>
-              <p class="mt-1.5 leading-relaxed text-muted">{{ step.body }}</p>
+              <h3 class="font-display text-xl font-medium text-default lg:text-[23px]">{{ step.title }}</h3>
+              <p
+                class="mt-1.5 leading-relaxed text-muted lg:mx-auto lg:mt-2.5 lg:max-w-[300px] lg:text-[15px]"
+              >
+                {{ step.body }}
+              </p>
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
-    <!-- The shareable link wedge, on a warm full-bleed band. -->
-    <section class="bg-gradient-to-b from-primary/5 to-white">
-      <div class="mx-auto max-w-screen-sm px-6 py-16 text-center sm:py-20">
-        <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary">One clean link</p>
-        <h2 class="mt-2 font-display text-3xl font-medium tracking-tight text-default sm:text-4xl">
+    <!-- 4. ONE CLEAN LINK — full-bleed peach-50 band, centred, scaled up at lg. -->
+    <section class="bg-primary/5 px-6 py-12 lg:px-14 lg:py-[88px]">
+      <div class="mx-auto max-w-[1120px] text-center">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary lg:text-[12px]">
+          One clean link
+        </p>
+        <h2
+          class="mx-auto mt-2.5 max-w-[290px] font-display text-[27px] font-medium tracking-tight text-default lg:mt-3.5 lg:max-w-[620px] lg:text-[40px]"
+        >
           A page that works the moment you share it
         </h2>
         <p
-          class="mx-auto mt-6 inline-block rounded-full bg-white px-6 py-2.5 font-display text-xl text-default shadow-sm ring-1 ring-primary/15"
+          class="mx-auto mt-6 inline-block rounded-full bg-white px-6 py-3 font-display text-lg text-default shadow-sm ring-1 ring-primary/15 lg:mt-[30px] lg:px-8 lg:py-4 lg:text-2xl"
         >
           stems.market/<span class="text-primary">@you</span>
         </p>
-        <p class="mx-auto mt-6 max-w-md text-balance leading-relaxed text-muted">
-          No app for buyers to download, no sign-in to look. They click your link, see what is in this week,
-          and reach you the way they always have. You keep your customers. We never take a cut.
+        <p
+          class="mx-auto mt-5 max-w-[300px] text-balance text-[15px] leading-relaxed text-muted lg:mt-[26px] lg:max-w-[560px] lg:text-base"
+        >
+          No app to download, no sign-in to look. They click, see what is in this week, and reach you the way
+          they always have. We never take a cut.
         </p>
       </div>
     </section>
 
-    <div class="mx-auto max-w-screen-sm px-6">
-      <!-- Buyer's quiet door, deliberately subordinate to the grower CTA. -->
-      <section class="border-t border-default py-12 text-center sm:py-14">
-        <p class="mx-auto max-w-sm text-balance text-muted">
-          Just here to buy? Search local growers near you, by name or area, no account needed.
+    <!-- 5. ORDERS & INVOICES — stacked + centred (mobile) becoming two columns
+         (lg): copy left, invoice mock card right. -->
+    <section class="border-t border-default bg-default px-6 py-12 sm:py-14 lg:px-14 lg:py-[92px]">
+      <div class="mx-auto max-w-[1120px] lg:flex lg:items-center lg:gap-20">
+        <div class="text-center lg:max-w-[480px] lg:flex-1 lg:text-left">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-primary lg:text-[12px]">
+            Orders &amp; invoices
+          </p>
+          <h2
+            class="mx-auto mt-2.5 max-w-[300px] font-display text-[27px] font-medium tracking-tight text-default lg:mx-0 lg:mt-4 lg:max-w-none lg:text-[40px]"
+          >
+            Got an order? Send an invoice in seconds.
+          </h2>
+          <p
+            class="mx-auto mt-3.5 max-w-[300px] text-balance text-[15px] leading-relaxed text-muted lg:mx-0 lg:mt-5 lg:max-w-[420px] lg:text-base"
+          >
+            Save your buyers as contacts, then bill them straight from your flower list. Pick the stems, set
+            the amounts, send a tidy invoice. Mark it paid when the money is in.
+          </p>
+        </div>
+
+        <!-- Invoice mock card (presentational illustration of the printable invoice). -->
+        <div
+          class="mx-auto mt-7 max-w-[330px] rounded-[14px] border border-[#EFE7E2] bg-white p-5 text-left shadow-[0_10px_28px_-16px_rgba(33,30,26,0.22)] lg:mx-0 lg:mt-0 lg:w-[420px] lg:max-w-none lg:shrink-0 lg:rounded-[16px] lg:p-7 lg:shadow-[0_18px_44px_-22px_rgba(33,30,26,0.28)]"
+        >
+          <div class="flex items-start justify-between">
+            <div>
+              <div
+                class="font-display text-[15px] font-medium uppercase tracking-[0.14em] text-default lg:text-[19px]"
+              >
+                Invoice
+              </div>
+              <div class="mt-1 text-[11px] font-medium text-muted lg:mt-1.5 lg:text-[13px]">INV-0007</div>
+            </div>
+            <span
+              class="rounded-full bg-success/10 px-3 py-1.5 text-[10px] font-medium text-success lg:px-3.5 lg:py-2 lg:text-[12px]"
+            >
+              Paid
+            </span>
+          </div>
+
+          <div class="mt-4 text-[10px] uppercase tracking-[0.04em] text-dimmed lg:mt-5 lg:text-[11px]">
+            Billed to
+          </div>
+          <div class="mt-1 text-[13px] font-medium text-default lg:text-[15px]">Mevagissey Flowers</div>
+
+          <div class="mt-4 divide-y divide-[#F4F1EB] border-t border-[#EFEBE4] lg:mt-5">
+            <div
+              v-for="line in invoiceLines"
+              :key="line.name"
+              class="flex items-center justify-between py-2.5 lg:py-[13px]"
+            >
+              <span class="text-[12px] text-default lg:text-[14px]">
+                {{ line.name }} <span class="text-dimmed">· {{ line.qty }}</span>
+              </span>
+              <span class="text-[12px] font-medium tabular-nums text-default lg:text-[14px]">
+                {{ line.amount }}
+              </span>
+            </div>
+          </div>
+
+          <div class="mt-0.5 flex items-center justify-between border-t border-[#EFEBE4] pt-3.5 lg:pt-4">
+            <span class="font-display text-sm font-medium text-default lg:text-[17px]">Total</span>
+            <span class="text-base font-medium tabular-nums text-default lg:text-xl">£65.00</span>
+          </div>
+
+          <div
+            class="mt-3.5 flex items-center gap-1.5 text-[10px] font-medium text-dimmed lg:mt-[18px] lg:text-[12px]"
+          >
+            <UIcon name="i-lucide-flower-2" class="size-3 text-primary/40 lg:size-3.5" />
+            Pulled straight from your flower list
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. BUYER DOOR — stacked (mobile) becoming a centred inline row (lg). -->
+    <section class="border-t border-default bg-default px-6 py-10 lg:px-14">
+      <div
+        class="mx-auto max-w-[1120px] text-center lg:flex lg:flex-wrap lg:items-center lg:justify-center lg:gap-[22px]"
+      >
+        <p
+          class="mx-auto max-w-[280px] text-balance text-[13px] leading-relaxed text-muted lg:mx-0 lg:max-w-none lg:text-[15px]"
+        >
+          Just here to buy? Find a local grower by name or area, no account needed.
         </p>
-        <UButton to="/discover" color="neutral" variant="soft" class="mt-4 rounded-full px-6">
+        <UButton
+          to="/discover"
+          variant="outline"
+          color="neutral"
+          icon="i-lucide-search"
+          class="mt-3.5 rounded-full px-5 lg:mt-0"
+        >
           Find a grower near you
         </UButton>
-      </section>
-    </div>
+      </div>
+    </section>
 
-    <!-- Closing CTA over the floral wash, a lush bookend to the hero. -->
+    <!-- 7. CLOSING — full-bleed floral wash bookending the hero, scaled up at lg.
+         The footer wordmark is inline on mobile; desktop gets a real footer bar. -->
     <section class="relative w-full overflow-hidden">
       <div
-        class="absolute inset-0 scale-110 bg-[url('/hero-flowers.svg')] bg-cover bg-center blur-xl"
+        class="absolute inset-0 scale-110 bg-[url('/hero-flowers.svg')] bg-cover bg-bottom blur-xl"
         aria-hidden="true"
       />
-      <div class="absolute inset-0 bg-gradient-to-b from-white via-white/70 to-white/85" aria-hidden="true" />
+      <div class="absolute inset-0 bg-gradient-to-b from-white via-white/60 to-white/85" aria-hidden="true" />
 
-      <div class="relative mx-auto max-w-screen-sm px-6 py-20 text-center sm:py-24">
-        <h2 class="font-display text-3xl font-medium tracking-tight text-default sm:text-4xl">
+      <div
+        class="relative mx-auto max-w-[1120px] px-6 pb-8 pt-14 text-center lg:px-14 lg:pb-[84px] lg:pt-[96px]"
+      >
+        <h2
+          class="mx-auto max-w-[300px] font-display text-[29px] font-medium tracking-tight text-default lg:max-w-[560px] lg:text-[44px] lg:tracking-[-0.015em]"
+        >
           Give your flowers a good shopfront
         </h2>
-        <p class="mx-auto mt-3 max-w-sm text-balance text-muted">
-          It takes an evening, and most of that is choosing photos. The flowers will do the rest.
+        <p
+          class="mx-auto mt-3 max-w-[290px] text-balance text-[15px] leading-relaxed text-muted lg:mt-[18px] lg:max-w-[460px] lg:text-base"
+        >
+          It takes an evening, and most of that is choosing the photos. The flowers do the rest.
         </p>
-        <div class="mt-7 flex justify-center">
+        <div class="mt-6 flex justify-center lg:mt-8">
           <UButton
             :to="showSignedOutCta ? '/login' : '/discover'"
             color="primary"
             size="lg"
-            class="rounded-full px-8 font-medium"
+            class="rounded-full px-8 font-medium lg:px-[38px] lg:py-[17px] lg:text-base"
           >
             {{ showSignedOutCta ? 'List your flowers' : 'Open Stems' }}
           </UButton>
         </div>
+
+        <!-- Mobile inline footer wordmark (desktop uses the footer bar below). -->
+        <div class="mt-10 border-t border-default/80 pt-5 lg:hidden">
+          <div class="font-display text-[23px] font-medium text-default">Stems</div>
+          <p class="mt-1.5 text-[9px] font-semibold uppercase tracking-[0.28em] text-dimmed">
+            Local · Seasonal · Grown
+          </p>
+        </div>
       </div>
     </section>
+
+    <!-- Desktop footer bar -->
+    <footer class="hidden border-t border-default bg-default lg:block">
+      <div class="mx-auto flex max-w-[1120px] flex-wrap items-center justify-between gap-5 px-14 py-9">
+        <div>
+          <div class="font-display text-[22px] font-medium text-default">Stems</div>
+          <p class="mt-[7px] text-[10px] font-semibold uppercase tracking-[0.28em] text-dimmed">
+            Local · Seasonal · Grown
+          </p>
+        </div>
+        <div class="flex items-center gap-[26px] text-[13px] font-medium text-muted">
+          <NuxtLink
+            v-for="link in navLinks"
+            :key="link.to"
+            :to="link.to"
+            class="transition-colors hover:text-primary"
+          >
+            {{ link.label }}
+          </NuxtLink>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>

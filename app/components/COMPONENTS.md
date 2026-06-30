@@ -305,6 +305,18 @@ Granular cookie-preferences modal (Strictly functional [always on] / Analytics /
 
 ---
 
+## `<LandingPhoneMock>`
+
+Presentational phone mockup for the marketing landing (`/`). A static illustration that mirrors the live grower page (`app/pages/@[handle]/index.vue`) 1:1 — banner, peach avatar with serif initials, contact pill, availability header, hairline-divided flower rows with placeholder gradient thumbnails, bottom scroll fade. **Never wired to live data**; the flower list is a local array and the `tint` gradients stand in for real photos. Self-contained: no props. Sizing scales up at `lg` (≥1024px) per the desktop handoff (272px device / 498px screen / 4 rows on mobile → 300px / 600px / 5 rows on desktop; the fifth row, Phlox, is `hidden lg:flex`). Rendered in both the mobile centrepiece and the desktop hero of `index.vue` — each parent gates visibility by breakpoint, so only the matching size ever shows.
+
+### Example
+
+```vue
+<LandingPhoneMock />
+```
+
+---
+
 ## Learnings
 
 - **Directory prefix is the component name.** `Flower/Card.vue` is `<FlowerCard>`, `Image/CropModal.vue` is `<ImageCropModal>`, `Layout/CookieConsent.vue` is `<LayoutCookieConsent>`. Name new files with that in mind.

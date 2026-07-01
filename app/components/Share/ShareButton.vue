@@ -8,6 +8,10 @@ const props = withDefaults(
   defineProps<{
     handle: string
     farmName: string
+    // Share a specific flower's page (`/@handle/{flowerId}`) rather than the
+    // grower's shop. When set, the share text names the flower.
+    flowerId?: string
+    flowerName?: string
     variant?: ButtonProps['variant']
     size?: ButtonProps['size']
     color?: ButtonProps['color']
@@ -38,11 +42,16 @@ const { copy } = useClipboard()
 const requestUrl = useRequestURL()
 const shareUrl = computed(() => {
   const origin = import.meta.client ? window.location.origin : requestUrl.origin
-  return `${origin}/@${props.handle}`
+  const path = props.flowerId ? `/@${props.handle}/${props.flowerId}` : `/@${props.handle}`
+  return `${origin}${path}`
 })
 
-const shareTitle = computed(() => props.farmName || 'Stems')
-const shareText = computed(() => `${props.farmName}'s flower availability on Stems`)
+const shareTitle = computed(() => props.flowerName || props.farmName || 'Stems')
+const shareText = computed(() =>
+  props.flowerName
+    ? `${props.flowerName} from ${props.farmName} on Stems`
+    : `${props.farmName}'s flower availability on Stems`
+)
 
 // Feature-detect only on the client to avoid touching `navigator` during SSR.
 const canNativeShare = ref(false)

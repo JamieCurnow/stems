@@ -121,7 +121,7 @@ Small status pill for invoices. Colour-codes `draft` (neutral) / `sent` (info) /
 
 ## `<FlowerGallery>`
 
-Horizontally swipeable image gallery for the read-only flower drawer (a flower can carry several square photos, cover first). Native CSS scroll-snap rail — no carousel library — so it coexists cleanly with the `UDrawer` it lives in: `touch-action: pan-x` hands horizontal gestures to the browser (snap between photos) and lets vertical gestures fall through to vaul's drag-to-close. Position dots are tappable (desktop) and indicative (touch); hidden for a single photo. Frame is `aspect-square` capped at `max-h-[46vh]` so the whole sheet fits without an inner scroll. Key it by flower id so the rail resets to the cover per flower.
+Image gallery for the read-only single-flower page (a flower can carry several photos, cover first). Native CSS scroll-snap rail — no carousel library: `touch-action: pan-x` hands horizontal gestures to the browser (snap between photos) and lets vertical ones fall through to page scroll. Layers buyer-facing affordances over the rail — a frosted photo-count chip (`{current} / {total}`), frosted prev/next arrows (wrap around the ends), and tappable position dots. All of those are hidden for a single photo; a photo-less flower shows the flower-icon placeholder. (No thumbnail rail — the count chip + arrows already signal multiple photos.) Frame is `aspect-[4/5]` on mobile / `aspect-square` (`lg:`, where the single-listing page goes two-column) on desktop, rounded `24px`/`22px`. Key it by flower id so the rail resets to the cover per flower.
 
 ### Props
 
@@ -154,15 +154,18 @@ One grower row in the discovery feed. Avatar-led, borderless, links the whole ro
 
 ## `<ShareButton>`
 
-Share affordance for a grower's public page. Uses the Web Share API on mobile, falling back to copy-to-clipboard + toast elsewhere. Builds an absolute `/@handle` URL.
+Share affordance for a grower's public page or a single flower listing. Uses the Web Share API on mobile, falling back to copy-to-clipboard + toast elsewhere. Builds an absolute `/@handle` URL by default; pass `flowerId` to share a specific flower's page (`/@handle/{flowerId}`), and `flowerName` so the share text names the flower.
 
 ### Props
 
 - `handle`: `string` (required)
 - `farmName`: `string` (required)
+- `flowerId`: `string` — share this flower's page instead of the grower's shop.
+- `flowerName`: `string` — flower name for the share title/text (used with `flowerId`).
 - `variant` / `size` / `color`: `ButtonProps[...]` — passed through to `UButton`.
 - `block`: `boolean` (default `false`)
 - `label`: `string` (default `'Share'`)
+- `square`: `boolean` (default `false`) — icon-only circular button (label kept for a11y).
 
 ### Example
 

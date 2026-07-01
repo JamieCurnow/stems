@@ -11,17 +11,27 @@
 function onAdd() {
   navigateTo('/flowers/new')
 }
+
+// Focused pages (e.g. the single flower listing, which has its own sticky
+// Contact bar) can hide the floating tab bar via `definePageMeta({ hideTabBar:
+// true })`. When hidden, the main pane drops its tab-bar clearance padding.
+const route = useRoute()
+const hideTabBar = computed(() => (route.meta as { hideTabBar?: boolean }).hideTabBar === true)
 </script>
 
 <template>
   <div class="flex min-h-[100dvh] flex-col bg-default">
-    <!-- Scrollable content. Bottom padding clears the fixed tab bar + safe area. -->
-    <main class="flex-1 pb-[calc(env(safe-area-inset-bottom)+5rem)]">
+    <!-- Scrollable content. Bottom padding clears the fixed tab bar + safe area
+         (dropped when a page hides the tab bar and supplies its own footer). -->
+    <main
+      class="flex-1"
+      :class="hideTabBar ? 'pb-[env(safe-area-inset-bottom)]' : 'pb-[calc(env(safe-area-inset-bottom)+5rem)]'"
+    >
       <div class="mx-auto w-full max-w-screen-sm px-4">
         <slot />
       </div>
     </main>
 
-    <AppTabBar @add="onAdd" />
+    <AppTabBar v-if="!hideTabBar" @add="onAdd" />
   </div>
 </template>

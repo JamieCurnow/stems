@@ -45,6 +45,7 @@ The PUBLIC grower-page payload (`shared/types/profile.ts`). Returned by `GET /ap
 
 - `handle`: `string`
 - `farmName`: `string`
+- `tagline`: `string | null` — short role/eyebrow shown above the name, e.g. "Florist & Gardener"
 - `bio`: `string | null`
 - `locationName`: `string | null`
 - `instagram`: `string | null`

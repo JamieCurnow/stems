@@ -31,6 +31,7 @@ export default defineEventHandler(
       .select({
         handle: profile.handle,
         farmName: profile.farmName,
+        tagline: profile.tagline,
         bio: profile.bio,
         locationName: profile.locationName,
         instagram: profile.instagram,
@@ -52,6 +53,7 @@ export default defineEventHandler(
     const profileDto: PublicProfileDto = {
       handle: profileRow.handle,
       farmName: profileRow.farmName,
+      tagline: profileRow.tagline,
       bio: profileRow.bio,
       locationName: profileRow.locationName,
       instagram: profileRow.instagram,

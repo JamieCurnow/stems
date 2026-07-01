@@ -179,6 +179,7 @@ export const profile = sqliteTable(
       .references(() => user.id, { onDelete: 'cascade' }),
     handle: text('handle').notNull().unique(), // lowercase canonical, no '@'
     farmName: text('farmName').notNull(), // display name / farm name
+    tagline: text('tagline'), // short role/eyebrow e.g. "Florist & Gardener"
     bio: text('bio'), // about-page body (plain text/markdown-lite)
     locationName: text('locationName'), // freeform e.g. "Bissoe, Cornwall"
     postcode: text('postcode'), // stored for future radius search (V2)

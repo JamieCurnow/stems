@@ -20,6 +20,7 @@ const bannerKey = ref<string | undefined>(profile.value?.bannerKey ?? undefined)
 // Local editable copy seeded from the cached profile. Handle is read-only in V1.
 const state = reactive({
   farmName: profile.value?.farmName ?? '',
+  tagline: profile.value?.tagline ?? '',
   bio: profile.value?.bio ?? '',
   locationName: profile.value?.locationName ?? '',
   postcode: profile.value?.postcode ?? '',
@@ -113,6 +114,7 @@ async function save() {
       method: 'PATCH',
       body: {
         farmName: state.farmName,
+        tagline: state.tagline,
         bio: state.bio,
         locationName: state.locationName,
         postcode: state.postcode,
@@ -194,6 +196,15 @@ async function save() {
 
         <UFormField label="Farm or display name" required>
           <UInput v-model="state.farmName" placeholder="e.g. Bramble & Bloom" maxlength="80" class="w-full" />
+        </UFormField>
+
+        <UFormField label="Tagline" help="A short role shown above your name, e.g. “Florist & Gardener”.">
+          <UInput
+            v-model="state.tagline"
+            placeholder="e.g. Florist & Gardener"
+            maxlength="60"
+            class="w-full"
+          />
         </UFormField>
 
         <UFormField label="Bio" help="Tell florists about your flowers.">

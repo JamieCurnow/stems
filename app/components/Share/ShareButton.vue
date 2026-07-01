@@ -13,13 +13,19 @@ const props = withDefaults(
     color?: ButtonProps['color']
     block?: boolean
     label?: string
+    icon?: string
+    // Render as an icon-only square (circular) button — the quiet secondary
+    // action on the public listing. Drops the visible label; keep `label` for a11y.
+    square?: boolean
   }>(),
   {
     variant: 'soft',
     size: 'md',
     color: 'neutral',
     block: false,
-    label: 'Share'
+    label: 'Share',
+    icon: 'i-lucide-share-2',
+    square: false
   }
 )
 
@@ -68,8 +74,10 @@ async function onShare() {
 
 <template>
   <UButton
-    :label="label"
-    icon="i-lucide-share-2"
+    :label="square ? undefined : label"
+    :aria-label="square ? label : undefined"
+    :icon="icon"
+    :square="square"
     :variant="variant"
     :size="size"
     :color="color"

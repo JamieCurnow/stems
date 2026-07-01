@@ -37,6 +37,14 @@ const handle = z
   })
   .transform((val) => normaliseHandle(val))
 
+/** Tagline/eyebrow: optional, ≤60 chars, blank → null. */
+const tagline = z
+  .preprocess(
+    (v) => (typeof v === 'string' ? v.trim() : v),
+    z.string().max(60, 'Your tagline must be 60 characters or fewer.').nullish()
+  )
+  .transform((v) => (v == null || v === '' ? null : v))
+
 /** Bio: optional, ≤1000 chars, blank → null. */
 const bio = z
   .preprocess(
@@ -138,6 +146,7 @@ export const profileCreateSchema = z.object({
 export const profilePatchSchema = z
   .object({
     farmName,
+    tagline,
     bio,
     locationName: optionalText,
     postcode: optionalText,

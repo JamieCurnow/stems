@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#ECE8E2; }
+    *, *::before, *::after { box-sizing:border-box; }
+    a, button { -webkit-tap-highlight-color:transparent; }
+  </style>
+</helmet>
+
+<!-- ============================ MOBILE ============================ -->
+<div style="position:absolute; left:80px; top:80px; width:412px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Mobile</div>
+
+  <div style="width:412px; padding:11px; background:#1c1a17; border-radius:52px; box-shadow:0 30px 60px -26px rgba(33,30,26,.5), 0 10px 22px rgba(33,30,26,.16);">
+    <div data-screen-label="Listing · Mobile" style="position:relative; width:390px; height:844px; border-radius:42px; overflow:hidden; background:#fff; font-family:Inter,sans-serif; color:#211E1A;">
+
+      <!-- scroll body -->
+      <div style="position:absolute; inset:0; overflow:hidden;">
+
+        <!-- floral hero with profile overlaid -->
+        <header style="position:relative; overflow:hidden; text-align:center;">
+          <img src="listing_assets/banner.jpg" alt="Juliette Florence Flowers" style="position:absolute; top:0; left:0; width:100%; height:230px; object-fit:cover;">
+          <div aria-hidden="true" style="position:absolute; top:0; left:0; right:0; height:270px; background:linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.55) 34%, #fff 58%);"></div>
+          <div style="position:relative; padding:120px 26px 6px;">
+            <img src="listing_assets/profile.jpg" alt="" style="width:92px; height:92px; border-radius:50%; object-fit:cover; box-shadow:0 6px 18px -8px rgba(33,30,26,.4); outline:4px solid #fff;">
+            <p style="margin:14px 0 0; font:600 10px/1 Inter,sans-serif; letter-spacing:.26em; text-transform:uppercase; color:#E87767;">Florist &amp; Gardener</p>
+            <h1 style="margin:7px 0 0; font:500 31px/1.05 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Juliette Florence Flowers</h1>
+            <p style="margin:9px 0 0; display:inline-flex; align-items:center; gap:7px; font:400 14px/1 Inter,sans-serif; color:#847B6E;">
+              <span style="color:#A89F92;">@julietteflorence</span>
+              <span style="color:#D8D2C8;">&middot;</span>
+              <span style="display:inline-flex; align-items:center; gap:4px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#A89F92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Bissoe &amp; Mithian
+              </span>
+            </p>
+          </div>
+        </header>
+
+        <!-- bio + actions -->
+        <div style="padding:14px 26px 4px; text-align:center;">
+          <p style="margin:0 auto; max-width:30ch; font:400 15px/1.5 Inter,sans-serif; color:#4A453E;">Flowers grown in Bissoe &amp; Mithian, no dig method, no chemicals.</p>
+
+          <div style="margin-top:20px; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <a href="#" style="display:inline-flex; align-items:center; gap:9px; background:#FCE8E3; color:#E87767; font:500 15px/1 Inter,sans-serif; padding:14px 28px; border-radius:999px; text-decoration:none;" style-hover="background:#fbded7">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              Contact
+            </a>
+            <a href="#" title="Instagram" style="display:flex; align-items:center; justify-content:center; width:46px; height:46px; flex-shrink:0; border-radius:50%; border:1px solid #E2DDD4; color:#847B6E; text-decoration:none;" style-hover="background:rgba(33,30,26,.035)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="#" title="Share" style="display:flex; align-items:center; justify-content:center; width:46px; height:46px; flex-shrink:0; border-radius:50%; border:1px solid #E2DDD4; color:#847B6E; text-decoration:none;" style-hover="background:rgba(33,30,26,.035)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- availability header -->
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:22px 24px 6px;">
+          <div>
+            <h2 style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">Availability</h2>
+            <p style="margin:8px 0 0; display:flex; align-items:center; gap:6px; font:400 11px/1 Inter,sans-serif; color:#A89F92;">
+              <span style="width:6px; height:6px; border-radius:50%; background:#5C7F5A;"></span>
+              <span style="color:#5C7F5A; font-weight:500;">{{ inSeasonLabel }}</span>
+              <span>&middot; Updated 5 hours ago</span>
+            </p>
+          </div>
+          <div style="display:inline-flex; flex-shrink:0; background:#F1EEE8; border-radius:999px; padding:3px;">
+            <button onClick="{{ setList }}" aria-label="List view" title="List view" style="border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; width:36px; height:30px; border-radius:999px; transition:background .15s, box-shadow .15s; background:{{ listBg }}; box-shadow:{{ listShadow }}; color:{{ listColor }};">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+            <button onClick="{{ setGrid }}" aria-label="Grid view" title="Grid view" style="border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; width:36px; height:30px; border-radius:999px; transition:background .15s, box-shadow .15s; background:{{ gridBg }}; box-shadow:{{ gridShadow }}; color:{{ gridColor }};">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- feed: list -->
+        <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:0 24px 60px;">
+          <sc-for list="{{ flowers }}" as="f" hint-placeholder-count="5">
+            <a href="#" style="display:flex; align-items:flex-start; gap:14px; padding:16px 0; text-decoration:none; border-bottom:1px solid #EDE9E2;" style-hover="background:rgba(33,30,26,.012)">
+              {{ f.thumbM }}
+              <div style="min-width:0; flex:1;">
+                <h3 style="margin:0; font:500 19px/1.15 'EB Garamond',serif; color:#211E1A;">{{ f.name }}</h3>
+                <p style="margin:2px 0 0; font:400 13px/1.35 Inter,sans-serif; color:#847B6E; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ f.subtitle }}</p>
+                <p style="margin:6px 0 0; font:400 13px/1 Inter,sans-serif; color:#847B6E;">Availability: <span style="color:#211E1A; font-weight:600;">{{ f.availability }}</span></p>
+                <sc-if value="{{ f.showPrice }}" hint-placeholder-val="{{ true }}">
+                  <p style="margin:3px 0 0; font:400 13px/1 Inter,sans-serif; color:#847B6E; font-variant-numeric:tabular-nums;">{{ f.price }}</p>
+                </sc-if>
+                <sc-if value="{{ f.openToOffers }}" hint-placeholder-val="{{ false }}">
+                  <span style="margin-top:7px; display:inline-flex; align-items:center; background:#EAF1E7; color:#5C7F5A; font:500 11px/1 Inter,sans-serif; padding:5px 10px; border-radius:999px;">Open to offers</span>
+                </sc-if>
+                <sc-if value="{{ f.showNote }}" hint-placeholder-val="{{ false }}">
+                  <p style="margin:8px 0 0; display:flex; align-items:flex-start; gap:6px; font:italic 400 13px/1.4 Inter,sans-serif; color:#A89F92;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#CFC8BC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>
+                    <span>{{ f.note }}</span>
+                  </p>
+                </sc-if>
+                <p style="margin:7px 0 0; font:400 11px/1 Inter,sans-serif; color:#BBB2A4;">Updated {{ f.updated }}</p>
+              </div>
+            </a>
+          </sc-for>
+        </div>
+        </sc-if>
+
+        <!-- feed: grid -->
+        <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px 12px; padding:2px 18px 90px;">
+          <sc-for list="{{ flowers }}" as="f" hint-placeholder-count="6">
+            <a href="#" style="display:flex; flex-direction:column; min-width:0; text-decoration:none;">
+              {{ f.media }}
+              <h3 style="margin:9px 0 0; font:500 17px/1.12 'EB Garamond',serif; color:#211E1A;">{{ f.name }}</h3>
+              <p style="margin:2px 0 0; font:400 12px/1.3 Inter,sans-serif; color:#A89F92; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ f.subtitle }}</p>
+              <sc-if value="{{ f.showPrice }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:6px 0 0; font:500 13px/1.25 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">{{ f.price }}</p>
+              </sc-if>
+              <sc-if value="{{ f.openToOffers }}" hint-placeholder-val="{{ false }}">
+                <span style="margin-top:7px; align-self:flex-start; display:inline-flex; align-items:center; background:#EAF1E7; color:#5C7F5A; font:500 10px/1 Inter,sans-serif; padding:4px 8px; border-radius:999px;">Open to offers</span>
+              </sc-if>
+            </a>
+          </sc-for>
+        </div>
+        </sc-if>
+
+      </div>
+
+      <!-- floating pill nav (logged-out buyer view) -->
+      <div style="position:absolute; left:50%; bottom:26px; transform:translateX(-50%); display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.94); backdrop-filter:blur(12px); border:1px solid #E9E5DE; border-radius:999px; box-shadow:0 10px 30px -10px rgba(33,30,26,.28); padding:7px 8px;">
+        <a href="#" style="display:flex; align-items:center; gap:9px; white-space:nowrap; color:#847B6E; font:500 14px/1 Inter,sans-serif; text-decoration:none; padding:11px 20px; border-radius:999px;" style-hover="background:rgba(33,30,26,.04)">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Discover
+        </a>
+        <a href="#" style="display:flex; align-items:center; gap:9px; white-space:nowrap; background:#FCE8E3; color:#E87767; font:500 14px/1 Inter,sans-serif; text-decoration:none; padding:11px 20px; border-radius:999px;" style-hover="background:#fbded7">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Sign in
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================ DESKTOP ============================ -->
+<div style="position:absolute; left:560px; top:80px; width:1120px;">
+  <div data-drags-parent="1" style="font:600 12px/1 Inter,sans-serif; letter-spacing:.16em; text-transform:uppercase; color:#847B6E; margin-bottom:14px; padding-left:3px;">Desktop</div>
+
+  <div data-screen-label="Listing · Desktop" style="position:relative; width:1120px; background:#fff; border-radius:6px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.1); font-family:Inter,sans-serif; color:#211E1A; padding-bottom:120px;">
+
+    <!-- full-bleed floral hero -->
+    <header style="position:relative; overflow:hidden; text-align:center;">
+      <img src="listing_assets/banner.jpg" alt="Juliette Florence Flowers" style="position:absolute; top:0; left:0; width:100%; height:320px; object-fit:cover;">
+      <div aria-hidden="true" style="position:absolute; top:0; left:0; right:0; height:420px; background:linear-gradient(to bottom, rgba(255,255,255,.08) 0%, rgba(255,255,255,.5) 32%, #fff 56%);"></div>
+      <div style="position:relative; max-width:640px; margin:0 auto; padding:150px 24px 4px;">
+        <img src="listing_assets/profile.jpg" alt="" style="width:120px; height:120px; border-radius:50%; object-fit:cover; box-shadow:0 8px 24px -10px rgba(33,30,26,.45); outline:5px solid #fff;">
+        <p style="margin:18px 0 0; font:600 11px/1 Inter,sans-serif; letter-spacing:.3em; text-transform:uppercase; color:#E87767;">Florist &amp; Gardener</p>
+        <h1 style="margin:9px 0 0; font:500 44px/1.02 'EB Garamond',serif; letter-spacing:-.01em; color:#211E1A;">Juliette Florence Flowers</h1>
+        <p style="margin:12px 0 0; display:inline-flex; align-items:center; gap:9px; font:400 16px/1 Inter,sans-serif; color:#847B6E;">
+          <span style="color:#A89F92;">@julietteflorence</span>
+          <span style="color:#D8D2C8;">&middot;</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A89F92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Bissoe &amp; Mithian
+          </span>
+        </p>
+      </div>
+    </header>
+
+    <!-- centered column -->
+    <div style="max-width:640px; margin:0 auto; padding:0 24px;">
+
+      <div style="text-align:center;">
+        <p style="margin:18px auto 0; max-width:46ch; font:400 16px/1.55 Inter,sans-serif; color:#4A453E;">Flowers grown in Bissoe &amp; Mithian, no dig method, no chemicals.</p>
+
+        <div style="margin-top:22px; display:flex; align-items:center; justify-content:center; gap:11px;">
+          <a href="#" style="display:inline-flex; align-items:center; gap:10px; background:#FCE8E3; color:#E87767; font:500 16px/1 Inter,sans-serif; padding:15px 32px; border-radius:999px; text-decoration:none;" style-hover="background:#fbded7">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Contact
+          </a>
+          <a href="#" title="Instagram" style="display:flex; align-items:center; justify-content:center; width:50px; height:50px; flex-shrink:0; border-radius:50%; border:1px solid #E2DDD4; color:#847B6E; text-decoration:none;" style-hover="background:rgba(33,30,26,.035)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" title="Share" style="display:flex; align-items:center; justify-content:center; width:50px; height:50px; flex-shrink:0; border-radius:50%; border:1px solid #E2DDD4; color:#847B6E; text-decoration:none;" style-hover="background:rgba(33,30,26,.035)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- availability header -->
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:34px 2px 6px;">
+        <div>
+          <h2 style="margin:0; font:600 11px/1 Inter,sans-serif; letter-spacing:.18em; text-transform:uppercase; color:#847B6E;">Availability</h2>
+          <p style="margin:8px 0 0; display:flex; align-items:center; gap:7px; font:400 12px/1 Inter,sans-serif; color:#A89F92;">
+            <span style="width:6px; height:6px; border-radius:50%; background:#5C7F5A;"></span>
+            <span style="color:#5C7F5A; font-weight:500;">{{ inSeasonLabel }}</span>
+            <span>&middot; Updated 5 hours ago</span>
+          </p>
+        </div>
+        <div style="display:inline-flex; flex-shrink:0; background:#F1EEE8; border-radius:999px; padding:3px;">
+          <button onClick="{{ setList }}" aria-label="List view" title="List view" style="border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; width:36px; height:30px; border-radius:999px; transition:background .15s, box-shadow .15s; background:{{ listBg }}; box-shadow:{{ listShadow }}; color:{{ listColor }};">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+          <button onClick="{{ setGrid }}" aria-label="Grid view" title="Grid view" style="border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; width:36px; height:30px; border-radius:999px; transition:background .15s, box-shadow .15s; background:{{ gridBg }}; box-shadow:{{ gridShadow }}; color:{{ gridColor }};">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- feed: list -->
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <sc-for list="{{ flowers }}" as="f" hint-placeholder-count="8">
+          <a href="#" style="display:flex; align-items:flex-start; gap:18px; padding:18px 10px; margin:0 -10px; border-radius:12px; text-decoration:none; border-bottom:1px solid #EDE9E2;" style-hover="background:rgba(33,30,26,.016)">
+            {{ f.thumbD }}
+            <div style="min-width:0; flex:1;">
+              <h3 style="margin:0; font:500 22px/1.12 'EB Garamond',serif; color:#211E1A;">{{ f.name }}</h3>
+              <p style="margin:3px 0 0; font:400 14px/1.35 Inter,sans-serif; color:#847B6E; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ f.subtitle }}</p>
+              <p style="margin:8px 0 0; font:400 14px/1 Inter,sans-serif; color:#847B6E;">Availability: <span style="color:#211E1A; font-weight:600;">{{ f.availability }}</span></p>
+              <sc-if value="{{ f.showPrice }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:4px 0 0; font:400 14px/1 Inter,sans-serif; color:#847B6E; font-variant-numeric:tabular-nums;">{{ f.price }}</p>
+              </sc-if>
+              <sc-if value="{{ f.openToOffers }}" hint-placeholder-val="{{ false }}">
+                <span style="margin-top:8px; display:inline-flex; align-items:center; background:#EAF1E7; color:#5C7F5A; font:500 12px/1 Inter,sans-serif; padding:6px 11px; border-radius:999px;">Open to offers</span>
+              </sc-if>
+              <sc-if value="{{ f.showNote }}" hint-placeholder-val="{{ false }}">
+                <p style="margin:9px 0 0; display:flex; align-items:flex-start; gap:7px; font:italic 400 14px/1.4 Inter,sans-serif; color:#A89F92;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#CFC8BC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>
+                  <span>{{ f.note }}</span>
+                </p>
+              </sc-if>
+              <p style="margin:8px 0 0; font:400 12px/1 Inter,sans-serif; color:#BBB2A4;">Updated {{ f.updated }}</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CFC8BC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:4px;"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          </a>
+        </sc-for>
+      </div>
+      </sc-if>
+
+      <!-- feed: grid -->
+      <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:28px 20px;">
+        <sc-for list="{{ flowers }}" as="f" hint-placeholder-count="9">
+          <a href="#" style="display:flex; flex-direction:column; min-width:0; text-decoration:none;">
+            {{ f.media }}
+            <h3 style="margin:11px 0 0; font:500 19px/1.1 'EB Garamond',serif; color:#211E1A;">{{ f.name }}</h3>
+            <p style="margin:3px 0 0; font:400 12px/1.35 Inter,sans-serif; color:#A89F92; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ f.subtitle }}</p>
+            <div style="margin-top:8px; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+              <sc-if value="{{ f.showPrice }}" hint-placeholder-val="{{ true }}">
+                <span style="font:500 13px/1.2 Inter,sans-serif; color:#211E1A; font-variant-numeric:tabular-nums;">{{ f.price }}</span>
+              </sc-if>
+              <sc-if value="{{ f.openToOffers }}" hint-placeholder-val="{{ false }}">
+                <span style="display:inline-flex; align-items:center; background:#EAF1E7; color:#5C7F5A; font:500 10px/1 Inter,sans-serif; padding:4px 8px; border-radius:999px; white-space:nowrap;">Open to offers</span>
+              </sc-if>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+      </sc-if>
+
+    </div>
+
+    <!-- floating pill nav (logged-out buyer view) -->
+    <div style="position:absolute; left:50%; bottom:30px; transform:translateX(-50%); display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.96); backdrop-filter:blur(10px); border:1px solid #E9E5DE; border-radius:999px; box-shadow:0 8px 26px -10px rgba(33,30,26,.22); padding:7px 8px;">
+      <a href="#" style="display:flex; align-items:center; gap:8px; color:#847B6E; font:500 13px/1 Inter,sans-serif; text-decoration:none; padding:10px 22px; border-radius:999px;" style-hover="background:rgba(33,30,26,.04)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Discover
+      </a>
+      <a href="#" style="display:flex; align-items:center; gap:8px; background:#FCE8E3; color:#E87767; font:500 13px/1 Inter,sans-serif; text-decoration:none; padding:11px 22px; border-radius:999px;" style-hover="background:#fbded7">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Sign in
+      </a>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1760,&quot;height&quot;:1500},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;grid&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;grid&quot;],&quot;tsType&quot;:&quot;'list' | 'grid'&quot;,&quot;section&quot;:&quot;Listing&quot;},&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Listing&quot;},&quot;showPrices&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Listing&quot;}}">
+class Component extends DCLogic {
+  state = { view: null };
+  renderVals() {
+    const showNotes = this.props.showNotes ?? true;
+    const showPrices = this.props.showPrices ?? true;
+    const raw = [
+      { name: 'Icelandic poppies', subtitle: 'Peach, white, pale yellow · 40cm', availability: 'Good', price: '£1.00/stem · £10.00/bunch', offers: true, note: 'Can provide short stems too. Welcome to ask for specific colours.', updated: '2 weeks ago', photo: 'listing_assets/Icelandic-poppies.jpg' },
+      { name: 'Phlox', subtitle: 'Crème caramel, cherry brandy · Nude, cherry · 25cm', availability: 'Good', price: '£0.85/stem', offers: true, note: 'Let me know if you want just nude / just nude and red.', updated: '2 weeks ago', photo: 'listing_assets/Phlox.jpg' },
+      { name: 'Coreopsis', subtitle: 'Bright yellow, yellow with red centre · 40cm', availability: 'Good', price: '£0.50/stem', offers: true, note: 'Let me know if you want just yellow or both.', updated: '2 weeks ago', photo: null },
+      { name: 'Achillea', subtitle: 'Peachy pink and white · 35cm', availability: 'Good', price: '£0.80/stem', offers: true, note: 'Specify particular colours.', updated: '2 weeks ago', photo: null },
+      { name: 'Ammi majus', subtitle: 'White · 40cm', availability: 'Limited', price: '£1.00/stem', offers: false, note: null, updated: '2 weeks ago', photo: null },
+      { name: 'Cornflower', subtitle: 'White · 20cm', availability: 'Available', price: '£0.30/stem', offers: true, note: 'With side shoots.', updated: '2 weeks ago', photo: 'listing_assets/Cornflower.jpg' },
+      { name: 'Calendula', subtitle: 'Peachy orange variety (saved seed!) · 20cm', availability: 'Limited', price: '£0.60/stem', offers: true, note: null, updated: '2 weeks ago', photo: null },
+      { name: 'Calendula', subtitle: 'Bright orange · 20cm', availability: 'Limited', price: '£0.40/stem', offers: false, note: null, updated: '2 weeks ago', photo: null },
+      { name: 'Astrantia', subtitle: 'White · 50cm', availability: 'Available', price: '£0.95/stem', offers: false, note: null, updated: '2 weeks ago', photo: null },
+      { name: 'Astilbe', subtitle: 'White · 50cm', availability: 'Limited', price: '£1.30/stem', offers: false, note: null, updated: '2 weeks ago', photo: null },
+      { name: 'Sweet peas', subtitle: "Mixed colours · shell pink, Juliet & more", availability: 'Available', price: '£0.50/stem', offers: true, note: 'Let me know specific colours wanted!', updated: '1 day ago', photo: 'listing_assets/Sweet-peas.jpg' },
+      { name: 'Cosmos', subtitle: 'Kiiro, double cranberry, fandango, apricot lemonade · 60cm', availability: 'Limited', price: '£0.80/stem', offers: false, note: 'Still quite short stems right now.', updated: '1 day ago', photo: 'listing_assets/Cosmos.jpg' },
+      { name: 'Spray Rose', subtitle: 'Multi head · White · 50cm', availability: 'Limited', price: '£1.60/stem', offers: false, note: 'Limited. No scent.', updated: '2 weeks ago', photo: null },
+      { name: 'Allium flowers', subtitle: 'Tall · White · 100cm', availability: 'Very limited · 5 stems', price: '£1.00/stem', offers: false, note: null, updated: '1 week ago', photo: null },
+      { name: 'Catananche caerulea', subtitle: 'Blue · 50cm', availability: 'Good', price: '£0.50/stem', offers: true, note: null, updated: '1 week ago', photo: null },
+      { name: 'Godetia / Clarkia', subtitle: 'Bright pink, two tone · 40cm', availability: 'Limited · 5 stems', price: '£0.90/stem', offers: true, note: null, updated: '1 week ago', photo: null },
+      { name: 'Mignonette', subtitle: 'White · 30cm', availability: 'Limited · 10 stems', price: '£0.50/stem', offers: false, note: null, updated: '1 week ago', photo: null },
+      { name: 'Snaps', subtitle: 'Frilly white and frilly peach · 50cm', availability: 'Limited · 10 stems', price: '£0.70/stem', offers: true, note: null, updated: '1 day ago', photo: null },
+      { name: 'Briza grass', subtitle: 'Green · 20cm', availability: 'Available', price: '£0.20/stem', offers: true, note: 'Thinking of pricing for a big handful rather than individually picked!', updated: '1 week ago', photo: null },
+      { name: 'Lavender', subtitle: 'White · 50cm', availability: 'Available', price: '£0.30/stem', offers: true, note: null, updated: '1 day ago', photo: null },
+      { name: 'Corn cockle', subtitle: 'White · 50cm', availability: 'Available', price: '£0.30/stem', offers: false, note: 'Can also pick short stems for bud vases if wanted.', updated: '1 day ago', photo: null },
+      { name: 'Raspberry foliage', subtitle: '90cm', availability: 'Available', price: '£1.00/stem', offers: false, note: 'Ask if you want some with raspberries on!', updated: '6 hours ago', photo: null },
+      { name: 'Pansies', subtitle: 'Various · 10cm', availability: 'Available', price: '£0.20/stem', offers: false, note: 'Let me know any specific colour requests.', updated: '5 hours ago', photo: null }
+    ];
+    const h = React.createElement;
+    const self = this;
+    const view = this.state.view ?? this.props.defaultView ?? 'grid';
+
+    const mkThumb = (f, w, ht, r, ic) =>
+      f.photo
+        ? h('img', { src: f.photo, alt: f.name, style: { width: w, height: ht, flexShrink: 0, borderRadius: r, objectFit: 'cover', background: '#ECE8E2' } })
+        : h('div', { style: { width: w, height: ht, flexShrink: 0, borderRadius: r, background: '#F1EEE8', display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+            h('svg', { width: ic, height: ic, viewBox: '0 0 24 24', fill: 'none', stroke: '#CFC8BC', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' },
+              h('circle', { cx: 12, cy: 8, r: 3.4 }),
+              h('circle', { cx: 6.4, cy: 11.3, r: 3.4 }),
+              h('circle', { cx: 17.6, cy: 11.3, r: 3.4 }),
+              h('circle', { cx: 12, cy: 11.4, r: 2, fill: '#CFC8BC', stroke: 'none' }),
+              h('path', { d: 'M12 14.8V21' })));
+
+    // Warm, deterministic tile for photo-less flowers in grid mode — same tint
+    // language as the app's avatar fallbacks, so a mixed grid reads intentional.
+    const tints = [
+      { bg: '#EFE6DA', ink: '#A9874F' }, { bg: '#E7EBDF', ink: '#6E7B58' },
+      { bg: '#F3E4DD', ink: '#B5715E' }, { bg: '#E4E8EC', ink: '#67788A' },
+      { bg: '#EFE4EB', ink: '#8E6E86' }, { bg: '#F1E9D6', ink: '#9C8444' }
+    ];
+    const tintFor = (name) => {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+      return tints[hash % tints.length];
+    };
+    const mkMedia = (f) => {
+      const statusColor = /imited/.test(f.availability) ? '#C08A3E' : '#5C7F5A';
+      const statusShort = f.availability.split(' · ')[0];
+      const tint = tintFor(f.name);
+      const chip = h('div', { style: { position: 'absolute', top: '8px', left: '8px', display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,.92)', backdropFilter: 'blur(4px)', borderRadius: '999px', padding: '4px 9px', font: '500 11px/1 Inter, sans-serif', color: '#4A453E', boxShadow: '0 1px 3px rgba(33,30,26,.12)' } },
+        h('span', { style: { width: '6px', height: '6px', borderRadius: '50%', background: statusColor } }), statusShort);
+      return h('div', { style: { position: 'relative', width: '100%', aspectRatio: '1 / 1.15', borderRadius: '14px', overflow: 'hidden', background: f.photo ? '#ECE8E2' : tint.bg } },
+        f.photo
+          ? h('img', { src: f.photo, alt: f.name, style: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } })
+          : h('div', { style: { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+              h('svg', { width: 44, height: 44, viewBox: '0 0 24 24', fill: 'none', stroke: tint.ink, strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round', style: { opacity: 0.7 } },
+                h('circle', { cx: 12, cy: 8, r: 3.4 }), h('circle', { cx: 6.4, cy: 11.3, r: 3.4 }),
+                h('circle', { cx: 17.6, cy: 11.3, r: 3.4 }), h('circle', { cx: 12, cy: 11.4, r: 2, fill: tint.ink, stroke: 'none' }),
+                h('path', { d: 'M12 14.8V21' }))),
+        chip);
+    };
+
+    // List / grid segmented switcher — active pill styling driven reactively
+    const ACTIVE = { bg: '#fff', shadow: '0 1px 3px rgba(33,30,26,.18)', color: '#211E1A' };
+    const INACTIVE = { bg: 'transparent', shadow: 'none', color: '#A89F92' };
+    const L = view === 'list' ? ACTIVE : INACTIVE;
+    const G = view === 'grid' ? ACTIVE : INACTIVE;
+
+    const flowers = raw.map(f => ({
+      name: f.name, subtitle: f.subtitle, availability: f.availability, price: f.price,
+      showPrice: showPrices, openToOffers: f.offers, note: f.note,
+      showNote: showNotes && !!f.note, updated: f.updated,
+      thumbM: mkThumb(f, '74px', '92px', '10px', 24),
+      thumbD: mkThumb(f, '88px', '110px', '12px', 28),
+      media: mkMedia(f)
+    }));
+    return {
+      flowers, inSeasonLabel: flowers.length + ' in season',
+      isList: view === 'list', isGrid: view === 'grid',
+      setList: () => self.setState({ view: 'list' }),
+      setGrid: () => self.setState({ view: 'grid' }),
+      listBg: L.bg, listShadow: L.shadow, listColor: L.color,
+      gridBg: G.bg, gridShadow: G.shadow, gridColor: G.color
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -68,7 +68,11 @@ const { stop } = useIntersectionObserver(
   <div
     ref="root"
     class="w-[272px] rounded-[42px] bg-[#1c1a17] p-[7px] shadow-[0_26px_52px_-22px_rgba(33,30,26,0.5),0_8px_18px_rgba(33,30,26,0.18)] transition-[opacity,translate] duration-700 ease-out motion-reduce:transition-none lg:w-[300px] lg:rounded-[46px] lg:p-[8px] lg:shadow-[0_34px_64px_-26px_rgba(33,30,26,0.5),0_10px_22px_rgba(33,30,26,0.18)]"
-    :class="shown ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100'"
+    :class="
+      shown
+        ? 'translate-y-0 opacity-100'
+        : 'translate-y-6 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100'
+    "
   >
     <div
       class="relative h-[498px] overflow-hidden rounded-[34px] bg-white text-left lg:h-[600px] lg:rounded-[38px]"

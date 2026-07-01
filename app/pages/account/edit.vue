@@ -28,14 +28,14 @@ const state = reactive({
   website: profile.value?.website ?? '',
   whatsapp: profile.value?.whatsapp ?? '',
   contactEmail: profile.value?.contactEmail ?? '',
-  preferredContact: profile.value?.preferredContact ?? '',
+  preferredContact: profile.value?.preferredContact || 'none',
   isGrower: profile.value?.isGrower ?? false
 })
 
 // Preferred-method options track which contact fields are actually filled, so a
 // grower can't pick a method they haven't provided.
 const preferredOptions = computed(() => {
-  const opts = [{ label: 'No preference', value: '' }]
+  const opts = [{ label: 'No preference', value: 'none' }]
   if (state.whatsapp.trim()) opts.push({ label: 'WhatsApp', value: 'whatsapp' })
   if (state.contactEmail.trim()) opts.push({ label: 'Email', value: 'email' })
   if (state.instagram.trim()) opts.push({ label: 'Instagram', value: 'instagram' })
@@ -123,9 +123,11 @@ async function save() {
         whatsapp: state.whatsapp,
         contactEmail: state.contactEmail,
         // Drop a stale preference if the matching field is now empty.
-        preferredContact: preferredOptions.value.some((o) => o.value === state.preferredContact)
-          ? state.preferredContact || null
-          : null,
+        preferredContact:
+          state.preferredContact !== 'none' &&
+          preferredOptions.value.some((o) => o.value === state.preferredContact)
+            ? state.preferredContact
+            : null,
         avatarKey: avatarKey.value ?? null,
         bannerKey: bannerKey.value ?? null,
         isGrower: state.isGrower
@@ -297,7 +299,7 @@ async function save() {
       </section>
 
       <!-- Grower toggle -->
-      <section class="flex items-start justify-between gap-4 rounded-xl bg-muted px-4 py-3.5">
+      <section class="flex items-start justify-between gap-4 rounded-[11px] bg-muted px-4 py-3.5 lg:rounded-xl">
         <div>
           <p class="text-sm font-medium text-default">I grow flowers</p>
           <p class="text-xs text-muted">List your flowers and appear in search.</p>

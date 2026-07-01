@@ -40,6 +40,13 @@ function openEdit(flower: FlowerDto) {
   navigateTo(`/flowers/${flower.id}/edit`)
 }
 
+// Open the buyer-facing single-flower page (the shareable public listing).
+function viewPublic(flower: FlowerDto) {
+  const handle = profile.value?.handle
+  if (!handle) return
+  navigateTo(`/@${handle}/${flower.id}`)
+}
+
 // ── Inline stems-available change (optimistic) ──────────────────────────────
 async function changeStems(id: string, stemsAvailable: number | null) {
   const list = flowers.value ?? []
@@ -196,6 +203,7 @@ function exportCsv() {
         @edit="openEdit"
         @duplicate="duplicate"
         @archive="archive"
+        @view-public="viewPublic"
       />
     </div>
   </div>

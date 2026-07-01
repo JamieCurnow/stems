@@ -70,7 +70,6 @@ async function save() {
         logoKey: logoKey.value ?? null
       }
     })
-    toast.add({ title: 'Invoice settings saved', color: 'success' })
     await navigateTo('/invoices')
   } catch (e) {
     const message =

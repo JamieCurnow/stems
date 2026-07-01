@@ -7,7 +7,7 @@
 
 import { formatPence } from '~~/shared/utils/price'
 import { formatDate } from '~~/shared/utils/time'
-import { taxRateLabel } from '~~/shared/utils/invoice'
+import { taxRateLabel, invoiceStatusLabel } from '~~/shared/utils/invoice'
 import type {
   InvoiceDto,
   InvoiceSettingsDto,
@@ -75,11 +75,40 @@ async function setStatus(status: InvoiceStatus) {
 
 const statusActions = computed(() => [
   [
-    { label: 'Mark as draft', icon: 'i-lucide-pencil-line', onSelect: () => setStatus('draft') },
-    { label: 'Mark as sent', icon: 'i-lucide-send', onSelect: () => setStatus('sent') },
-    { label: 'Mark as paid', icon: 'i-lucide-check-circle-2', onSelect: () => setStatus('paid') }
+    {
+      label: 'Mark as draft',
+      icon: 'i-lucide-pencil-line',
+      type: 'checkbox' as const,
+      checked: invoice.value.status === 'draft',
+      onSelect: () => setStatus('draft')
+    },
+    {
+      label: 'Mark as sent',
+      icon: 'i-lucide-send',
+      type: 'checkbox' as const,
+      checked: invoice.value.status === 'sent',
+      onSelect: () => setStatus('sent')
+    },
+    {
+      label: 'Mark as paid',
+      icon: 'i-lucide-check-circle-2',
+      type: 'checkbox' as const,
+      checked: invoice.value.status === 'paid',
+      onSelect: () => setStatus('paid')
+    }
   ]
 ])
+
+// Current status drives the dropdown button label + colour and the send/resend
+// button wording, so the invoice's state is obvious at a glance.
+const statusColor = computed<'neutral' | 'info' | 'success' | 'error'>(() => {
+  const overdue =
+    invoice.value.status !== 'paid' && invoice.value.dueDate != null && invoice.value.dueDate < Date.now()
+  if (overdue) return 'error'
+  return { draft: 'neutral', sent: 'info', paid: 'success' }[invoice.value.status]
+})
+const statusButtonLabel = computed(() => invoiceStatusLabel(invoice.value.status))
+const isSent = computed(() => invoice.value.status === 'sent' || invoice.value.status === 'paid')
 
 // ── Send via email ──────────────────────────────────────────────────────────
 const sendOpen = ref(false)
@@ -91,7 +120,6 @@ async function confirmSend() {
     invoice.value = updated
     syncList(updated)
     sendOpen.value = false
-    toast.add({ title: `Invoice sent to ${updated.customerEmail}`, color: 'success' })
   } catch (e) {
     const message =
       typeof e === 'object' && e && 'statusMessage' in e && typeof e.statusMessage === 'string'
@@ -155,9 +183,9 @@ const hasPaymentDetails = computed(
       <UDropdownMenu :items="statusActions">
         <UButton
           icon="i-lucide-circle-dot"
-          color="neutral"
+          :color="statusColor"
           variant="soft"
-          label="Status"
+          :label="statusButtonLabel"
           trailing-icon="i-lucide-chevron-down"
           :loading="updating"
         />
@@ -169,7 +197,13 @@ const hasPaymentDetails = computed(
         aria-label="Delete"
         @click="deleteOpen = true"
       />
-      <UButton icon="i-lucide-send" color="primary" label="Send" @click="sendOpen = true" />
+      <UButton
+        icon="i-lucide-send"
+        color="primary"
+        :variant="isSent ? 'outline' : 'solid'"
+        :label="isSent ? 'Resend' : 'Send'"
+        @click="sendOpen = true"
+      />
     </header>
 
     <!-- The invoice document -->

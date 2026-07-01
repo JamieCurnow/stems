@@ -68,33 +68,39 @@ async function handleSignOut() {
       />
     </div>
 
-    <!-- Identity: avatar + name, sitting directly on the page -->
+    <!-- Identity: avatar + name, sitting directly on the page. Avatar, name and
+         handle all link through to the public grower page. -->
     <div class="flex items-center gap-[18px] sm:items-start sm:gap-[26px]">
-      <img
-        v-if="avatarSrc"
-        :src="avatarSrc"
-        :alt="profile.farmName"
-        class="size-21 shrink-0 rounded-full object-cover sm:size-27"
-      />
-      <div
-        v-else
-        :class="tint"
-        class="flex size-21 shrink-0 items-center justify-center rounded-full font-display text-[30px] font-medium sm:size-27 sm:text-[40px]"
-        aria-hidden="true"
-      >
-        {{ initials }}
-      </div>
+      <ULink :to="`/@${profile.handle}`" :aria-label="`View ${profile.farmName}'s public page`" class="shrink-0">
+        <img
+          v-if="avatarSrc"
+          :src="avatarSrc"
+          :alt="profile.farmName"
+          class="size-21 rounded-full object-cover sm:size-27"
+        />
+        <div
+          v-else
+          :class="tint"
+          class="flex size-21 items-center justify-center rounded-full font-display text-[30px] font-medium sm:size-27 sm:text-[40px]"
+          aria-hidden="true"
+        >
+          {{ initials }}
+        </div>
+      </ULink>
 
       <div class="min-w-0 flex-1">
-        <h1
-          class="truncate font-display text-[30px] font-medium leading-none tracking-[-0.01em] text-default sm:text-[40px]"
+        <ULink
+          :to="`/@${profile.handle}`"
+          class="block truncate font-display text-[30px] font-medium leading-none tracking-[-0.01em] text-default sm:text-[40px]"
         >
-          {{ profile.farmName }}
-        </h1>
+          <h1 class="truncate">{{ profile.farmName }}</h1>
+        </ULink>
 
         <!-- Handle + location: stacked on mobile, inline on desktop -->
         <div class="mt-1.5 flex flex-col gap-2 sm:mt-2 sm:flex-row sm:items-center sm:gap-3.5">
-          <p class="text-[15px] text-dimmed sm:text-base">@{{ profile.handle }}</p>
+          <ULink :to="`/@${profile.handle}`" class="text-[15px] text-dimmed sm:text-base">
+            @{{ profile.handle }}
+          </ULink>
           <p
             v-if="profile.locationName"
             class="flex min-w-0 items-center gap-1.5 text-sm text-muted sm:text-base"

@@ -15,6 +15,7 @@
 //   edit          [flower: FlowerDto]
 //   duplicate     [flower: FlowerDto]
 //   archive       [flower: FlowerDto]
+//   view-public   [flower: FlowerDto]   open the buyer-facing single-flower page
 
 import { availabilityStatusMeta, isSoldOut, stemsLabel } from '~~/shared/utils/flowers'
 import { bunchPrice, formatPence } from '~~/shared/utils/price'
@@ -33,6 +34,7 @@ const emit = defineEmits<{
   edit: [flower: FlowerDto]
   duplicate: [flower: FlowerDto]
   archive: [flower: FlowerDto]
+  'view-public': [flower: FlowerDto]
 }>()
 
 const thumb = computed(() => props.flower.photoUrls[0] ?? null)
@@ -84,6 +86,11 @@ const menuItems = computed(() => [
       label: 'Duplicate',
       icon: 'i-lucide-copy',
       onSelect: () => emit('duplicate', props.flower)
+    },
+    {
+      label: 'View public page',
+      icon: 'i-lucide-external-link',
+      onSelect: () => emit('view-public', props.flower)
     }
   ],
   [
@@ -101,21 +108,34 @@ const menuItems = computed(() => [
   <!-- Borderless row (Toast × Instagram): sits directly on the page; the parent
        list draws the hairline divider. No card box or shadow. -->
   <div class="flex items-start gap-4 py-4" :class="{ 'opacity-60': soldOut }">
-    <!-- Portrait thumbnail -->
-    <div class="aspect-[4/5] w-24 shrink-0 overflow-hidden rounded-lg bg-muted">
+    <!-- Portrait thumbnail — in the grower view it links through to the edit page -->
+    <component
+      :is="editable ? 'button' : 'div'"
+      :type="editable ? 'button' : undefined"
+      class="aspect-[4/5] w-24 shrink-0 overflow-hidden rounded-lg bg-muted"
+      :class="{ 'cursor-pointer': editable }"
+      :aria-label="editable ? `Edit ${flower.name}` : undefined"
+      @click="editable && emit('edit', flower)"
+    >
       <img v-if="thumb" :src="thumb" :alt="flower.name" class="size-full object-cover" loading="lazy" />
       <div v-else class="flex size-full items-center justify-center text-dimmed">
         <UIcon name="i-lucide-flower-2" class="size-6" />
       </div>
-    </div>
+    </component>
 
     <!-- Details -->
     <div class="min-w-0 flex-1">
       <div class="flex items-start justify-between gap-2">
         <div class="min-w-0">
-          <h3 class="truncate font-display text-lg font-medium leading-snug text-default">
+          <component
+            :is="editable ? 'button' : 'h3'"
+            :type="editable ? 'button' : undefined"
+            class="block max-w-full truncate text-left font-display text-lg font-medium leading-snug text-default"
+            :class="{ 'cursor-pointer hover:text-primary': editable }"
+            @click="editable && emit('edit', flower)"
+          >
             {{ flower.name }}
-          </h3>
+          </component>
           <p v-if="subtitle" class="truncate text-sm text-muted">{{ subtitle }}</p>
         </div>
 

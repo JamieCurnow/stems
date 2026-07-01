@@ -142,11 +142,17 @@ const contactOpen = ref(false)
 // nav (Discover + Sign in) the mock shows. Auth resolves client-side, so gate
 // the Sign in link on mount to avoid a hydration mismatch (mirrors AppTabBar).
 const session = authClient.useSession()
+const { profile: myProfile, ensure: ensureMyProfile } = useProfile()
 const mounted = ref(false)
 onMounted(() => {
   mounted.value = true
+  ensureMyProfile()
 })
 const isAuthed = computed(() => mounted.value && !!session.value.data?.user)
+
+// Owner affordance: if the signed-in user owns this flower (their handle matches
+// the grower on this page), surface a quick shortcut to the flower editor.
+const isOwner = computed(() => mounted.value && myProfile.value?.handle === profile.value.handle)
 
 // ── SEO / social sharing ──────────────────────────────────────────────────
 // OG image must be ABSOLUTE for link unfurlers; resolve the /img path against
@@ -200,6 +206,15 @@ useSeoMeta({
           <UIcon name="i-lucide-chevron-left" class="size-5 shrink-0" />
           <span class="truncate">{{ profile.farmName }}</span>
         </button>
+        <!-- Owner-only: quick jump to the flower editor. -->
+        <NuxtLink
+          v-if="isOwner"
+          :to="{ path: `/flowers/${flower.id}/edit`, query: { backRoute: `/@${profile.handle}/${flower.id}` } }"
+          class="ml-auto flex shrink-0 items-center gap-1.5 rounded-full bg-[rgba(33,30,26,0.05)] px-3.5 py-2 text-sm font-medium text-[#4A453E] transition-colors hover:bg-[rgba(33,30,26,0.09)] lg:ml-0"
+        >
+          <UIcon name="i-lucide-pencil" class="size-[15px]" />
+          Edit
+        </NuxtLink>
         <!-- Mobile: a quiet Share icon. -->
         <ShareButton
           square
@@ -210,7 +225,8 @@ useSeoMeta({
           :farm-name="profile.farmName"
           :flower-id="flower.id"
           :flower-name="flower.name"
-          class="ml-auto flex size-[38px] shrink-0 items-center justify-center rounded-full text-[#847B6E] hover:bg-[rgba(33,30,26,0.045)] lg:hidden"
+          class="flex size-[38px] shrink-0 items-center justify-center rounded-full text-[#847B6E] hover:bg-[rgba(33,30,26,0.045)] lg:hidden"
+          :class="isOwner ? 'ml-1' : 'ml-auto'"
         />
 
         <!-- Desktop: the global nav the floating tab bar carries elsewhere. -->

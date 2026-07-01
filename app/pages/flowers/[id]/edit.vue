@@ -10,6 +10,10 @@ definePageMeta({ middleware: ['auth', 'onboarding'], layout: 'app' })
 const route = useRoute()
 const id = computed(() => route.params.id as string)
 
+// Where to return on back / cancel / save — the caller passes `?backRoute=` (the
+// public flower page, or the grower's /flowers list); defaults to /flowers.
+const backRoute = useBackRoute('/flowers')
+
 const { profile } = useProfile()
 watchEffect(() => {
   if (profile.value && !profile.value.isGrower) navigateTo('/account')
@@ -34,7 +38,7 @@ function onSaved(saved: FlowerDto) {
     const idx = flowers.value.findIndex((f) => f.id === saved.id)
     if (idx >= 0) flowers.value = flowers.value.map((f) => (f.id === saved.id ? saved : f))
   }
-  navigateTo('/flowers')
+  navigateTo(backRoute.value)
 }
 </script>
 
@@ -46,11 +50,11 @@ function onSaved(saved: FlowerDto) {
         color="neutral"
         variant="ghost"
         aria-label="Back"
-        @click="navigateTo('/flowers')"
+        @click="navigateTo(backRoute)"
       />
       <h1 class="font-display text-3xl font-medium text-default">Edit flower</h1>
     </header>
 
-    <FlowerForm v-if="flower" :flower="flower" @saved="onSaved" @cancel="navigateTo('/flowers')" />
+    <FlowerForm v-if="flower" :flower="flower" @saved="onSaved" @cancel="navigateTo(backRoute)" />
   </div>
 </template>

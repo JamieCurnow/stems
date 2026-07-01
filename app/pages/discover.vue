@@ -60,7 +60,7 @@ const inviteMailto = computed(() => {
         <h1
           class="mt-2 font-display text-[46px] font-medium leading-[0.95] tracking-tight text-default sm:mt-3 sm:text-6xl"
         >
-          Stems
+          <NuxtLink to="/" class="select-none">Stems</NuxtLink>
         </h1>
         <p class="mx-auto mt-2.5 max-w-[230px] text-balance text-sm text-muted sm:mt-3 sm:max-w-[340px] sm:text-base">
           Find a local grower by name, handle or area

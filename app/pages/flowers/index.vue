@@ -37,7 +37,7 @@ function openAdd() {
 }
 
 function openEdit(flower: FlowerDto) {
-  navigateTo(`/flowers/${flower.id}/edit`)
+  navigateTo({ path: `/flowers/${flower.id}/edit`, query: { backRoute: '/flowers' } })
 }
 
 // Open the buyer-facing single-flower page (the shareable public listing).

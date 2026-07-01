@@ -55,6 +55,7 @@ PUBLIC grower page — the shareable wedge. SSR-rendered so link previews (Whats
 - Hero (banner or blurred floral wash + avatar/initials, name, handle, location), bio, links, an inline "Contact" button (opens `<ContactSheet>`), `<ShareButton>`, and an "Updated X ago" line from the freshest visible flower.
 - Availability is a borderless feed; each row is a `<NuxtLink>` to `/@handle/<flowerId>` showing an "Availability: …" line (`availabilityText`, plain text — no badge), price, and a per-flower "Updated X ago" (`timeAgo`). Sold-out flowers are dimmed and sorted last (done server-side).
 - Full `useSeoMeta` (OG/Twitter, absolute OG image resolved against the request origin) + JSON-LD (`LocalBusiness`/`Person`).
+- Owner affordance: when the signed-in user's handle (`useProfile()`) matches this profile, a frosted settings icon floats top-right of the banner → `/account/edit`. Gated on `onMounted` to avoid a hydration mismatch (auth/profile resolve client-side).
 
 ---
 
@@ -65,6 +66,7 @@ PUBLIC, read-only flower detail — a real page (previously a bottom drawer, whi
 - Reuses the grower-page payload via the SAME `useFetch` key (`public-profile-<handle>`), so arriving from the listing is instant (no refetch) and the profile is on hand for the contact sheet. Resolves the flower by `id` from `flowers`; 404s on an unknown/archived id.
 - `<FlowerGallery>` (keyed by id), serif name, subtitle, the same "Availability: …" line, price, "Open to offers" badge, stem/bunch meta, "Updated X ago", notes, and a "Contact" CTA (`<ContactSheet>`).
 - Back affordance is a button calling `router.back()` when app history exists (so the grower list's saved scroll position is restored) — falling back to `/@handle` for deep-links. Scroll restoration on back is otherwise Nuxt's default + the cached payload (stable list height, no refetch).
+- Owner affordance: when the signed-in user's handle (`useProfile()`) matches the grower, an "Edit" button appears in the sticky top bar → `/flowers/<id>/edit`. Gated on `onMounted` (auth/profile resolve client-side).
 - Per-flower `useSeoMeta` (OG `product`, first photo as the absolute OG image).
 
 ---
@@ -96,7 +98,7 @@ The grower's working surface — "My Flowers" (`layout: app`, middleware `['auth
 
 ## `/flowers/new` (flowers/new.vue) & `/flowers/[id]/edit` (flowers/[id]/edit.vue)
 
-Full-page add/edit forms (`layout: app`, middleware `['auth', 'onboarding']`, `robots: noindex`), grower-gated like `/flowers`. Both render `<FlowerForm>` inline. The edit page fetches the flower via `useRequestFetch()` against `GET /api/flowers/[id]` (cookie-forwarding; 404/403 handled by the endpoint). On `@saved` they patch the shared `'my-flowers'` cache (`useNuxtData`) and `navigateTo('/flowers')`; `@cancel` / the back chevron navigate back.
+Full-page add/edit forms (`layout: app`, middleware `['auth', 'onboarding']`, `robots: noindex`), grower-gated like `/flowers`. Both render `<FlowerForm>` inline. The edit page fetches the flower via `useRequestFetch()` against `GET /api/flowers/[id]` (cookie-forwarding; 404/403 handled by the endpoint). On `@saved` it patches the shared `'my-flowers'` cache (`useNuxtData`) then returns to `backRoute`; `@cancel` / the back chevron go to `backRoute` too. The edit page reaches `backRoute` via `useBackRoute('/flowers')` — callers pass `?backRoute=` so it returns to wherever they came from (`/flowers`, or the public flower page when a grower edits from there).
 
 ---
 
@@ -143,7 +145,7 @@ Owner's identity home (`layout: app`, middleware `['auth', 'onboarding']`). Avat
 
 ## `/account/edit` (account/edit.vue)
 
-Owner-facing profile edit form (`layout: app`, middleware `['auth', 'onboarding']`). Avatar + banner via `<ImageUploader>`, about/links/contact fields, grower toggle. Handle is **read-only in V1** (renaming would break shared links). Client-side `validate()` mirrors the server guards for fast inline errors; saves via `PATCH /api/profile`, then `useProfile().set(updated)` and navigates back to `/account`. Unsaved-changes guard: a snapshot/`isDirty` diff drives an `onBeforeRouteLeave` confirm modal (and a `beforeunload` prompt) so edits aren't lost; a successful save (or "Discard") sets an `allowLeave` flag to bypass it.
+Owner-facing profile edit form (`layout: app`, middleware `['auth', 'onboarding']`). Avatar + banner via `<ImageUploader>`, about/links/contact fields, grower toggle. Handle is **read-only in V1** (renaming would break shared links). Client-side `validate()` mirrors the server guards for fast inline errors; saves via `PATCH /api/profile`, then `useProfile().set(updated)` and navigates to `backRoute` (`useBackRoute('/account')` — callers pass `?backRoute=` so it returns to `/account` or the public profile page; the back chevron uses it too). Unsaved-changes guard: a snapshot/`isDirty` diff drives an `onBeforeRouteLeave` confirm modal (and a `beforeunload` prompt) so edits aren't lost; a successful save (or "Discard") sets an `allowLeave` flag to bypass it.
 
 ---
 

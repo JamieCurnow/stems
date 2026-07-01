@@ -35,6 +35,18 @@ if (error.value || !data.value) {
 const profile = computed(() => data.value!.profile)
 const flowers = computed(() => data.value!.flowers)
 
+// Owner affordance: if the signed-in user is viewing their own public page, show
+// a quiet settings shortcut to the profile editor. Auth/profile resolve
+// client-side, so gate on `mounted` to avoid a hydration mismatch (mirrors the
+// flower page and AppTabBar).
+const { profile: myProfile, ensure: ensureMyProfile } = useProfile()
+const mounted = ref(false)
+onMounted(() => {
+  mounted.value = true
+  ensureMyProfile()
+})
+const isOwner = computed(() => mounted.value && myProfile.value?.handle === profile.value.handle)
+
 // Photo-less avatar: warm, deterministic tint keyed off the handle + serif
 // initials — the same treatment as the discovery feed (Grower/Card.vue) so a
 // grower looks consistent wherever they appear.
@@ -174,6 +186,25 @@ useHead(() => ({
          scrim keeps the image light at the top and fades fully to the canvas
          before the name, so dark type stays legible. -->
     <header class="relative mx-[calc(50%-50vw)] w-screen overflow-hidden">
+      <!-- Back to the discovery feed. Frosted circle floating top-left over the
+           banner, mirroring the owner settings shortcut. -->
+      <NuxtLink
+        to="/discover"
+        aria-label="Back to discover"
+        class="absolute left-4 top-[calc(env(safe-area-inset-top)+16px)] z-10 flex size-10 items-center justify-center rounded-full bg-white/[0.86] text-[#4A453E] shadow-[0_2px_8px_-2px_rgba(33,30,26,0.25)] backdrop-blur-[6px] transition-colors hover:bg-white sm:size-11"
+      >
+        <UIcon name="i-lucide-arrow-left" class="size-[18px] sm:size-5" />
+      </NuxtLink>
+      <!-- Owner-only: quick jump to the profile editor. Frosted circle floating
+           top-right over the banner. -->
+      <NuxtLink
+        v-if="isOwner"
+        :to="{ path: '/account/edit', query: { backRoute: `/@${profile.handle}` } }"
+        aria-label="Edit profile"
+        class="absolute right-4 top-[calc(env(safe-area-inset-top)+16px)] z-10 flex size-10 items-center justify-center rounded-full bg-white/[0.86] text-[#4A453E] shadow-[0_2px_8px_-2px_rgba(33,30,26,0.25)] backdrop-blur-[6px] transition-colors hover:bg-white sm:size-11"
+      >
+        <UIcon name="i-lucide-settings" class="size-[18px] sm:size-5" />
+      </NuxtLink>
       <img
         v-if="profile.bannerUrl"
         :src="profile.bannerUrl"

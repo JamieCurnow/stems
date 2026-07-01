@@ -88,6 +88,24 @@ consent.set({ analytics: true, marketing: false })
 
 ---
 
+## `useBackRoute`
+
+Resolves the "back" destination for a page reachable from more than one place (e.g. an edit page opened from the owner's dashboard **or** from the public page). Entry points pass where to return via a `?backRoute=` query param; this reads it, validates it's a safe in-app absolute path, and falls back to the given default. Used by `/account/edit` (default `/account`) and `/flowers/[id]/edit` (default `/flowers`).
+
+### Usage
+
+```ts
+const backRoute = useBackRoute('/flowers') // ComputedRef<string>
+// entry point (link or navigateTo):
+navigateTo({ path: `/flowers/${id}/edit`, query: { backRoute: '/flowers' } })
+```
+
+### Returns
+
+- `ComputedRef<string>` — the validated `backRoute` query value, or the fallback. Only same-origin absolute paths (`/foo`) are honoured; protocol-relative (`//evil.com`) and external URLs are rejected, so it can't be used to bounce a user off-site.
+
+---
+
 ## Learnings
 
 - **State is shared via `useState`, not Pinia.** `useProfile` (`'profile'`) and `useSubscription` (`'billing-status'`) own the two cross-component state keys. `<AppTabBar>` reads those same keys directly — keep the key strings in sync. Pinia is installed but no stores exist (see `app/stores/STORES.md`).

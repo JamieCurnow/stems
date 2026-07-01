@@ -10,6 +10,10 @@ useSeoMeta({ title: 'Edit profile', robots: 'noindex,nofollow' })
 const toast = useToast()
 const { profile, ensure, set } = useProfile()
 
+// Where to return on back / save — the caller passes `?backRoute=` (the public
+// profile page, or the /account dashboard); defaults to /account.
+const backRoute = useBackRoute('/account')
+
 await ensure()
 
 // Image keys are bound to <ImageUploader> via its default v-model, whose model
@@ -135,7 +139,7 @@ async function save() {
     })
     set(updated)
     allowLeave = true // saved — don't prompt on the way out
-    await navigateTo('/account')
+    await navigateTo(backRoute.value)
   } catch (e) {
     const message =
       typeof e === 'object' && e && 'statusMessage' in e && typeof e.statusMessage === 'string'
@@ -152,12 +156,12 @@ async function save() {
   <div class="mx-auto w-full max-w-md px-4 py-6">
     <header class="mb-6 flex items-center gap-2">
       <UButton
-        to="/account"
+        :to="backRoute"
         icon="i-lucide-arrow-left"
         color="neutral"
         variant="ghost"
         size="sm"
-        aria-label="Back to account"
+        aria-label="Back"
       />
       <h1 class="font-display text-2xl font-medium text-default">Edit profile</h1>
     </header>

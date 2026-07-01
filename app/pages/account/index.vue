@@ -58,7 +58,7 @@ async function handleSignOut() {
     <div class="mb-7 flex items-center justify-between sm:hidden">
       <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">Profile</span>
       <UButton
-        to="/account/edit"
+        :to="{ path: '/account/edit', query: { backRoute: '/account' } }"
         icon="i-lucide-settings"
         color="neutral"
         variant="outline"
@@ -195,7 +195,7 @@ async function handleSignOut() {
     <!-- Actions: outline pills, stacked on mobile and side by side on desktop -->
     <div class="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-3.5">
       <UButton
-        to="/account/edit"
+        :to="{ path: '/account/edit', query: { backRoute: '/account' } }"
         label="Edit profile"
         icon="i-lucide-pencil"
         block

@@ -71,7 +71,7 @@ const steps = [
       <div class="relative mx-auto max-w-[1120px] px-6 lg:px-14">
         <!-- Desktop top bar -->
         <nav class="hidden items-center justify-between py-7 lg:flex" aria-label="Primary">
-          <NuxtLink to="/" class="font-display text-[26px] font-medium tracking-tight text-default">
+          <NuxtLink to="/" class="select-none font-display text-[26px] font-medium tracking-tight text-default">
             Stems
           </NuxtLink>
           <div class="flex items-center gap-[30px]">
@@ -118,7 +118,7 @@ const steps = [
                gives crawlers and screen readers a keyword-rich H1 without
                changing the design. No em-dashes (copywriting rule). -->
           <h1
-            class="mt-2.5 font-display text-6xl font-medium leading-none tracking-tight text-default sm:text-7xl"
+            class="mt-2.5 select-none font-display text-6xl font-medium leading-none tracking-tight text-default sm:text-7xl"
           >
             <span aria-hidden="true">Stems</span>
             <span class="sr-only">

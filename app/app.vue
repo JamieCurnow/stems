@@ -30,6 +30,11 @@ useSchemaOrg([
     inLanguage: 'en-GB'
   })
 ])
+
+// Keep GA4 user_id + is_grower user property (and PostHog identity) in sync
+// with the current session. Client-only — analytics is client-side and
+// awaiting useSession during SSR would block hydration.
+if (import.meta.client) await useAnalyticsIdentity()
 </script>
 
 <template>
@@ -38,8 +43,8 @@ useSchemaOrg([
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-    <!-- Consent banner kept dormant: it only sets a first-party cookie via
-         useConsent (no third-party tags wired yet). Ready for PostHog. -->
+    <!-- Cookie banner: writes the first-party consent cookie and drives GA4
+         Consent Mode v2 + PostHog opt-in via useConsent. -->
     <LayoutCookieConsent />
   </UApp>
 </template>

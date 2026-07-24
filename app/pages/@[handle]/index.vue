@@ -40,10 +40,12 @@ const flowers = computed(() => data.value!.flowers)
 // client-side, so gate on `mounted` to avoid a hydration mismatch (mirrors the
 // flower page and AppTabBar).
 const { profile: myProfile, ensure: ensureMyProfile } = useProfile()
+const { track } = useAnalytics()
 const mounted = ref(false)
 onMounted(() => {
   mounted.value = true
   ensureMyProfile()
+  track('grower_view', { grower_handle: profile.value.handle })
 })
 const isOwner = computed(() => mounted.value && myProfile.value?.handle === profile.value.handle)
 

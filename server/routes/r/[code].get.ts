@@ -1,4 +1,5 @@
 import { REFERRAL_COOKIE } from '~~/shared/utils/constants'
+import { hashCode } from '~~/server/utils/analytics'
 
 const VALID_CODE = /^[A-Z0-9]{2,8}-[A-Z0-9]{2,8}$/
 
@@ -24,9 +25,24 @@ export default defineEventHandler(async (event) => {
       secure: !import.meta.dev
     })
 
-    // TODO(posthog): capture a 'referral_landed' event here. Hash the code
-    // (e.g. SHA-256, first 12 hex) before sending so the raw referral code
-    // never reaches a third-party tool.
+    // Capture 'referral_landed' server-side (the visitor may never reach a
+    // page that runs client analytics). Hash the code first so the raw,
+    // user-shareable identifier never reaches PostHog. Fire-and-forget via
+    // waitUntil so the redirect isn't delayed; never let it break the redirect.
+    try {
+      const codeHash = await hashCode(code)
+      const posthog = useServerPostHog()
+      posthog.capture({
+        distinctId: `ref:${codeHash}`,
+        event: 'referral_landed',
+        properties: { code_hash: codeHash }
+      })
+      const waitUntil = event.context.cloudflare?.waitUntil
+      if (waitUntil) waitUntil(flushServerPostHog())
+      else await flushServerPostHog()
+    } catch (err) {
+      console.warn('[analytics] referral_landed capture failed', (err as Error).message)
+    }
   }
 
   return sendRedirect(event, `/login${valid ? `?ref=${code}` : ''}`, 302)

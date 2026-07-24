@@ -139,6 +139,23 @@ export function serverAuth(event: H3Event) {
     baseURL: env.BETTER_AUTH_URL,
     secret: env.BETTER_AUTH_SECRET,
 
+    // Session lifetime tuned for the installed (home-screen) iOS PWA. Better
+    // Auth's defaults are a 7-day cookie that rolls forward every 24h — fine for
+    // a browser tab, but two things bite a standalone PWA:
+    //   1. iOS WebKit (ITP) evicts a site's data after ~7 days of no
+    //      interaction, and a 7-day cookie expires on exactly that boundary, so
+    //      an app opened less than weekly silently logs out.
+    //   2. Users expect an installed app to stay signed in like a native one.
+    // A long `expiresIn` with a 1-day `updateAge` means every open (within the
+    // window) re-issues a fresh 90-day cookie — an actively-used PWA effectively
+    // never logs out, and an occasionally-used one survives up to 90 days. The
+    // cookie stays HttpOnly + Secure + SameSite=Lax (Better Auth defaults), which
+    // is the most eviction-resistant client storage iOS offers.
+    session: {
+      expiresIn: 60 * 60 * 24 * 90, // 90 days
+      updateAge: 60 * 60 * 24 // refresh the cookie at most once a day (rolling)
+    },
+
     // Capture the referral cookie at signup, persisted on the user row. The
     // cookie is set by /r/[code]. Keep this in sync with auth.cli.ts so the
     // CLI generates the matching column.

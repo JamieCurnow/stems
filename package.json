@@ -23,6 +23,7 @@
     "@nuxt/ui": "^4.7.1",
     "@nuxtjs/seo": "^5.3.1",
     "@pinia/nuxt": "^0.11.3",
+    "@posthog/nuxt": "^1.7.80",
     "@react-email/render": "^2.0.9",
     "@vite-pwa/nuxt": "^1.1.1",
     "@vueuse/core": "^14.3.0",

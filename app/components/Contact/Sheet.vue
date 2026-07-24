@@ -7,8 +7,22 @@ import { UModal, UDrawer } from '#components'
 import { contactOptions } from '~~/shared/utils/contact'
 import type { PublicProfileDto } from '~~/shared/types/profile'
 
-const props = defineProps<{ profile: PublicProfileDto }>()
+// `source` records where the sheet was opened from (grower page vs a single
+// flower page) so contact_grower conversions can be attributed per surface.
+const props = withDefaults(defineProps<{ profile: PublicProfileDto; source?: 'profile' | 'flower' }>(), {
+  source: 'profile'
+})
 const open = defineModel<boolean>('open', { default: false })
+
+const { track } = useAnalytics()
+
+// The primary conversion for the marketplace: a buyer reaching out to a grower.
+// `method` is the channel (whatsapp/email/instagram/…). We never send message
+// content — just that contact was initiated.
+function onContact(method: string) {
+  track('contact_grower', { method, grower_handle: props.profile.handle, source: props.source })
+  open.value = false
+}
 
 // Same SSR-safe breakpoint dance as Flower/Form.vue: start as a drawer to match
 // the server render, then switch to the modal once mounted on wide viewports.
@@ -43,7 +57,7 @@ const title = computed(() => `Contact ${props.profile.farmName}`)
           size="lg"
           block
           class="justify-start"
-          @click="open = false"
+          @click="onContact(opt.key)"
         >
           {{ opt.label }}
           <template v-if="opt.key === profile.preferredContact" #trailing>

@@ -37,6 +37,11 @@ const session = authClient.useSession()
 const isAuthed = computed(() => !!session.value.data?.user)
 const showSignedOutCta = computed(() => !session.value.isPending && !isAuthed.value)
 
+const { track } = useAnalytics()
+function trackCta(location: string, label: string, destination: string) {
+  track('cta_click', { cta_location: location, cta_label: label, destination })
+}
+
 const steps = [
   {
     icon: 'i-lucide-at-sign',
@@ -131,7 +136,13 @@ const steps = [
           </p>
 
           <div v-if="showSignedOutCta" class="mt-6 flex flex-col items-center gap-3">
-            <UButton to="/login" color="primary" size="lg" class="rounded-full px-8 font-medium">
+            <UButton
+              to="/login"
+              color="primary"
+              size="lg"
+              class="rounded-full px-8 font-medium"
+              @click="trackCta('hero', 'List your flowers', '/login')"
+            >
               List your flowers
             </UButton>
             <UButton
@@ -182,6 +193,13 @@ const steps = [
                 color="primary"
                 size="lg"
                 class="rounded-full px-[34px] py-[17px] text-base font-medium"
+                @click="
+                  trackCta(
+                    'hero',
+                    showSignedOutCta ? 'List your flowers' : 'Open Stems',
+                    showSignedOutCta ? '/login' : '/discover'
+                  )
+                "
               >
                 {{ showSignedOutCta ? 'List your flowers' : 'Open Stems' }}
               </UButton>
@@ -363,6 +381,13 @@ const steps = [
             color="primary"
             size="lg"
             class="rounded-full px-8 font-medium lg:px-[38px] lg:py-[17px] lg:text-base"
+            @click="
+              trackCta(
+                'footer_cta',
+                showSignedOutCta ? 'List your flowers' : 'Open Stems',
+                showSignedOutCta ? '/login' : '/discover'
+              )
+            "
           >
             {{ showSignedOutCta ? 'List your flowers' : 'Open Stems' }}
           </UButton>

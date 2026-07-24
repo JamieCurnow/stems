@@ -8,6 +8,7 @@ definePageMeta({ middleware: ['auth', 'onboarding'], layout: 'app' })
 useSeoMeta({ title: 'Edit profile', robots: 'noindex,nofollow' })
 
 const toast = useToast()
+const { track } = useAnalytics()
 const { profile, ensure, set } = useProfile()
 
 // Where to return on back / save — the caller passes `?backRoute=` (the public
@@ -138,6 +139,7 @@ async function save() {
       }
     })
     set(updated)
+    track('profile_update')
     allowLeave = true // saved — don't prompt on the way out
     await navigateTo(backRoute.value)
   } catch (e) {

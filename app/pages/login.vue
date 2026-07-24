@@ -4,6 +4,7 @@ import { authClient } from '~/utils/auth-client'
 useSeoMeta({ title: 'Sign in', robots: 'noindex,nofollow' })
 
 const route = useRoute()
+const { track } = useAnalytics()
 
 // Kept in a const (not inlined in the template) so the Stems token
 // can't end up nested inside a Vue interpolation — `{{ … 'Sign in to Stems' }}`
@@ -48,6 +49,7 @@ async function sendCode() {
       type: 'sign-in'
     })
     if (err) throw new Error(err.message ?? 'Could not send your sign-in code.')
+    track('sign_in_code_requested', { has_referral: !!referralCode.value })
     step.value = 'code'
     otp.value = ''
   } catch (e) {
@@ -66,6 +68,7 @@ async function verify() {
       otp: otp.value
     })
     if (err) throw new Error(err.message ?? 'That code was incorrect or has expired.')
+    track('login', { method: 'email_otp' })
     // Session cookie is now set in this context; the destination's middleware
     // routes new (profile-less) users on to /onboarding.
     await navigateTo(redirectTo.value)

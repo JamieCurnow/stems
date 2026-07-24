@@ -10,6 +10,7 @@ definePageMeta({ layout: 'default', middleware: ['auth', 'onboarding'] })
 useSeoMeta({ title: 'Claim your Stems page', robots: 'noindex,nofollow' })
 
 const { set } = useProfile()
+const { track } = useAnalytics()
 
 const state = reactive({
   handle: '',
@@ -89,6 +90,10 @@ async function submit() {
     })
     // Populate the shared state so the tab bar reflects isGrower without reload.
     set(created)
+    // Creating the profile is the true "new account activated" moment — fire
+    // the GA4-standard sign_up conversion plus our onboarding funnel step.
+    track('sign_up', { method: 'email_otp' })
+    track('onboarding_complete', { is_grower: state.isGrower })
     await navigateTo('/account')
   } catch (e) {
     const message =

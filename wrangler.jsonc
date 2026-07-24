@@ -50,6 +50,12 @@
   "vars": {
     // No public (NUXT_PUBLIC_*) vars are set currently. Anything added here is
     // baked into the client payload — i.e. effectively published on the site.
+    //
+    // Analytics: the public GTM / GA4 / PostHog IDs are baked as defaults in
+    // nuxt.config.ts (they're non-secret), so they need no vars here. Only the
+    // server-side GA4 Measurement Protocol key is a secret — set it per env:
+    //   wrangler secret put GA4_API_SECRET --env staging
+    //   wrangler secret put GA4_API_SECRET --env production
   },
 
   "d1_databases": [

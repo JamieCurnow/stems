@@ -21,7 +21,9 @@ const row = await db.select().from(profile).where(eq(profile.userId, user.id)).g
 
 ### `serverAuth(event)` — `auth.ts`
 
-Build a Better Auth instance from the request-scoped D1 binding. Magic-link only (`emailAndPassword` disabled). The Stripe plugin loads **only when `STRIPE_SECRET_KEY` is set** (so dev works before billing is configured). Captures the referral cookie at signup and wires referral reward hooks. Returns the Better Auth instance; `/api/auth/[...all].ts` forwards to `auth.handler`.
+Build a Better Auth instance from the request-scoped D1 binding. Magic-link **and email-OTP** sign-in (`emailAndPassword` disabled — OTP is the primary path so the session cookie lands in the installed iOS PWA's own cookie jar, not Safari's). The Stripe plugin loads **only when `STRIPE_SECRET_KEY` is set** (so dev works before billing is configured). Captures the referral cookie at signup and wires referral reward hooks. Returns the Better Auth instance; `/api/auth/[...all].ts` forwards to `auth.handler`.
+
+Session lifetime is overridden to a **90-day rolling cookie** (`session.expiresIn` 90d, `updateAge` 1d) — Better Auth's 7-day default collides with iOS WebKit's ~7-day ITP data eviction and logs out home-screen PWA users who don't open the app weekly. Cookie stays HttpOnly + Secure + SameSite=Lax.
 
 ### `requireUser(event)` — `requireUser.ts`
 
@@ -147,7 +149,15 @@ The send/preferences/scheduling layer:
 
 ## Analytics
 
-None. Google Analytics (client GTM + server-side GA4 Measurement Protocol) was removed. The Stripe webhook and the `/r/[code]` referral redirect carry `// TODO(posthog)` seams where conversion events (`purchase`, `trial_start`, `subscription_cancelled`, `subscription_reactivated`, `referral_landed`) used to fire. The cookie-consent system (`useConsent` + `<LayoutCookieConsent>`) is kept dormant, ready for a future provider (e.g. PostHog).
+Client-side is GTM (loads GA4) + PostHog, driven from `useAnalytics()` / `useConsent()` — see `app/composables/COMPOSABLES.md` and `roadmap/analytics/`. Server-side:
+
+### `sendServerEvent(event, opts)` / `hashCode(code)` — `analytics.ts`
+
+GA4 Measurement Protocol sender for events that must arrive off-browser (the visitor may never hit a page that runs client analytics). Measurement id comes from `runtimeConfig` (baked default); the api secret is the `GA4_API_SECRET` wrangler secret. **Soft-fails** (warns, never throws) if the secret is unset — analytics must never break a request. `hashCode()` returns 12 hex chars of SHA-256 so referral codes can be reported without leaking the raw identifier.
+
+### `useServerPostHog()` / `flushServerPostHog()` — `posthog.ts`
+
+Shared server-side PostHog client (`posthog-node`), tuned for Workers: `flushAt: 1`, `flushInterval: 0` (the isolate can freeze the instant a response is sent, so batching would drop events). Handlers that capture **must** `await flushServerPostHog()` — or hand it to `event.context.cloudflare.waitUntil()` — before returning. Used by `/r/[code]` to capture `referral_landed` with a hashed code.
 
 ---
 

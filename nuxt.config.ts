@@ -16,7 +16,8 @@ export default defineNuxtConfig({
     '@nuxtjs/robots',
     'nuxt-schema-org',
     'nuxt-seo-utils',
-    'nuxt-site-config'
+    'nuxt-site-config',
+    '@posthog/nuxt'
   ],
 
   // Site-wide config consumed by the SEO modules: absolute-URL generation
@@ -61,6 +62,43 @@ export default defineNuxtConfig({
   // Everything not disallowed is allowed — the public surface stays crawlable.
   robots: {
     disallow: ['/flowers', '/invoices', '/account', '/onboarding', '/login', '/r/', '/email/', '/api/']
+  },
+
+  // Analytics — GTM (loads GA4 + any future pixels) and PostHog. Public IDs are
+  // safe to ship in the client bundle, so they're baked as defaults: analytics
+  // works on every deployed environment (staging + prod). The boot plugin
+  // (app/plugins/analytics.client.ts) skips local dev, and PostHog boots
+  // opted-out until consent. Override via NUXT_PUBLIC_* env if ever needed.
+  runtimeConfig: {
+    public: {
+      gtmId: process.env.NUXT_PUBLIC_GTM_ID || 'GTM-K7VHMP47',
+      ga4MeasurementId: process.env.NUXT_PUBLIC_GA4_MEASUREMENT_ID || 'G-EBCF7SNNC5',
+      posthog: {
+        publicKey:
+          process.env.NUXT_PUBLIC_POSTHOG_PROJECT_TOKEN ||
+          'phc_soAApoN2onn7mdF3XPZHXjX3hxTmDt5W4Zmqc7LEzpGh',
+        host: process.env.NUXT_PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com'
+      }
+    }
+  },
+
+  // @posthog/nuxt module config. Boots opted-out with in-memory persistence
+  // (no cookie, no capture) until useConsent() grants analytics consent —
+  // GDPR-safe by default, mirroring GA4 Consent Mode v2.
+  posthogConfig: {
+    publicKey:
+      process.env.NUXT_PUBLIC_POSTHOG_PROJECT_TOKEN ||
+      'phc_soAApoN2onn7mdF3XPZHXjX3hxTmDt5W4Zmqc7LEzpGh',
+    host: process.env.NUXT_PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com',
+    clientConfig: {
+      defaults: '2026-05-30',
+      capture_exceptions: true,
+      opt_out_capturing_by_default: true,
+      persistence: 'memory'
+    },
+    serverConfig: {
+      enableExceptionAutocapture: true
+    }
   },
 
   devtools: { enabled: false },

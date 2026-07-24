@@ -1,0 +1,315 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-07-06 12:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Stems",
+      "publicId": "GTM-K7VHMP47",
+      "usageContext": ["WEB"],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces",
+      "features": {
+        "supportUserPermissions": true,
+        "supportEnvironments": true,
+        "supportWorkspaces": true,
+        "supportGtagConfigs": true,
+        "supportBuiltInVariables": true,
+        "supportClients": true,
+        "supportFolders": true,
+        "supportTags": true,
+        "supportTemplates": true,
+        "supportTriggers": true,
+        "supportVariables": true,
+        "supportVersions": true,
+        "supportZones": true
+      },
+      "tagIds": ["GTM-K7VHMP47"]
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "GA4 — Configuration",
+        "type": "googtag",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "tagId",
+            "value": "G-EBCF7SNNC5"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "enableSendToServerContainer",
+            "value": "false"
+          }
+        ],
+        "fingerprint": "0",
+        "firingTriggerId": ["2147479553"],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": { "type": "MAP" },
+        "consentSettings": { "consentStatus": "NOT_SET" }
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "2",
+        "name": "GA4 — Event (catch-all)",
+        "type": "gaawe",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "sendEcommerceData",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventName",
+            "value": "{{Event}}"
+          },
+          {
+            "type": "LIST",
+            "key": "eventParameters",
+            "list": [
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "cta_location" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - cta_location}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "cta_label" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - cta_label}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "destination" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - destination}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "question_label" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - question_label}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "section_id" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - section_id}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "query_length" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - query_length}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "result_count" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - result_count}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "grower_handle" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - grower_handle}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "flower_id" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - flower_id}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "method" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - method}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "source" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - source}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "content_type" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - content_type}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "has_referral" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - has_referral}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "is_grower" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - is_grower}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "from" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - from}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "to" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - to}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "code_hash" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - code_hash}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "error_message" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - error_message}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "currency" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - currency}}" }
+              ]},
+              { "type": "MAP", "map": [
+                { "type": "TEMPLATE", "key": "name", "value": "value" },
+                { "type": "TEMPLATE", "key": "value", "value": "{{DLV - value}}" }
+              ]}
+            ]
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "measurementIdOverride",
+            "value": "G-EBCF7SNNC5"
+          }
+        ],
+        "fingerprint": "0",
+        "firingTriggerId": ["3"],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": { "type": "MAP" },
+        "consentSettings": { "consentStatus": "NOT_SET" }
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "3",
+        "name": "GA4 — Set user_id",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n  (function() {\n    var id = {{DLV - user_id}};\n    if (window.gtag && id) {\n      gtag('config', 'G-EBCF7SNNC5', { user_id: String(id) });\n    }\n  })();\n<\/script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "fingerprint": "0",
+        "firingTriggerId": ["4"],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": { "type": "MAP" },
+        "consentSettings": { "consentStatus": "NOT_SET" }
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "4",
+        "name": "GA4 — Set user properties",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n  (function() {\n    var props = {{DLV - user_properties}};\n    if (window.gtag && props) {\n      gtag('set', 'user_properties', props);\n    }\n  })();\n<\/script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "fingerprint": "0",
+        "firingTriggerId": ["5"],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": { "type": "MAP" },
+        "consentSettings": { "consentStatus": "NOT_SET" }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "3",
+        "name": "Custom Event — Stems events",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "MATCH_REGEX",
+            "parameter": [
+              { "type": "TEMPLATE", "key": "arg0", "value": "{{_event}}" },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "^(cta_click|faq_open|scroll_section_view|discover_search|grower_view|flower_view|contact_grower|share|sign_in_code_requested|sign_up|login|onboarding_complete|flower_create|flower_status_change|invoice_create|profile_update|referral_landed)$"
+              }
+            ]
+          }
+        ],
+        "fingerprint": "0"
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "4",
+        "name": "Custom Event — set_user_id",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              { "type": "TEMPLATE", "key": "arg0", "value": "{{_event}}" },
+              { "type": "TEMPLATE", "key": "arg1", "value": "set_user_id" }
+            ]
+          }
+        ],
+        "fingerprint": "0"
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "5",
+        "name": "Custom Event — set_user_properties",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              { "type": "TEMPLATE", "key": "arg0", "value": "{{_event}}" },
+              { "type": "TEMPLATE", "key": "arg1", "value": "set_user_properties" }
+            ]
+          }
+        ],
+        "fingerprint": "0"
+      }
+    ],
+    "variable": [
+      { "accountId": "0", "containerId": "0", "variableId": "100", "name": "DLV - cta_location", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "cta_location" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "101", "name": "DLV - cta_label", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "cta_label" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "102", "name": "DLV - destination", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "destination" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "103", "name": "DLV - question_label", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "question_label" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "104", "name": "DLV - section_id", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "section_id" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "105", "name": "DLV - query_length", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "query_length" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "106", "name": "DLV - result_count", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "result_count" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "107", "name": "DLV - grower_handle", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "grower_handle" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "108", "name": "DLV - flower_id", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "flower_id" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "109", "name": "DLV - method", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "method" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "110", "name": "DLV - source", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "source" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "111", "name": "DLV - content_type", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "content_type" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "112", "name": "DLV - has_referral", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "has_referral" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "113", "name": "DLV - is_grower", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "is_grower" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "114", "name": "DLV - from", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "from" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "115", "name": "DLV - to", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "to" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "116", "name": "DLV - code_hash", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "code_hash" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "117", "name": "DLV - error_message", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "error_message" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "118", "name": "DLV - currency", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "currency" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "119", "name": "DLV - value", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "value" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "120", "name": "DLV - user_id", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "user_id" }], "fingerprint": "0" },
+      { "accountId": "0", "containerId": "0", "variableId": "121", "name": "DLV - user_properties", "type": "v", "parameter": [{ "type": "INTEGER", "key": "dataLayerVersion", "value": "2" }, { "type": "BOOLEAN", "key": "setDefaultValue", "value": "false" }, { "type": "TEMPLATE", "key": "name", "value": "user_properties" }], "fingerprint": "0" }
+    ],
+    "builtInVariable": [
+      { "accountId": "0", "containerId": "0", "type": "PAGE_URL", "name": "Page URL" },
+      { "accountId": "0", "containerId": "0", "type": "PAGE_HOSTNAME", "name": "Page Hostname" },
+      { "accountId": "0", "containerId": "0", "type": "PAGE_PATH", "name": "Page Path" },
+      { "accountId": "0", "containerId": "0", "type": "REFERRER", "name": "Referrer" },
+      { "accountId": "0", "containerId": "0", "type": "EVENT", "name": "Event" }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces"
+  }
+}

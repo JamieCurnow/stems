@@ -67,7 +67,7 @@ await startCheckout({ successPath: '/billing/success' })
 
 ## `useConsent`
 
-Cookie-backed cookie-consent choice, stored in a first-party cookie (`stems_consent`) so SSR/edge code can read it on the first request. **Dormant** — no analytics or marketing tags are wired up yet (Google Analytics was removed), so this just records the user's preference; nothing reads it. When a provider is added (e.g. PostHog), have it consult `state.value.analytics` on boot and react to `set()`. Bump `CONSENT_VERSION` (in the composable) when categories change — old cookies invalidate and the banner re-shows.
+Cookie-backed cookie-consent choice, stored in a first-party cookie (`stems_consent`) so SSR/edge code can read it on the first request. `set()` writes the cookie **and** pushes the change to both providers: GA4 Consent Mode v2 (`gtag('consent', 'update', …)`) and PostHog (`opt_in_capturing` / `opt_out_capturing` + persistence). `analytics` → GA4 `analytics_storage` + PostHog; `marketing` → GA4 ad signals. The boot plugin (`analytics.client.ts`) replays the stored choice for returning visitors. Bump `CONSENT_VERSION` (in the composable) when categories change — old cookies invalidate and the banner re-shows.
 
 ### Usage
 
@@ -106,10 +106,42 @@ navigateTo({ path: `/flowers/${id}/edit`, query: { backRoute: '/flowers' } })
 
 ---
 
+## `useAnalytics`
+
+Typed wrapper around `dataLayer.push` (GTM) — the single choke-point for events, so providers can swap without touching call sites. GA4 tags fire from the GTM container off these pushes. No-op on the server and before GTM boots (the stub queues pushes). See `roadmap/analytics/` for the event taxonomy + importable container.
+
+### Usage
+
+```ts
+const { track } = useAnalytics()
+track('contact_grower', { method: 'whatsapp', grower_handle: 'bramble-bloom', source: 'profile' })
+```
+
+### Returns
+
+- `track(eventName, params?)` — push a custom event onto the dataLayer.
+- `setUserId(id | null)` / `setUserProperties(props)` — feed the container's user-id / user-properties tags (usually via `useAnalyticsIdentity`, not called directly).
+
+---
+
+## `useAnalyticsIdentity`
+
+Keeps GA4's `user_id` + `is_grower` user property (and PostHog identity) in sync with the current Better Auth session and profile. Called **once**, client-only, from `app.vue` (`if (import.meta.client) await useAnalyticsIdentity()`). Reads the shared `useProfile()` / `useSession()` state — never triggers its own fetch. Resets PostHog on sign-out.
+
+### Usage
+
+```ts
+// app.vue only
+if (import.meta.client) await useAnalyticsIdentity()
+```
+
+---
+
 ## Learnings
 
 - **State is shared via `useState`, not Pinia.** `useProfile` (`'profile'`) and `useSubscription` (`'billing-status'`) own the two cross-component state keys. `<AppTabBar>` reads those same keys directly — keep the key strings in sync. Pinia is installed but no stores exist (see `app/stores/STORES.md`).
 - **One owner per `useState` default — never seed `'profile'` elsewhere.** `useProfile` defaults `'profile'` to `undefined` (= "not fetched"); `ensure()` only fetches when it's `undefined`. A consumer that seeds its own default (e.g. `<AppTabBar>` once did `useState('profile', () => null)`) wins the race on public pages like `/discover` (the PWA `start_url`, no onboarding middleware) and wedges the state at `null` — so `ensure()` never fetches: grower tabs vanish and Profile bounces to `/onboarding`. Consumers must read `const { profile } = useProfile()`, not re-declare the state.
+- **Analytics is client-only and skipped in local dev.** `analytics.client.ts` early-returns on `import.meta.dev`, so GTM/PostHog never load under `nuxt dev` — but `track()` calls are safe everywhere (no-op until the dataLayer exists). Analytics runs on every *deployed* build (staging **and** prod both report to the single GA4 property `G-EBCF7SNNC5` / GTM `GTM-K7VHMP47`). Public IDs are baked as defaults in `nuxt.config.ts`; only `GA4_API_SECRET` (server Measurement Protocol) is a wrangler secret. Send event *params*, never PII — search logs length not text, referral codes are hashed.
 - **`profile.client.ts` loads the profile from the session.** Public app-layout pages don't run the onboarding middleware, so nothing would load the profile there. The client plugin watches `authClient.useSession()` and fetches `/api/profile/me` (keyed by user id) whenever a session is present — lighting up the grower shell on every page and recovering from a stale/SSR-missing profile. It clears the state only on a confirmed sign-out (not while the session is still resolving), so an SSR-hydrated profile doesn't flash off.
 - **Auth is client-resolved.** `authClient.useSession()` (no `useFetch`) returns a reactive ref but only resolves on the client, so SSR/first paint look "logged out". Gate logged-out-only UI on `session.isPending` to avoid a flash for already-signed-in users; pass `useFetch` (as `useAuth` does) when you need the value hydrated during SSR.
 - **Prefer `useRequestFetch()` over `useFetch` for auth-dependent reads in middleware/composables.** `useFetch` dedupes by URL and would serve the stale "logged out" response cached during the original render after client-side sign-in. `useRequestFetch()` returns the event-bound `$fetch` on SSR (forwarding cookies + the Cloudflare platform context so D1 bindings resolve) and plain `$fetch` on the client.

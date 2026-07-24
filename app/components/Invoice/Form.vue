@@ -28,6 +28,7 @@ const emit = defineEmits<{
 }>()
 
 const toast = useToast()
+const { track } = useAnalytics()
 const isEdit = computed(() => !!props.invoice)
 
 interface LineState {
@@ -252,6 +253,7 @@ async function save() {
     const url = isEdit.value ? `/api/invoices/${props.invoice!.id}` : '/api/invoices'
     const saved = await $fetch<InvoiceDto>(url, { method: isEdit.value ? 'PATCH' : 'POST', body })
     emit('saved', saved)
+    if (!isEdit.value) track('invoice_create')
   } catch (e) {
     const message =
       typeof e === 'object' && e && 'statusMessage' in e && typeof e.statusMessage === 'string'

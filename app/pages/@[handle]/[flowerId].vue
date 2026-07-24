@@ -53,6 +53,11 @@ if (!flower.value) {
 
 const growerUrl = computed(() => `/@${profile.value.handle}`)
 
+const { track } = useAnalytics()
+onMounted(() => {
+  track('flower_view', { flower_id: flowerId, grower_handle: handle })
+})
+
 // Back affordance: prefer a real history pop so the grower list restores its
 // saved scroll position; fall back to the grower page for deep-links (where
 // there's nowhere to go back to within the app).
@@ -450,6 +455,6 @@ useSeoMeta({
       </button>
     </div>
 
-    <ContactSheet v-if="hasContact" v-model:open="contactOpen" :profile="profile" />
+    <ContactSheet v-if="hasContact" v-model:open="contactOpen" :profile="profile" source="flower" />
   </div>
 </template>

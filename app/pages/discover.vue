@@ -30,6 +30,16 @@ const hasResults = computed(() => (data.value?.length ?? 0) > 0)
 const isSearching = computed(() => trimmedQ.value.length > 0)
 const resultCount = computed(() => data.value?.length ?? 0)
 
+// Log a search once its results have settled — one event per distinct term.
+// We send the query *length* + result count, never the query text itself.
+const { track } = useAnalytics()
+let lastSearchLogged = ''
+watch([() => trimmedQ.value, status], ([term, s]) => {
+  if (!term || s !== 'success' || term === lastSearchLogged) return
+  lastSearchLogged = term
+  track('discover_search', { query_length: term.length, result_count: resultCount.value })
+})
+
 const inviteMailto = computed(() => {
   const subject = encodeURIComponent('Join me on Stems')
   const body = encodeURIComponent(

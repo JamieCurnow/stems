@@ -32,6 +32,16 @@ export interface CloudflareEnv {
   ADMIN_API_SECRET: string
   ADMIN_EMAILS?: string // comma-separated extras
 
+  // Analytics. Public IDs are optional runtime overrides for the nuxt.config
+  // defaults; GA4_API_SECRET is a server-only wrangler secret used by
+  // server/utils/analytics.ts (GA4 Measurement Protocol). All optional — the
+  // sender soft-fails and the client falls back to the baked defaults.
+  NUXT_PUBLIC_GTM_ID?: string
+  NUXT_PUBLIC_GA4_MEASUREMENT_ID?: string
+  NUXT_PUBLIC_POSTHOG_PROJECT_TOKEN?: string
+  NUXT_PUBLIC_POSTHOG_HOST?: string
+  GA4_API_SECRET?: string
+
   EMAIL_SCHEDULER: DurableObjectNamespace
 }
 

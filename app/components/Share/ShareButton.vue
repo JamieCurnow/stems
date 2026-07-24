@@ -35,6 +35,9 @@ const props = withDefaults(
 
 const toast = useToast()
 const { copy } = useClipboard()
+const { track } = useAnalytics()
+
+const contentType = computed(() => (props.flowerId ? 'flower' : 'grower'))
 
 // Absolute URL, correct across environments. useRequestURL() resolves on both
 // SSR and client; window.location.origin is preferred on the client so the
@@ -65,6 +68,7 @@ async function onShare() {
   if (canNativeShare.value && (!navigator.canShare || navigator.canShare(data))) {
     try {
       await navigator.share(data)
+      track('share', { content_type: contentType.value, method: 'native' })
       return
     } catch (err) {
       // User dismissed the sheet — not an error worth surfacing.
@@ -75,6 +79,7 @@ async function onShare() {
 
   try {
     await copy(shareUrl.value)
+    track('share', { content_type: contentType.value, method: 'copy' })
   } catch {
     toast.add({ title: 'Could not copy link', color: 'error' })
   }

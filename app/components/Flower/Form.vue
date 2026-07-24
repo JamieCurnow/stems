@@ -27,6 +27,7 @@ const emit = defineEmits<{
 }>()
 
 const toast = useToast()
+const { track } = useAnalytics()
 
 const isEdit = computed(() => !!props.flower)
 
@@ -174,6 +175,8 @@ async function save() {
       body
     })
     emit('saved', saved)
+    // Activation event — a grower publishing a listing. Edits don't count.
+    if (!isEdit.value) track('flower_create', { has_photo: state.photoKeys.length > 0 })
   } catch (e) {
     const message =
       typeof e === 'object' && e && 'statusMessage' in e && typeof e.statusMessage === 'string'

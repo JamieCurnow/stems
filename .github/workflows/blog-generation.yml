@@ -1,0 +1,119 @@
+name: Blog generation
+
+# Scheduled, headless run of the blog pipeline. Claude Code drafts ONE blog post
+# and opens a PR against main. It NEVER merges and NEVER deploys: publishing stays
+# a human gate (review + merge the PR, then flip `draft: false` once the post is
+# fact-checked). The orchestration prompt is marketing/03-seo-content/blog-generation-task.md.
+#
+# Cadence: 07:00 UTC every Monday. Also runnable on demand via "Run workflow".
+#
+# Least-privilege by design:
+#   - The job token can only write repo contents + open PRs (permissions block).
+#   - Claude is given an explicit --allowedTools whitelist: read/write/edit files,
+#     web search, and scoped git/gh/grep/date/ls/cat/head Bash. Nothing else.
+#
+# Prereqs (one-time, in repo Settings -> Secrets and variables -> Actions):
+#   - ANTHROPIC_API_KEY - secret. Required. An Anthropic API key with credit.
+#   - BLOG_BOT_TOKEN - secret. STRONGLY RECOMMENDED. A fine-grained PAT (or a
+#     GitHub App installation token) with this repo's Contents: read/write +
+#     Pull requests: read/write. Used for the branch push + `gh pr create` so
+#     those are authored by a real identity. Why it matters: GitHub will NOT
+#     auto-trigger workflows from events authored by the default GITHUB_TOKEN,
+#     so without this the bot's PR does not fire blog-preview.yml (and opening a
+#     PR at all needs the "Allow GitHub Actions to create and approve pull
+#     requests" repo setting). With it, the build check fires automatically. If
+#     the secret is absent the workflow falls back to GITHUB_TOKEN.
+#
+# Frontmatter validation is left to the PR's own build: the bot's PR triggers
+# blog-preview.yml (which runs `npm run build`), so a schema error surfaces as a
+# red check on the PR rather than being re-run inside the agent loop. The draft
+# step keeps only the cheap grep self-checks (no em-dashes, single H1) and uses
+# Sonnet to keep token cost down - a human reviews and merges every post anyway.
+
+on:
+  schedule:
+    # 07:00 UTC every Monday.
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: blog-generation
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          # Full history so Claude can branch and push cleanly.
+          fetch-depth: 0
+          # Push as BLOG_BOT_TOKEN (a PAT or GitHub App token) when set, so the
+          # branch push + PR are authored by a real identity and DO trigger
+          # downstream workflows (blog-preview.yml). Falls back to the default
+          # GITHUB_TOKEN, whose pushes/PRs GitHub will NOT auto-trigger workflows
+          # from (and which needs the "Allow GitHub Actions to create and approve
+          # pull requests" repo setting to open PRs at all).
+          token: ${{ secrets.BLOG_BOT_TOKEN || github.token }}
+          persist-credentials: true
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Configure git identity
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - name: Run blog generation
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # gh CLI auth. Prefer BLOG_BOT_TOKEN (PAT/App) so the PR is opened by a
+          # real identity and triggers blog-preview.yml; else fall back to
+          # GITHUB_TOKEN (needs the repo "create PRs" setting, and its PRs do not
+          # auto-trigger other workflows).
+          GH_TOKEN: ${{ secrets.BLOG_BOT_TOKEN || github.token }}
+        run: |
+          # pipefail so a claude failure isn't masked by the jq pretty-printer
+          # downstream (the default shell here is `bash -e`, without pipefail).
+          set -o pipefail
+          # stream-json + --verbose makes the CLI emit one event per line as it
+          # works; the jq filter turns that into a live, readable progress log
+          # (tool calls, reasoning, final cost) instead of minutes of silence.
+          claude -p "$(cat marketing/03-seo-content/blog-generation-task.md)" \
+            --output-format stream-json \
+            --verbose \
+            --model claude-sonnet-5 \
+            --max-turns 40 \
+            --permission-mode acceptEdits \
+            --allowedTools \
+              "Read" "Write" "Edit" "Glob" "Grep" "WebSearch" "WebFetch" \
+              "Bash(git:*)" "Bash(gh:*)" "Bash(grep:*)" "Bash(date:*)" \
+              "Bash(ls:*)" "Bash(cat:*)" "Bash(head:*)" \
+            | jq -Rr --unbuffered '
+                fromjson?
+                | if .type=="system" and .subtype=="init" then "> session started (model: \(.model // "?"))"
+                  elif .type=="assistant" then
+                    ([.message.content[]?
+                      | if .type=="text" and ((.text // "")|length>0) then "[text] " + ((.text)|gsub("\n";" ")|.[0:300])
+                        elif .type=="tool_use" then "[tool] \(.name) \(((.input // {})|tostring)[0:160])"
+                        else empty end] | join("\n"))
+                  elif .type=="result" then "[done] \(.subtype // "done") | turns: \(.num_turns // "?") | cost: $\(.total_cost_usd // 0)"
+                  else empty end
+                | select(. != null and . != "")
+              '

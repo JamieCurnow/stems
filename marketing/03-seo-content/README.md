@@ -42,6 +42,25 @@ Two intents, both genuine and both low-competition for this niche:
 - Technical SEO (sitemap, schema, metadata) is tracked separately in
   `../seo-roadmap/`. This folder is content strategy, not the technical build.
 
+## Automated drafting (weekly)
+
+A GitHub Action drafts one post a week so the backlog keeps moving without a
+person sitting down to write. It is a draft engine, not an autopublisher.
+
+- **`.github/workflows/blog-generation.yml`** runs 07:00 UTC every Monday (and
+  on demand via "Run workflow"). It runs Claude Code headless against the
+  orchestration prompt in `blog-generation-task.md`: pick the top `unclaimed`
+  row from `pillar-articles.md`, draft it into `content/blog/<slug>.md` with
+  `draft: true`, open a PR, and flip that row to `drafted`. It never merges and
+  never deploys.
+- **`.github/workflows/blog-preview.yml`** builds the PR so a bad frontmatter
+  field (the `content.config.ts` schema) fails visibly on the PR.
+- **The human gate:** review the PR, fact-check every `TODO(jamie)`, merge, then
+  flip `draft: false` when the post is ready to go live.
+- **Setup:** needs the `ANTHROPIC_API_KEY` repo secret (required) and a
+  `BLOG_BOT_TOKEN` PAT (recommended, so the bot's PR triggers the build check).
+  See the header comment in `blog-generation.yml` for the exact scopes.
+
 ## Read these next
 
 1. `todo.md`

@@ -1,0 +1,49 @@
+name: Blog preview
+
+# Build check for blog PRs. When the scheduled generator (blog-generation.yml)
+# opens a `blog-*` PR, this runs `npm run build` so a bad post fails visibly on
+# the PR instead of only blowing up on the staging deploy after merge. It is the
+# frontmatter-schema gate the generation prompt relies on: `content.config.ts`'s
+# Zod schema is enforced when @nuxt/content builds the content DB, so a missing
+# or malformed frontmatter field turns this check red.
+#
+# `nuxt build` is a static build and needs no Cloudflare secrets, so this runs
+# ungated (unlike the deploy workflows, which wait on DEPLOY_ENABLED).
+#
+# Note: for this to auto-trigger on the bot's PR, the generator must push as
+# BLOG_BOT_TOKEN - GitHub does not fire workflows for PRs authored by the default
+# GITHUB_TOKEN. See blog-generation.yml.
+
+on:
+  pull_request:
+    branches: [main]
+    # Only the generator's branches. Keeps this off every normal PR.
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: blog-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    # Scope to blog branches only.
+    if: startsWith(github.head_ref, 'blog-')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (validates blog content + frontmatter schema)
+        run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144

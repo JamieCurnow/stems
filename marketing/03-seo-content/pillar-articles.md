@@ -40,7 +40,7 @@ Grower-facing posts come first: they serve acquisition, which is the V1 goal.
 | # | Title | Target keyword | Audience | Status | Notes |
 |---|---|---|---|---|---|
 | 1 | How to sell your flowers locally without building a website | how to sell flowers locally | Grower | **drafted** | `content/blog/how-to-sell-flowers-locally-without-a-website.md`. The flagship. Doubles as a manifesto. Has FAQ schema. |
-| 2 | How to price cut flowers for florists (a grower's guide) | how to price cut flowers | Grower | unclaimed | Per-stem, bunch-of-ten, British-grown premium. Needs real price ranges, `TODO(jamie)` until checked. High-intent, low competition. |
+| 2 | How to price cut flowers for florists (a grower's guide) | how to price cut flowers | Grower | **drafted** | `content/blog/how-to-price-cut-flowers-for-florists.md`. PR: https://github.com/JamieCurnow/stems/pull/3. Has FAQ schema. Real per-stem price ranges still `TODO(jamie)`. |
 | 3 | Where to buy British-grown flowers near you | british grown flowers near me | Buyer | unclaimed | The buyer-side counterpart. Explains seasonality, links to /discover. Strong AEO target. |
 | 4 | What flowers are in season in the UK right now | flowers in season UK | Both | unclaimed | Evergreen, refreshable per season. Big search volume. Could become a recurring monthly "what's in season" series. |
 | 5 | How to find a local flower grower for your wedding | local wedding flowers / british wedding flowers | Buyer | unclaimed | Event florists + couples. Seasonal-colour realities, lead times, why local. Links to /discover. |

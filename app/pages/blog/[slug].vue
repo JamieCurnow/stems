@@ -12,7 +12,11 @@ const { data: post } = await useAsyncData(`blog-${route.path}`, () =>
   queryCollection('blog').path(route.path).first()
 )
 
-if (!post.value || (!import.meta.dev && post.value.draft)) {
+// Drafts render in local dev and on the blog-preview staging deploy
+// (NUXT_PUBLIC_SHOW_DRAFTS=true), but 404 on real production.
+const showDrafts = import.meta.dev || useRuntimeConfig().public.showDrafts
+
+if (!post.value || (!showDrafts && post.value.draft)) {
   throw createError({ statusCode: 404, statusMessage: 'Post not found', fatal: true })
 }
 

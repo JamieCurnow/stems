@@ -1,37 +1,48 @@
 name: Blog preview
 
-# Build check for blog PRs. When the scheduled generator (blog-generation.yml)
-# opens a `blog-*` PR, this runs `npm run build` so a bad post fails visibly on
-# the PR instead of only blowing up on the staging deploy after merge. It is the
-# frontmatter-schema gate the generation prompt relies on: `content.config.ts`'s
-# Zod schema is enforced when @nuxt/content builds the content DB, so a missing
-# or malformed frontmatter field turns this check red.
+# Per-PR preview for blog drafts (the URL you review the post at).
 #
-# `nuxt build` is a static build and needs no Cloudflare secrets, so this runs
-# ungated (unlike the deploy workflows, which wait on DEPLOY_ENABLED).
+# Two things happen on any PR that touches content/blog/**:
+#   1. `npm run build` — the frontmatter-schema gate. `content.config.ts`'s Zod
+#      schema is enforced when @nuxt/content builds the content DB, so a missing
+#      or malformed field turns the PR check red. This runs regardless.
+#   2. Deploy the PR to the STAGING Worker and comment the /blog link, so a human
+#      can read the drafted post rendered in the real app before merging.
 #
-# Note: for this to auto-trigger on the bot's PR, the generator must push as
-# BLOG_BOT_TOKEN - GitHub does not fire workflows for PRs authored by the default
-# GITHUB_TOKEN. See blog-generation.yml.
+# Why deploy to staging instead of a native preview URL: Cloudflare per-version
+# Preview URLs are NOT available for this Worker because it binds a Durable
+# Object (EmailScheduler) - a documented limitation:
+# https://developers.cloudflare.com/workers/configuration/previews/#limitations
+# So the PR becomes staging's ACTIVE deployment; the next push to main
+# (deploy-staging.yml) restores staging to main. Fine for the weekly, sequential
+# blog cadence.
+#
+# The deploy step is gated on the DEPLOY_ENABLED repo variable (same guard as
+# deploy-staging.yml) so a fresh clone / un-provisioned repo still gets the build
+# check without failing on the deploy. Prereqs when enabled: CLOUDFLARE_API_TOKEN
+# + CLOUDFLARE_ACCOUNT_ID (already used by the deploy workflows).
 
 on:
   pull_request:
-    branches: [main]
-    # Only the generator's branches. Keeps this off every normal PR.
     types: [opened, synchronize, reopened]
+    paths:
+      - 'content/blog/**'
 
+# Staging is a shared, single resource, so serialize blog-preview deploys (don't
+# key by PR number) and let them queue rather than cancel mid-deploy.
 concurrency:
-  group: blog-preview-${{ github.ref }}
-  cancel-in-progress: true
+  group: staging-blog-preview
+  cancel-in-progress: false
 
 jobs:
-  build:
-    # Scope to blog branches only.
-    if: startsWith(github.head_ref, 'blog-')
+  preview:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
-      - name: Checkout
+      - name: Checkout PR
         uses: actions/checkout@v6
 
       - name: Install node
@@ -47,3 +58,46 @@ jobs:
         run: npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=6144
+
+      # Deploy the built PR to staging so the drafted post can be read in the real
+      # app. Gated on DEPLOY_ENABLED so an un-provisioned repo still gets the build
+      # check above. No migration step: blog PRs are content-only. If a blog PR
+      # ever also adds a D1 migration, apply it via the normal deploy-staging flow.
+      - name: Deploy PR to staging
+        id: deploy
+        if: ${{ vars.DEPLOY_ENABLED == 'true' }}
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # `--env staging` is REQUIRED - without it wrangler resolves the DB via
+          # the top-level d1_databases binding (placeholder UUID).
+          command: deploy --env staging
+
+      - name: Comment preview link
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+        with:
+          script: |
+            const marker = '<!-- blog-preview -->'
+            const outcome = process.env.DEPLOY_OUTCOME // 'success' | 'failure' | 'skipped' | ''
+            let body
+            if (outcome === 'success') {
+              body = `${marker}\n### 🔍 Blog preview deployed to staging\n\n[https://stems-staging.jamiecurnow.workers.dev/blog](https://stems-staging.jamiecurnow.workers.dev/blog)\n\n**This PR is now staging's active deployment**; staging is restored to \`main\` on the next merge. Re-deployed on each push to this PR.`
+            } else if (outcome === 'failure') {
+              body = `${marker}\n### ⚠️ Blog preview deploy failed\n\nThe build passed but the staging deploy step did not succeed. See the run log.`
+            } else {
+              body = `${marker}\n### ✅ Blog build passed\n\nStaging deploy is disabled (\`DEPLOY_ENABLED\` is not \`true\`), so there's no live preview link. The post built cleanly and its frontmatter is valid.`
+            }
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo,
+              issue_number: context.issue.number
+            })
+            const existing = comments.find((c) => c.body && c.body.includes(marker))
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body })
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body })
+            }

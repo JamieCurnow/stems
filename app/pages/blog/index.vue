@@ -19,9 +19,13 @@ useSeoMeta({
   description: 'Notes from Stems: growing, seasonality, and the people behind the flowers.'
 })
 
+// Show drafts in local dev and on the blog-preview staging deploy
+// (NUXT_PUBLIC_SHOW_DRAFTS=true); hide them on real production.
+const showDrafts = import.meta.dev || useRuntimeConfig().public.showDrafts
+
 const { data: posts } = await useAsyncData('blog-index', () => {
   const query = queryCollection('blog').order('date', 'DESC')
-  return import.meta.dev ? query.all() : query.where('draft', '=', false).all()
+  return showDrafts ? query.all() : query.where('draft', '=', false).all()
 })
 
 // Lead = most recent post; list = the rest (still date DESC).

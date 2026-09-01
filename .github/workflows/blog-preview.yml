@@ -58,6 +58,13 @@ jobs:
         run: npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=6144
+          # Reveal draft posts on this preview deploy only. Generated posts ship
+          # draft: true (a human flips them to false to publish), which 404s on a
+          # normal production build - so without this the preview URL would 404
+          # the very post under review. Baked into the client bundle at build
+          # time; normal staging/prod builds never set it, so drafts stay hidden
+          # there. Drafts remain excluded from the sitemap regardless.
+          NUXT_PUBLIC_SHOW_DRAFTS: 'true'
 
       # Deploy the built PR to staging so the drafted post can be read in the real
       # app. Gated on DEPLOY_ENABLED so an un-provisioned repo still gets the build

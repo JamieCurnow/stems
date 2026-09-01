@@ -78,7 +78,14 @@ export default defineNuxtConfig({
           process.env.NUXT_PUBLIC_POSTHOG_PROJECT_TOKEN ||
           'phc_soAApoN2onn7mdF3XPZHXjX3hxTmDt5W4Zmqc7LEzpGh',
         host: process.env.NUXT_PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com'
-      }
+      },
+      // When true, unpublished (draft: true) posts render instead of 404ing and
+      // show in the blog index. Off everywhere by default (drafts stay hidden on
+      // real production). The blog-preview workflow builds with
+      // NUXT_PUBLIC_SHOW_DRAFTS=true so a freshly drafted post can be read on the
+      // staging preview deploy before a human flips it to draft: false. Drafts
+      // are still excluded from the sitemap regardless of this flag.
+      showDrafts: process.env.NUXT_PUBLIC_SHOW_DRAFTS === 'true'
     }
   },
 

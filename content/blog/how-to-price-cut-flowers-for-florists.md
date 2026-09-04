@@ -51,8 +51,10 @@ The calculation is the same whatever you grow. Take the total cost of a bed for
 a season, seed or plugs, compost, fleece, water, feed, and divide it by the
 number of usable stems you expect from it. One UK grower's worked example, from
 [the Hampshire Seed Co's guide to pricing flowers](https://www.thehampshireseedco.com/post/pricing-flowers-with-confidence),
-put a bed at £232.97 to grow out and yielding around 1,000 stems, which comes to
-roughly 23p a stem before anything else is added.
+put a bed of snapdragons at £232.97 to grow out and yielding around 1,000 stems,
+which comes to roughly 23p a stem before anything else is added. Your own crops
+will land at different numbers, a bed of dahlias yields far fewer stems than one
+of snapdragons, but the method is the same whatever you grow.
 
 That 23p isn't your price. It's your raw cost. On top of it you need to add an
 overhead, a share of the polytunnel, the tools, the diesel, the hours you spend
@@ -72,7 +74,13 @@ Covering your costs isn't pricing, it's breaking even. Once you know your floor,
 decide what you actually want to make on top of it, and add it on purpose rather
 than by accident.
 
-`TODO(jamie): confirm typical current per-stem price ranges UK growers charge florists for common crops (dahlias, sweet peas, ranunculus, cosmos) so we can give real numbers here rather than a placeholder.`
+There's no single right margin, and anyone who hands you a flat number for every
+crop is guessing. What a stem is worth depends on what you grow, how scarce it is
+at that point in the season, and what comparable British-grown flowers fetch
+where you are. The most reliable way to find your ceiling is to look sideways:
+what other local growers charge, what florists near you already pay for the same
+crop in season, and what your particular market will bear. Price toward the top
+of what's fair for a freshly cut, genuinely local stem, not the bottom.
 
 However you land on the final figure, be able to explain it to yourself. "This
 covers my costs, plus what my time is worth, plus a bit for the bad weeks" is a
@@ -95,8 +103,8 @@ their own numbers won't blink at a grower who's clearly worked out theirs.
 
 ## Where the British-grown premium comes from
 
-Most cut flowers sold in the UK aren't grown here. As of 2024, [86 per cent of
-UK cut flowers were imported](https://wickedleeks.riverford.co.uk/opinion/where-have-all-the-flowers-gone/),
+Most cut flowers sold in the UK aren't grown here. Depending on the year and how
+you count, [roughly 85 to 90 per cent are imported](https://wickedleeks.riverford.co.uk/opinion/where-have-all-the-flowers-gone/),
 flown or shipped in from large-scale growers overseas with land, labour and
 heating costs a small British farm simply doesn't have. That's not a knock on
 imported flowers, they have their place, but it does mean you're not really

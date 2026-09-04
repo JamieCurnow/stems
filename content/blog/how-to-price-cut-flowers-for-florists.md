@@ -7,7 +7,7 @@ tags:
   - growers
   - selling
   - pricing
-draft: true
+draft: false
 faq:
   - question: Should I price cut flowers per stem or per bunch?
     answer: For florists, price per stem with a clear bunch size, usually ten stems to a bunch. It's the convention florists already order in, and it makes quoting fast for both of you. For markets and the public, pricing per bunch is often simpler.

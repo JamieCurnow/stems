@@ -45,18 +45,21 @@ Two intents, both genuine and both low-competition for this niche:
 ## Automated drafting (weekly)
 
 A GitHub Action drafts one post a week so the backlog keeps moving without a
-person sitting down to write. It is a draft engine, not an autopublisher.
+person sitting down to write. It drafts and opens a PR; it never merges, so
+nothing goes live without a human.
 
 - **`.github/workflows/blog-generation.yml`** runs 07:00 UTC every Monday (and
   on demand via "Run workflow"). It runs Claude Code headless against the
   orchestration prompt in `blog-generation-task.md`: pick the top `unclaimed`
-  row from `pillar-articles.md`, draft it into `content/blog/<slug>.md` with
-  `draft: true`, open a PR, and flip that row to `drafted`. It never merges and
-  never deploys.
-- **`.github/workflows/blog-preview.yml`** builds the PR so a bad frontmatter
-  field (the `content.config.ts` schema) fails visibly on the PR.
-- **The human gate:** review the PR, fact-check every `TODO(jamie)`, merge, then
-  flip `draft: false` when the post is ready to go live.
+  row from `pillar-articles.md`, write it into `content/blog/<slug>.md` with
+  `draft: false` (ready to publish), open a PR, and flip that row to `drafted`.
+  It never merges and never deploys.
+- **`.github/workflows/blog-preview.yml`** builds the PR (schema gate) and
+  deploys it to staging so the post can be read at
+  `stems-staging.jamiecurnow.workers.dev/blog` before merging.
+- **The human gate is the merge:** review the PR, fact-check and clear every
+  `TODO(jamie)` (the post ships `draft: false`, so it publishes on merge), then
+  merge. Only merge once the TODOs are gone.
 - **Setup:** needs the `ANTHROPIC_API_KEY` repo secret (required) and a
   `BLOG_BOT_TOKEN` PAT (recommended, so the bot's PR triggers the build check).
   See the header comment in `blog-generation.yml` for the exact scopes.

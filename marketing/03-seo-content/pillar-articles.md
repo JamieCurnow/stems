@@ -21,7 +21,7 @@ description: String           # meta description shown in SERPs
 date: 'YYYY-MM-DD'            # ISO, quoted
 keyword: String              # the single target keyword
 tags: [growers, selling]     # 1-3 tags
-draft: true                  # true until fact-checked + ready; hidden in prod
+draft: false                 # false = publishes on merge; set true only to hide a WIP
 faq:                          # optional, drives FAQPage JSON-LD (good for AEO)
   - question: String
     answer: String
@@ -30,8 +30,8 @@ faq:                          # optional, drives FAQPage JSON-LD (good for AEO)
 
 ## Status legend
 
-`published` · `drafted` (file exists, `draft: true`, awaiting fact-check/publish)
-· `unclaimed` (next to write)
+`published` (merged, live) · `drafted` (PR open, `draft: false`, awaiting
+review + merge) · `unclaimed` (next to write)
 
 ## Backlog
 
@@ -55,9 +55,10 @@ the goal.
 ## How to write the next one
 
 Use `prompt-blog-article.md` in this folder as the brief. Pick the top
-`unclaimed` row, write it to `content/blog/<slug>.md` with `draft: true`, run it
-past the voice doc, flag any figures as `TODO(jamie)`, and leave it for Jamie to
-fact-check and publish (flip `draft` to false).
+`unclaimed` row, write it to `content/blog/<slug>.md` with `draft: false`, run it
+past the voice doc, flag any figures as `TODO(jamie)`, and open a PR. The post
+publishes when Jamie merges the PR, so he fact-checks and clears every `TODO`
+before merging.
 
 ## Internal linking map (build this as posts land)
 

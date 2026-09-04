@@ -2,9 +2,10 @@
 
 This is the prompt the scheduled GitHub Action (`.github/workflows/blog-generation.yml`)
 feeds to `claude -p`. It drafts ONE new blog post and opens a pull request. It
-never merges and never deploys. Publishing stays a human gate (review + merge the
-PR, then flip `draft: false` when the post is fact-checked). Tune this file to
-sharpen the output; it is the single source of the orchestration prompt.
+never merges and never deploys. Posts ship `draft: false` (ready to publish), so
+merging the PR is what puts them live: the PR review is the human gate, and any
+`TODO(jamie)` fact-check must be cleared before merge. Tune this file to sharpen
+the output; it is the single source of the orchestration prompt.
 
 ---
 
@@ -50,7 +51,11 @@ Then run these steps:
      block. Do not invent new frontmatter fields (the schema in
      `content.config.ts` is the contract).
    - `date` is today, ISO and quoted: use `date +%F`.
-   - `draft: true` always. Jamie fact-checks and flips it to `false` to publish.
+   - `draft: false` always. The post is written ready to publish; it goes live
+     when the PR is merged, so the PR review IS the human gate (not a later
+     draft-flip). This means any `TODO(jamie)` marker you leave MUST be resolved
+     by the reviewer before merge, or it renders live. Only ever set
+     `draft: true` if you are deliberately parking an unfinished post.
    - 1500+ words. Follow `prompt-blog-article.md` and the pillar outline.
    - Add a `faq` block of 2 to 4 real Q&As where the topic suits it (drives
      FAQPage JSON-LD, good for AEO), and mirror those answers in plain language
@@ -88,9 +93,9 @@ Then run these steps:
 6. **Open the PR** with `gh pr create`: base `main`, head `blog-<slug>`, title
    `blog: <slug>`. The PR body is exactly: a one-line summary, the target
    keyword, the audience, and a one-line "why now" (backlog priority). List any
-   `TODO(jamie)` markers left for fact-checking. Note that the post ships
-   `draft: true` and needs a human to fact-check and flip it. Nothing else. DO
-   NOT merge.
+   `TODO(jamie)` markers left for fact-checking, calling out clearly that the
+   post ships `draft: false` and publishes on merge, so those TODOs must be
+   resolved before merging. Nothing else. DO NOT merge.
 
 7. **Update the backlog.** Edit `marketing/03-seo-content/pillar-articles.md`:
    set the chosen row's Status to `drafted` and add the file path + PR link in

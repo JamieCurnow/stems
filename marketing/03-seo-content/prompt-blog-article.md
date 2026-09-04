@@ -51,8 +51,9 @@ Write one blog post, in Stems' voice, that is genuinely useful to its audience
 ## Frontmatter
 
 Fill the contract from `pillar-articles.md`. Always include `title`,
-`description`, `date` (today, ISO quoted), `keyword`, `tags`. Set `draft: true`
-(Jamie publishes by flipping it). Add a `faq` block of 2-4 real Q&As where the
+`description`, `date` (today, ISO quoted), `keyword`, `tags`. Set `draft: false`
+(the post publishes when its PR is merged; only set `draft: true` to park an
+unfinished one). Add a `faq` block of 2-4 real Q&As where the
 topic suits it, it drives FAQPage schema and helps AEO. Mirror the FAQ answers
 in plain language in the body too.
 
@@ -69,4 +70,5 @@ following the linking map in `pillar-articles.md`. Markdown links: `[text](/path
   body (none allowed).
 - Save to `content/blog/<slug>.md`. Slug is lowercase, hyphenated, keyword-led.
 - Update the row in `pillar-articles.md` to `drafted` with the file path.
-- Leave it `draft: true`. Tell Jamie what needs fact-checking (every `TODO`).
+- Leave it `draft: false` (it goes live on merge). Tell Jamie what needs
+  fact-checking (every `TODO`) so he can resolve them before merging.

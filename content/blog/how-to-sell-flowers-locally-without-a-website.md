@@ -7,7 +7,7 @@ tags:
   - growers
   - selling
   - getting-started
-draft: true
+draft: false
 faq:
   - question: Do I need a website to sell my flowers locally?
     answer: No. Most small growers sell perfectly well without one, through Instagram, word of mouth, local florists, and markets. A full website is a big project that's hard to keep current in the season. What you actually need is one clear, up-to-date place to show what you have available, that you can share with a single link.
